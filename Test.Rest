@@ -1,8 +1,8 @@
-GET http://localhost:5031/WeatherForecast HTTP/1.1
+GET http://localhost:8080/WeatherForecast HTTP/1.1
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsImVtYWlsIjoidGVzdEBlbWFpbC5jb20iLCJuYmYiOjE3MDczMTk1NTgsImV4cCI6MTcwNzMxOTYxOCwiaWF0IjoxNzA3MzE5NTU4LCJpc3MiOiJJc3N1ZXIiLCJhdWQiOiJBdWRpZW5jZSJ9.UPwJmEnNBLJaCqUEWMOVTil5CmffqHgOzeKvQzK3fMfwJYi3fdaArTBRIPx8Ljds0SLmeMWxltamDElFvGdFpA
 ###
-POST  http://localhost:5031/api/auth HTTP/1.1
+POST  http://localhost:8080/api/auth HTTP/1.1
 Content-Type: application/json
 
 {
@@ -10,3 +10,16 @@ Content-Type: application/json
     "Password" : "a"
 }
 ###
+
+POST  http://localhost:5031/api/signup HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsImVtYWlsIjoidGVzdEBlbWFpbC5jb20iLCJuYmYiOjE3MDczMTk1NTgsImV4cCI6MTcwNzMxOTYxOCwiaWF0IjoxNzA3MzE5NTU4LCJpc3MiOiJJc3N1ZXIiLCJhdWQiOiJBdWRpZW5jZSJ9.UPwJmEnNBLJaCqUEWMOVTil5CmffqHgOzeKvQzK3fMfwJYi3fdaArTBRIPx8Ljds0SLmeMWxltamDElFvGdFpA
+
+{
+    "first_name" : "adarsha",
+    "last_name" : "khadka",
+    "username": "kiran",
+    "email" : "akk@email.com",
+    "phone_no": "9849549584",
+    "password" : "ZeroMode"
+}
