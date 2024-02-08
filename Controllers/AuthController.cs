@@ -38,10 +38,10 @@ namespace CustomJwtAuth.Controller {
 
                 var subject = new ClaimsIdentity(new[] {
                     new Claim(JwtRegisteredClaimNames.Sub , user.Email),
-                    new Claim(JwtRegisteredClaimNames.Email , user.Email)
+                    new Claim(JwtRegisteredClaimNames.Email , user.Password)
                 });
 
-                var expires = DateTime.UtcNow.AddMinutes(1);
+                var expires = DateTime.UtcNow.AddMinutes(10);
                 
                 var tokenDescriptor = new SecurityTokenDescriptor {
                     Subject = subject,
@@ -54,11 +54,7 @@ namespace CustomJwtAuth.Controller {
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var token = tokenHandler.CreateToken(tokenDescriptor);
                 var jwtToken = tokenHandler.WriteToken(token);
-
-
                 return Ok(jwtToken);
-                
-
             }
 
 

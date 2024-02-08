@@ -1,0 +1,39 @@
+version: '3.4'
+
+networks:
+  dev:
+    driver: bridge
+
+services:
+  micro-code:
+    image: docker.io/library/microcode
+    depends_on:
+      - "dataBase"
+    container_name: MicroCodeService
+    ports:
+      - "8080:80"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - ConnectionStrings__DefaultConnection=services=dataBase;Port=5433;Database=postgresql;Username=postgres;Password=microcode
+      - ASPNETCORE_URL=http://+:80
+    networks:
+      - dev
+  dataBase:
+    image: postgres:latest
+    container_name: microcode_db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=microcode
+      - POSTGRES_DB=postgresql
+    ports:
+      - "5433:5432"
+    restart: always
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - dev
+
+volumes:
+  db_data:
