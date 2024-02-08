@@ -17,7 +17,7 @@ services:
       dockerfile: Dockerfile
     environment:
       - ASPNETCORE_URLS=http://+:80
-      - ConnectionStrings__DefaultConnection=services=dataBase;Port=5432;Database=postgresql;Username=postgres;Password=microcode
+      - ConnectionStrings__DefaultConnection=Host=dataBase;Port=5432;Database=postgresql;Username=postgres;Password=microcode;Pooling=true;
     
     networks:
       - dev

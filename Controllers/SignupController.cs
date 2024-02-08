@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace MicroCode.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class SignUpController : ControllerBase
 {
    private readonly MicroCodeContext dbContext;
@@ -17,20 +17,20 @@ public class SignUpController : ControllerBase
         this.dbContext = dbContext;
    }
 
-   [HttpPost(Name ="signup")]
+   [HttpPost]
    [AllowAnonymous]
-    public async Task<IActionResult> addUser ([FromBody] ProfileModel user){
+    public async Task<IActionResult> AddUser ([FromBody] ProfileModel profile){
         string salt = BCrypt.Net.BCrypt.GenerateSalt(12);
-        string hashedPassword = BCrypt.Net.BCrypt.HashPassword(user.password, salt);
+        string hashedPassword = BCrypt.Net.BCrypt.HashPassword(profile.password, salt);
         var newUser = new UserModel {
             user_id = Guid.NewGuid(),
-            username = user.username,
-            first_name = user.first_name,
-            last_name = user.last_name,
-            phone_no = user.phone_no,
-            eamil = user.eamil,
+            username = profile.username,
+            first_name = profile.first_name,
+            last_name = profile.last_name,
+            phone_no = profile.phone_no,
+            eamil = profile.eamil,
             password_hash = hashedPassword,
-            registration_data = DateTime.Now,
+            registration_data = DateTime.UtcNow,
         };
 
         await dbContext.UserModel.AddAsync(newUser);
