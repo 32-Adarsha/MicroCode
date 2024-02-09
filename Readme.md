@@ -37,7 +37,7 @@ Feature Added
 -------------------------------------------------
 Views in react
 
-cd /views/microcode-views
-npm install
-npm run dev
+- cd views/microcode-views
+- npm install
+- npm run dev
     
