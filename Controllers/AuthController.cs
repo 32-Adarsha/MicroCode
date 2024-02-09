@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using MicroCode.models;
+using MicroCode.Data;
+using BCrypt.Net;
 
 
 namespace CustomJwtAuth.Controller {
@@ -13,21 +15,24 @@ namespace CustomJwtAuth.Controller {
     [ApiController]
     public class AuthController: ControllerBase 
     {
-        IConfiguration configuration;
-        public AuthController(IConfiguration configuration)
+        private IConfiguration configuration;
+        private readonly MicroCodeContext dbContext;
+        public AuthController(IConfiguration configuration , MicroCodeContext dbContext)
         {
             this.configuration = configuration;
+            this.dbContext = dbContext;
         }
 
     
     [AllowAnonymous]
     [HttpPost]
-    public IActionResult Auth([FromBody] LoginModel user){
+    public IActionResult Auth([FromBody] LoginModel person){
         
         IActionResult response = Unauthorized();
-        
+        var user = dbContext.UserModel.FirstOrDefault(u => u.eamil == person.Email);
         if (user != null) {
-            if (user.Email.Equals("test@email.com") && user.Password.Equals("a")){
+            bool verify = BCrypt.Net.BCrypt.Verify(person.Password, user.password_hash,false, hashType : HashType.SHA512);
+            if (verify){
                 var issuer = configuration["Jwt:Issuer"];
                 var audience = configuration["Jwt:Audience"];
                 var key = Encoding.UTF8.GetBytes(configuration["Jwt:Key"]);
@@ -37,8 +42,8 @@ namespace CustomJwtAuth.Controller {
                 );
 
                 var subject = new ClaimsIdentity(new[] {
-                    new Claim(JwtRegisteredClaimNames.Sub , user.Email),
-                    new Claim(JwtRegisteredClaimNames.Email , user.Password)
+                    new Claim(JwtRegisteredClaimNames.Sub , user.username),
+                    new Claim(JwtRegisteredClaimNames.Email , user.eamil)
                 });
 
                 var expires = DateTime.UtcNow.AddMinutes(10);

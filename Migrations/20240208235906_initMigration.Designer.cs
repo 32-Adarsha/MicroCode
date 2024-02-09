@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MicroCode.Migrations
 {
     [DbContext(typeof(MicroCodeContext))]
-    [Migration("20240208164013_initMigration1")]
-    partial class initMigration1
+    [Migration("20240208235906_initMigration")]
+    partial class initMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
