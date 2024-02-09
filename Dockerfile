@@ -20,5 +20,6 @@ COPY --from=build-env /app/out ./
 # Expose the port your application will run on
 EXPOSE 80
 
+
 # Start the application
 ENTRYPOINT ["dotnet", "MicroCode.dll"]

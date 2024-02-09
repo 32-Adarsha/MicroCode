@@ -32,4 +32,12 @@ Step to running the application :
 Feature Added 
    -    Added JWT Authentication  
    -    Signup post method
+
+-----------------------------------------------
+-------------------------------------------------
+Views in react
+
+- cd views/microcode-views
+- npm install
+- npm run dev
     
