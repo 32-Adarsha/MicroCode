@@ -18,7 +18,7 @@ namespace MicroCode.Migrations
                     user_id = table.Column<Guid>(type: "uuid", nullable: false),
                     first_name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     last_name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    phone_no = table.Column<int>(type: "integer", nullable: true),
+                    phone_no = table.Column<string>(type: "text", nullable: false),
                     username = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     eamil = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     password_hash = table.Column<string>(type: "text", nullable: false),

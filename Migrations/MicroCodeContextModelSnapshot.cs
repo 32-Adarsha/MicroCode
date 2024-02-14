@@ -47,8 +47,9 @@ namespace MicroCode.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("phone_no")
-                        .HasColumnType("integer");
+                    b.Property<string>("phone_no")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("registration_data")
                         .HasColumnType("timestamp with time zone");

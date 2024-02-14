@@ -17,7 +17,7 @@ services:
       dockerfile: Dockerfile
     environment:
       - ASPNETCORE_URLS=http://+:80
-      - ConnectionStrings__DefaultConnection=Host=dataBase;Port=5432;Database=testDatabase;Username=postgres;Password=microcode;Pooling=true;
+      - ConnectionStrings__DefaultConnection=Server=dataBase;Port=5432;Database=postgres;Username=postgres;Password=microcode;Pooling=true;
     
     networks:
       - dev
@@ -27,9 +27,11 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=microcode
-      - POSTGRES_DB=testDatabase
+      - POSTGRES_DB=postgres
     ports:
-      - "5400:5500"
+      - "5432:5432"
+    expose:
+      - 5432
     restart: always
     volumes:
       - db_data:/var/lib/postgresql/data

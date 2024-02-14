@@ -11,6 +11,7 @@ using BCrypt.Net;
 
 namespace CustomJwtAuth.Controller {
 
+
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController: ControllerBase 
@@ -43,7 +44,9 @@ namespace CustomJwtAuth.Controller {
 
                 var subject = new ClaimsIdentity(new[] {
                     new Claim(JwtRegisteredClaimNames.Sub , user.username),
-                    new Claim(JwtRegisteredClaimNames.Email , user.eamil)
+                    new Claim(JwtRegisteredClaimNames.Email , user.eamil),
+                    new Claim(JwtRegisteredClaimNames.Sid , user.user_id.ToString()),
+
                 });
 
                 var expires = DateTime.UtcNow.AddMinutes(10);

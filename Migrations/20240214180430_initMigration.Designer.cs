@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MicroCode.Migrations
 {
     [DbContext(typeof(MicroCodeContext))]
-    [Migration("20240208235906_initMigration")]
+    [Migration("20240214180430_initMigration")]
     partial class initMigration
     {
         /// <inheritdoc />
@@ -50,8 +50,9 @@ namespace MicroCode.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("phone_no")
-                        .HasColumnType("integer");
+                    b.Property<string>("phone_no")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("registration_data")
                         .HasColumnType("timestamp with time zone");

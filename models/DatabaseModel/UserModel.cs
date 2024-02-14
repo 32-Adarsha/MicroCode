@@ -10,7 +10,7 @@ namespace MicroCode.models
         public string first_name {get ; set;}
         [MaxLength(50)]
         public string last_name {get ;set;}
-        public Nullable<int> phone_no {get ; set;}
+        public string phone_no {get ; set;}
         [MaxLength(50)]
         [Required]
         public string username {get ; set;}
