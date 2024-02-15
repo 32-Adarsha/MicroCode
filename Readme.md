@@ -4,40 +4,29 @@ Micro Code
 
 ( Swagger is a tool to interact with api endpoint )
 
-Step to running the application : 
-- Install Docker and DBeaver ( To interact with postgres Data)
-- Clone the github repo in you local machine
-- Open console and navigate to the code folder
-
-#
-- Type : docker build . -t microcode
-- Type : docker compose up
--*Open a new terminal along side that
--* Type : dotnet build
--* Type : dotnet ef migrations add <anyName>
--* Type : dotnet ef database update
-- Open the DBeaver
--* Make new connection
--* Put HOST  = localhost , Port = 5433 , Database postgresql , username = postgres , password = microcode 
--* click Test Connection  If successful Click ok
-- Check the table
-- You can navigate to http://localhost:8080/swagger/index.html to test api
-- When you are finished with testing api 
-- Type :  Control C and Type : docker compose down
-- docker image rm microcode
-- every change you make to the code repeated the process from 12 except the one marked by *
+// Updated
 
 
- 
-Feature Added 
-   -    Added JWT Authentication  
-   -    Signup post method
+Install
+1) Install .net 8 sdk form the following link.
+- [.net 8.0.1 Sdk](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
+2) Type command below in console.
+  - dotnet tool install --global dotnet-ef --version 8.0.2
+3) Go the folder where you want to put the file and type
+  - git clone https://github.com/32-Adarsha/MicroCode.git
+4) Download Docker
+5) Type:
+   - docker compose up
+6) open a new terminal and navigate to the microcode file
+7) Type:
+   - dotnet build
+   - dotnet ef database update
+ 8) Now you can play with the Test.Rest file.
+ 9) Test.Rest file will show all the existing endpoint supported.
+ 10) To run swagger :
+     - http://localhost:8080/swagger/index.html
+ 11) To connect to vite:
+     - http://localhost:5173/
+  
 
------------------------------------------------
--------------------------------------------------
-Views in react
-
-- cd views/microcode-views
-- npm install
-- npm run dev
     
