@@ -30,7 +30,7 @@ Content-Type: application/json
 
 {
     "what": "username",
-    "value" : "dadf"
+    "value" : "d1adf"
 }
 
 ###
