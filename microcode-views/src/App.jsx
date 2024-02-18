@@ -1,35 +1,52 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import ReactDOM from 'react-dom/client'
+import reactLogo from "./assets/react.svg";
+import viteLogo from "/vite.svg";
+import axios from 'axios';
+import "./App.css";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [email, setName] = useState("");
+  const [pass, setPass] = useState("");
+  
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    axios.post('http://localhost:8080/api/auth', {
+      "Email": email,
+      "Password": pass
+    })
+    .then(function (res) {
+      console.log(res);
+      axios.defaults.headers.common = {'Authorization': `Bearer ${res}`}
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+    
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+      <form onSubmit={handleSubmit}>
+        <label>
+          Enter your name:
+          <input
+            type="text"
+            value={email}
+            onChange={(e) => setName(e.target.value)}
+          />
+        </label>
+        <label>
+          Enter your Password:
+          <input
+            type="password"
+            value={pass}
+            onChange={(e) => setPass(e.target.value)}
+          />
+        </label>
+        <input type="submit" />
+      </form>
+  );
 }
 
-export default App
+export default App;
