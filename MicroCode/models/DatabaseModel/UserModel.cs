@@ -3,6 +3,10 @@ using System.ComponentModel.DataAnnotations;
 namespace MicroCode.models
 {
     public class UserModel {
+
+        public UserModel () {
+            this.ProgramModels = new HashSet<ProgramModel>();
+        }
         [Key]
         [Required]
         public Guid user_id {get ; set;}
@@ -20,6 +24,7 @@ namespace MicroCode.models
         [Required]
         public string password_hash {get ;set;}
         public DateTime registration_data {get; set;}
+        public virtual ICollection<ProgramModel> ProgramModels { get; set; }
     }
 
 }
