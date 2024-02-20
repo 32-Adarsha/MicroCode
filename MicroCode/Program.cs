@@ -6,6 +6,7 @@ using MicroCode.Data;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddCors();
 
 builder.Services.AddControllers();
 var Configuration = builder.Configuration;
@@ -47,6 +48,7 @@ builder.Services.AddCors(options =>
                                               "http://www.contoso.com");
                       });
 });
+app.UseCors(CORS_POLICY);
 
 // Configure the HTTP request pipeline.
 

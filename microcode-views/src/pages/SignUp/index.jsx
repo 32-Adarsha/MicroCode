@@ -11,10 +11,11 @@ const SignUp = () =>{
         setId(e.target.value)
     }
     useEffect(()=>{
-        axios.post(`http://localhost:8080/exist`,{
-            "what": "username",
-            "value" : "d1adf"
-        },{"Content-Type": "application/json"}).then((d)=>console.log(d)).catch(e=>console.log(e))
+        // axios.post(`https://localhost:8080/exist`,{
+        //     "what": "username",
+        //     "value" : "d1adf"
+        // },{"Content-Type": "application/json"}).then((d)=>console.log(d)).catch(e=>console.log(e))
+        axios.get(`http://localhost:8080/WeatherForecast`).then(e=>console.log(e)).catch(e=>{console.log(e);})
     },[id])
 
     return(
