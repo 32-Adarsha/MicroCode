@@ -54,12 +54,11 @@ app.UseCors(CORS_POLICY);
 
 app.UseSwagger();
 app.UseSwaggerUI();
-
-app.UseCors(x => x
-.AllowAnyOrigin()
-.AllowAnyMethod()
-.AllowAnyHeader());
-
+app.UseCors(o => {
+    o.AllowAnyOrigin()
+    .AllowAnyHeader()
+    .AllowAnyMethod();
+});
 
 app.UseHttpsRedirection();
 

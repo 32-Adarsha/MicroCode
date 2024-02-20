@@ -7,5 +7,9 @@ public class MicroCodeContext : DbContext
     public MicroCodeContext(DbContextOptions<MicroCodeContext> options) : base(options) { }
 
     public DbSet<UserModel> UserModel { get; set; }
+    public DbSet<ProgramModel> ProgramModel { get; set; }
+    public DbSet<CodeModel> CodeModels { get; set; }
+    
+    
 }
 }
