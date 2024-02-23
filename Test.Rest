@@ -14,11 +14,11 @@ POST  http://localhost:8080/signup HTTP/1.1
 Content-Type: application/json
 
 {
-    "first_name" : "Adarsha",
-    "last_name" : "Breav",
+    "first_name" : "G",
+    "last_name" : "s",
     "phone_no": "98495",
-    "username": "Kiran",
-    "eamil" : "mmuu@email.com",
+    "username": "sdf",
+    "eamil" : "fda@email.com",
     "password" : "Trsc"
 }
 ###

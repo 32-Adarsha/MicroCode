@@ -4,6 +4,7 @@ import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import axios from 'axios';
 import "./App.css";
+import SignUp from "./pages/SignUp";
 
 function App() {
   const [email, setName] = useState("");
@@ -27,25 +28,7 @@ function App() {
   };
 
   return (
-      <form onSubmit={handleSubmit}>
-        <label>
-          Enter your name:
-          <input
-            type="text"
-            value={email}
-            onChange={(e) => setName(e.target.value)}
-          />
-        </label>
-        <label>
-          Enter your Password:
-          <input
-            type="password"
-            value={pass}
-            onChange={(e) => setPass(e.target.value)}
-          />
-        </label>
-        <input type="submit" />
-      </form>
+      <SignUp/>
   );
 }
 
