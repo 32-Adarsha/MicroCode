@@ -4,47 +4,22 @@ import TextInput from '../../components/TextInput';
 import CButton from '../../components/Button';
 import axios from 'axios';
 
-const SignUpForm = () => {
+const SignIn = () => {
   const [formData, setFormData] = useState({
-    first_name: '',
-    last_name: '',
     email: '',
-    phone_no: '',
-    username: '',
     password: '',
   });
-  const [usernameError, setUsernameError] = useState("")
   const [emailError, setEmailError] = useState("")
   const [passwordError, setPasswordError] = useState("")
   const [timerId, setTimerId] = useState(null)
   const [errorexist, setErrorExist] = useState(false)
 
-  const url = `http://localhost:8080/signup`
+  const url = `http://localhost:8080/api/auth`
   const checkUrl =`http://localhost:8080/exist`
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if(name=="username"){
-      if (timerId) {
-        clearTimeout(timerId);
-      }
-      const newTimerId = setTimeout(() => {
-        axios.post(checkUrl,{"what":name,"value":value}).then(e=>{
-          if(e.data.hasError){
-            setUsernameError(e.data.errorMessage)
-            setErrorExist(true)
-          }else{
-            setUsernameError("")
-            setErrorExist(false)
-            
-          }
-        }
-        )
-      }, 2000);
-      setTimerId(newTimerId)
-
-    }
-     else if(name=="password"){
+    if(name=="password"){
       const regmat=/^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/
       if(regmat.test(value)){
         setPasswordError("")
@@ -60,41 +35,31 @@ const SignUpForm = () => {
       }
       const newTimerId = setTimeout(() => {
         axios.post(checkUrl,{"what":"email","value":value}).then(e=>{
-          if(e.data.hasError){
-            setEmailError(e.data.errorMessage)
+          if(!e.data.hasError){
+            setEmailError("Email Does not exist")
             setErrorExist(true)
           }else{
-            setEmailError("")
-            setErrorExist(false)
+            if(e.data.errorMessage =="Invalid Email"){
+                setEmailError("Invalid Email")
+                setErrorExist(true)  
+            }else{
+                setEmailError("")
+                setErrorExist(false)
+            }
+            
             
           }
         }
         )
       }, 2000);
       setTimerId(newTimerId)
-    }else if(name =="first_name"){
-      if (value=="") {
-        setErrorExist(true)
-      }else{
-        setErrorExist(false)
-      }
-    }else if(name =="last_name"){
-      if (value=="") {
-        setErrorExist(true)
-      }else{
-        setErrorExist(false)
-      }
-    }else if(name == "phone_no"){
-      const phone_reg = /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$/
-      if (!phone_reg.test(value)) {
-        setErrorExist(true)
-      }else{
-        setErrorExist(false)
-      }
     }
+    
+        setFormData({ ...formData, [name]: value });  
+    
 
 
-    setFormData({ ...formData, [name]: value });
+    
 
 
     
@@ -127,24 +92,11 @@ const SignUpForm = () => {
     <Flex align="center" justify="center" height="100vh">
       <VStack spacing={8}>
         <Heading as="h1" size="xl">
-          Sign Up
+          Sign In
         </Heading>
         <form onSubmit={handleSubmit}>
           <VStack spacing={4}>
-            <TextInput
-              label="First Name:"
-              type="text"
-              name="first_name"
-              value={formData.first_name}
-              onChange={handleChange}
-            />
-            <TextInput
-              label="Last Name:"
-              type="text"
-              name="last_name"
-              value={formData.last_name}
-              onChange={handleChange}
-            />
+            
             <TextInput
               label="Email:"
               type="email"
@@ -153,21 +105,7 @@ const SignUpForm = () => {
               value={formData.email}
               onChange={handleChange}
             />
-            <TextInput
-              label="Phone Number:"
-              type="tel"
-              name="phone_no"
-              value={formData.phone_no}
-              onChange={handleChange}
-            />
-            <TextInput
-              label="Username:"
-              type="text"
-              error={usernameError}
-              name="username"
-              value={formData.username}
-              onChange={handleChange}
-            />
+            
             <TextInput
               label="Password:"
               type="password"
@@ -177,7 +115,7 @@ const SignUpForm = () => {
               onChange={handleChange}
             />
             <CButton type="submit" colorScheme="blue">
-              Sign Up
+              Sign In
             </CButton>
           </VStack>
         </form>
@@ -186,4 +124,4 @@ const SignUpForm = () => {
   );
 };
 
-export default SignUpForm;
+export default SignIn;

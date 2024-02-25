@@ -5,6 +5,7 @@ import viteLogo from "/vite.svg";
 import axios from 'axios';
 import "./App.css";
 import SignUp from "./pages/SignUp";
+import SignIn from "./pages/SignIn";
 
 function App() {
   const [email, setName] = useState("");
@@ -28,7 +29,7 @@ function App() {
   };
 
   return (
-      <SignUp/>
+      <SignIn/>
   );
 }
 
