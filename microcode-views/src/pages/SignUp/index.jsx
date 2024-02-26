@@ -3,6 +3,7 @@ import { Flex, Heading, VStack } from '@chakra-ui/react';
 import TextInput from '../../components/TextInput';
 import CButton from '../../components/Button';
 import axios from 'axios';
+import '../SignUp/signup.css'
 
 const SignUpForm = () => {
   const [formData, setFormData] = useState({
@@ -134,6 +135,7 @@ const SignUpForm = () => {
             <TextInput
               label="First Name:"
               type="text"
+              className={"abc"}
               name="first_name"
               value={formData.first_name}
               onChange={handleChange}
