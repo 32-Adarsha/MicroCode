@@ -39,16 +39,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy(name: MyAllowSpecificOrigins,
-                      builder =>
-                      {
-                          builder.WithOrigins("http://localhost:8080",
-                                              "http://www.contoso.com");
-                      });
-});
-app.UseCors(CORS_POLICY);
+
+
 
 // Configure the HTTP request pipeline.
 

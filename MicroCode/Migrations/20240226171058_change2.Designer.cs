@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MicroCode.Migrations
 {
     [DbContext(typeof(MicroCodeContext))]
-    [Migration("20240217234357_initmigration")]
-    partial class initmigration
+    [Migration("20240226171058_change2")]
+    partial class change2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -91,6 +91,45 @@ namespace MicroCode.Migrations
                     b.ToTable("ProgramModel");
                 });
 
+            modelBuilder.Entity("MicroCode.models.ResponseModel", b =>
+                {
+                    b.Property<Guid>("ResponseID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("Program_id")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("UserCode")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("customInput")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("language")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("submission_data")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("user_id")
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("verified")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("ResponseID");
+
+                    b.HasIndex("Program_id");
+
+                    b.HasIndex("user_id");
+
+                    b.ToTable("ResponseModel");
+                });
+
             modelBuilder.Entity("MicroCode.models.UserModel", b =>
                 {
                     b.Property<Guid>("user_id")
@@ -153,15 +192,34 @@ namespace MicroCode.Migrations
                     b.Navigation("UserModel");
                 });
 
+            modelBuilder.Entity("MicroCode.models.ResponseModel", b =>
+                {
+                    b.HasOne("MicroCode.models.ProgramModel", "ProgramModel")
+                        .WithMany("ResponseModels")
+                        .HasForeignKey("Program_id");
+
+                    b.HasOne("MicroCode.models.UserModel", "UserModel")
+                        .WithMany("ResponseModels")
+                        .HasForeignKey("user_id");
+
+                    b.Navigation("ProgramModel");
+
+                    b.Navigation("UserModel");
+                });
+
             modelBuilder.Entity("MicroCode.models.ProgramModel", b =>
                 {
                     b.Navigation("CodeModel")
                         .IsRequired();
+
+                    b.Navigation("ResponseModels");
                 });
 
             modelBuilder.Entity("MicroCode.models.UserModel", b =>
                 {
                     b.Navigation("ProgramModels");
+
+                    b.Navigation("ResponseModels");
                 });
 #pragma warning restore 612, 618
         }
