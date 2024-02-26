@@ -1,11 +1,11 @@
 import React from 'react';
-import { Input, border } from '@chakra-ui/react';
+import '../TextInput/textinput.css'
+import {Input} from 'antd'
 
-const TextInput = ({ label, type, name,id, value, onChange, error,className}) => {
+const TextInput = (props) => {
   return (
     <div>
-      <label>{label}</label>
-      <Input type={type} value={value} name={name} id={id} onChange={onChange} className={className}/><span>{error}</span>
+      <Input  prefix={props.label} {...props}/><span>{props.error}</span>
 
     </div>
   );

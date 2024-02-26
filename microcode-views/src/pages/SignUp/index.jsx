@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Flex, Heading, VStack } from '@chakra-ui/react';
 import TextInput from '../../components/TextInput';
 import CButton from '../../components/Button';
 import axios from 'axios';
@@ -125,16 +124,12 @@ const SignUpForm = () => {
   };
 
   return (
-    <Flex align="center" justify="center" height="100vh">
-      <VStack spacing={8}>
-        <Heading as="h1" size="xl">
-          Sign Up
-        </Heading>
+    <div className='border-solid'>
+      <h1>Sign Up</h1>
         <form onSubmit={handleSubmit}>
-          <VStack spacing={4}>
             <TextInput
               label="First Name:"
-              type="text"
+              htmlType="text"
               className={"abc"}
               name="first_name"
               value={formData.first_name}
@@ -178,13 +173,11 @@ const SignUpForm = () => {
               value={formData.password}
               onChange={handleChange}
             />
-            <CButton type="submit" colorScheme="blue">
+            <CButton htmlType="submit">
               Sign Up
             </CButton>
-          </VStack>
         </form>
-      </VStack>
-    </Flex>
+    </div>
   );
 };
 
