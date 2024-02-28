@@ -3,7 +3,7 @@ import {Flex,Button} from 'antd';
 
 const CButton = ({ children, ...props }) => {
   return     (<Flex gap="small" wrap="wrap">
-  <Button  {...props} type="primary">Primary Button</Button>
+  <Button  {...props}>{children}</Button>
 
 </Flex>);
 };

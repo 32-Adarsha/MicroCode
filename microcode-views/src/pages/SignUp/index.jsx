@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import TextInput from '../../components/TextInput';
 import CButton from '../../components/Button';
 import axios from 'axios';
+import {UserOutlined,MailOutlined, PhoneOutlined,PlusOutlined} from '@ant-design/icons'
 import '../SignUp/signup.css'
 
 const SignUpForm = () => {
@@ -130,43 +131,54 @@ const SignUpForm = () => {
             <TextInput
               label="First Name:"
               htmlType="text"
+              addonBefore={<UserOutlined></UserOutlined>}
               className={"abc"}
+              placeholder="First Name"
               name="first_name"
               value={formData.first_name}
               onChange={handleChange}
             />
             <TextInput
               label="Last Name:"
-              type="text"
+              htmlType="text"
+              addonBefore={<UserOutlined></UserOutlined>}
+              placeholder="Last Name"
               name="last_name"
               value={formData.last_name}
               onChange={handleChange}
             />
             <TextInput
               label="Email:"
-              type="email"
+              htmlType="email"
               name="email"
+              addonBefore={<MailOutlined></MailOutlined>}
+              placeholder="Email"
               error={emailError}
               value={formData.email}
               onChange={handleChange}
             />
             <TextInput
               label="Phone Number:"
-              type="tel"
+              htmlType="tel"
               name="phone_no"
+              addonBefore={<PhoneOutlined></PhoneOutlined>}
+              placeholder="Phone Number"
               value={formData.phone_no}
               onChange={handleChange}
             />
             <TextInput
               label="Username:"
-              type="text"
+              htmlType="text"
               error={usernameError}
+              addonBefore={<PlusOutlined></PlusOutlined>}
+              placeholder="username"
               name="username"
               value={formData.username}
               onChange={handleChange}
             />
             <TextInput
               label="Password:"
+              htmlType="password"
               type="password"
               name="password"
               error={passwordError}
