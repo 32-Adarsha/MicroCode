@@ -2,6 +2,8 @@ using System;
 using RestSharp;
 using MicroCode.models;
 using Microsoft.Net.Http.Headers;
+using System.Text.Json;
+using Microsoft.AspNetCore.Mvc;
 namespace MicroCode.Dependency
 {
 
@@ -18,8 +20,8 @@ namespace MicroCode.Dependency
         }
         public string SendPostRequest(SubmissionModel data)
         {
-            var client = new RestClient("https://judge0-ce.p.rapidapi.com/submissions?base64_encoded=false&fields=*");
-            var request = new RestRequest(Method.Post.ToString());
+            var client = new RestClient("https://judge0-ce.p.rapidapi.com/");
+            var request = new RestRequest("submissions?base64_encoded=false&fields=*");
             request.AddHeader("content-type", "application/json");
             request.AddHeader("Content-Type", "application/json");
             request.AddHeader("X-RapidAPI-Key", _token);
@@ -27,22 +29,15 @@ namespace MicroCode.Dependency
 
             request.AddJsonBody(data);
 
-            RestResponse response = client.Execute(request);
+            var response = client.Post<TokenResponse>(request);
 
-            if (response.IsSuccessful)
-            {
-                return response.Content;
-            }
-            else
-            {
-                return null;
-            }
+            return response.Token;
         }
          public string SendGetRequest(string token)
         {
-            string url = "https://judge0-ce.p.rapidapi.com/submissions/" + token + "?base64_encoded=true&fields=*";
-            var client = new RestClient(url);
-            var request = new RestRequest(Method.Get.ToString());
+            string url = token + "?base64_encoded=false&fields=*";
+            var client = new RestClient("https://judge0-ce.p.rapidapi.com/submissions/");
+            var request = new RestRequest(url);
             request.AddHeader("content-type", "application/json");
             request.AddHeader("Content-Type", "application/json");
             request.AddHeader("X-RapidAPI-Key", _token);
@@ -50,16 +45,9 @@ namespace MicroCode.Dependency
 
           
 
-            RestResponse response = client.Execute(request);
+            RestResponse response = client.Get(request);
 
-            if (response.IsSuccessful)
-            {
-                return response.Content;
-            }
-            else
-            {
-                return null;
-            }
+            return response.Content.ToString();
         }
     }
 }

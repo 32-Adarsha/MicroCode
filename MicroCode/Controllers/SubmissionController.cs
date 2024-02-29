@@ -23,15 +23,23 @@ public class SubmissionController : ControllerBase
         this._submission = submission;
     }
 
-    [Route("/check")]
+    [Route("/pushSubmission")]
     [HttpPost]
     [AllowAnonymous]
-    public async Task<IActionResult> pushSubmission ([FromBody] SubmissionModel sModel)
+    public async Task<IActionResult> pushSubmission([FromBody] SubmissionModel sModel)
     {
-         return Ok(_submission.SendPostRequest(sModel));
+        string value = _submission.SendPostRequest(sModel);
+        return Ok(value);
+
     }
-
-
+    [Route("/getSubmission")]
+    [HttpGet]
+    [AllowAnonymous]
+    public async Task<IActionResult> getSubmission([FromHeader] string Token)
+    {
+        string getValue = _submission.SendGetRequest(Token);
+        return Ok(getValue);
+    }
 }
 
 
