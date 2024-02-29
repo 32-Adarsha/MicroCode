@@ -25,8 +25,6 @@ namespace MicroCode.models
         public Nullable<Guid> Program_id { get; set; }
         [ForeignKey(nameof(Program_id))]
         public virtual ProgramModel ProgramModel { get; set; }
-        
-        
     }
 
 }

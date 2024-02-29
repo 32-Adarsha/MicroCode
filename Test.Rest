@@ -49,3 +49,6 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzZGYiLCJlb
 }
 
 ###
+GET https://judge0-ce.p.rapidapi.com/about,
+X-RapidAPI-Key: 'f008f458fbmsh6461d2ec9b97427p11018ajsn57aabd191f57',
+X-RapidAPI-Host: 'judge0-ce.p.rapidapi.com'
