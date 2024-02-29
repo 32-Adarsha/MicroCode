@@ -52,3 +52,21 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzZGYiLCJlb
 GET https://judge0-ce.p.rapidapi.com/about,
 X-RapidAPI-Key: 'f008f458fbmsh6461d2ec9b97427p11018ajsn57aabd191f57',
 X-RapidAPI-Host: 'judge0-ce.p.rapidapi.com'
+
+
+###
+POST  http://localhost:5031/pushSubmission HTTP/1.1
+Content-Type: application/json
+
+{
+  "language_id": 70,
+  "source_code": "print(\"Hello World h\")",
+  "stdin": "",
+  "expected_output": "Hello World"
+}
+
+
+###
+Get  http://localhost:5031/getSubmission HTTP/1.1
+Content-Type: application/json
+Token : ecb46ed6-8b45-47c8-8690-83f242c5bcde
