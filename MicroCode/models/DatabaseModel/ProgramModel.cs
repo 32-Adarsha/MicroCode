@@ -4,6 +4,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace MicroCode.models
 {
     public class ProgramModel {
+
+        public ProgramModel () {
+            this.ResponseModels = new HashSet<ResponseModel>();
+        }
         [Key]
         [Required]
         public Guid Program_id {get ; set;}
@@ -19,6 +23,9 @@ namespace MicroCode.models
         public virtual CodeModel CodeModel { get; set; }
         [ForeignKey(nameof(user_id))]
         public virtual UserModel UserModel {get ; set;}
+        
+         public virtual ICollection<ResponseModel> ResponseModels { get; set; }
+       
         
         
         

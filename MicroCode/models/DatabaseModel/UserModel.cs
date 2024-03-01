@@ -6,6 +6,7 @@ namespace MicroCode.models
 
         public UserModel () {
             this.ProgramModels = new HashSet<ProgramModel>();
+            this.ResponseModels = new HashSet<ResponseModel>();
         }
         [Key]
         [Required]
@@ -25,6 +26,7 @@ namespace MicroCode.models
         public string password_hash {get ;set;}
         public DateTime registration_data {get; set;}
         public virtual ICollection<ProgramModel> ProgramModels { get; set; }
+        public virtual ICollection<ResponseModel> ResponseModels { get; set; }
     }
 
 }
