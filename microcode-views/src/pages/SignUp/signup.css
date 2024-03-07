@@ -1,0 +1,15 @@
+body{
+    background-image: url(../../assets/images/background.jpg);
+}
+
+.card-signup{
+    background-color: rgb(48, 42, 42);
+}
+
+h1{
+    color: aliceblue;
+}
+
+.ant-card-head-title{
+    color: azure;
+}

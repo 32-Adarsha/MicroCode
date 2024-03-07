@@ -6,7 +6,15 @@ using MicroCode.Data;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddCors();
+builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("CorsPolicy",
+                builder => builder
+                    .AllowAnyMethod()
+                    .AllowCredentials()
+                    .SetIsOriginAllowed((host) => true)
+                    .AllowAnyHeader());
+        });
 
 builder.Services.AddControllers();
 var Configuration = builder.Configuration;
@@ -39,26 +47,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy(name: MyAllowSpecificOrigins,
-                      builder =>
-                      {
-                          builder.WithOrigins("http://localhost:8080",
-                                              "http://www.contoso.com");
-                      });
-});
-app.UseCors(CORS_POLICY);
 
 // Configure the HTTP request pipeline.
 
 app.UseSwagger();
 app.UseSwaggerUI();
-app.UseCors(o => {
-    o.AllowAnyOrigin()
-    .AllowAnyHeader()
-    .AllowAnyMethod();
-});
+app.UseCors("CorsPolicy");
 
 app.UseHttpsRedirection();
 
