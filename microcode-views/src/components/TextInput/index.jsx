@@ -5,7 +5,7 @@ import {Input} from 'antd'
 const TextInput = (props) => {
   return (
     <div>
-      <Input  prefix={props.prefix} {...props}/><span>{props.error}</span>
+      <Input className={"input-main"}  prefix={props.prefix} {...props}/><span>{props.error}</span>
 
     </div>
   );

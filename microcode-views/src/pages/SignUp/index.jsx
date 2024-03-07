@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import TextInput from '../../components/TextInput';
 import CButton from '../../components/Button';
 import axios from 'axios';
-import {UserOutlined,MailOutlined, PhoneOutlined,PlusOutlined} from '@ant-design/icons'
+import {UserOutlined,MailOutlined, PhoneOutlined,PlusOutlined, EyeOutlined} from '@ant-design/icons'
 import '../SignUp/signup.css'
+import { Card , Space, Input,message} from 'antd';
+
 
 const SignUpForm = () => {
   const [formData, setFormData] = useState({
@@ -19,6 +21,8 @@ const SignUpForm = () => {
   const [passwordError, setPasswordError] = useState("")
   const [timerId, setTimerId] = useState(null)
   const [errorexist, setErrorExist] = useState(false)
+  const [messageApi, contextHolder] = message.useMessage();
+
 
   const url = `http://localhost:8080/signup`
   const checkUrl =`http://localhost:8080/exist`
@@ -117,7 +121,11 @@ const SignUpForm = () => {
         console.log(e.data)
       })
     }else{
-      console.log(errorexist,errorCheck());
+      messageApi.open({
+        type: 'error',
+        content: 'There is something wrong with the sign up form',
+      });
+  
     }
     
     
@@ -126,13 +134,19 @@ const SignUpForm = () => {
 
   return (
     <div className='border-solid'>
-      <h1>Sign Up</h1>
+      {contextHolder}
+      <h1>Welcome to MicroCode</h1>
+      <Card title="Sign up" bordered="false"
+      className={"card-signup"}
+      
+      >
+        
         <form onSubmit={handleSubmit}>
+        <Space direction="vertical" size="middle">
             <TextInput
               label="First Name:"
-              htmlType="text"
+              htmltype="text"
               addonBefore={<UserOutlined></UserOutlined>}
-              className={"abc"}
               placeholder="First Name"
               name="first_name"
               value={formData.first_name}
@@ -140,7 +154,7 @@ const SignUpForm = () => {
             />
             <TextInput
               label="Last Name:"
-              htmlType="text"
+              htmltype="text"
               addonBefore={<UserOutlined></UserOutlined>}
               placeholder="Last Name"
               name="last_name"
@@ -149,7 +163,7 @@ const SignUpForm = () => {
             />
             <TextInput
               label="Email:"
-              htmlType="email"
+              htmltype="email"
               name="email"
               addonBefore={<MailOutlined></MailOutlined>}
               placeholder="Email"
@@ -159,7 +173,7 @@ const SignUpForm = () => {
             />
             <TextInput
               label="Phone Number:"
-              htmlType="tel"
+              htmltype="tel"
               name="phone_no"
               addonBefore={<PhoneOutlined></PhoneOutlined>}
               placeholder="Phone Number"
@@ -168,7 +182,7 @@ const SignUpForm = () => {
             />
             <TextInput
               label="Username:"
-              htmlType="text"
+              htmltype="text"
               error={usernameError}
               addonBefore={<PlusOutlined></PlusOutlined>}
               placeholder="username"
@@ -176,19 +190,29 @@ const SignUpForm = () => {
               value={formData.username}
               onChange={handleChange}
             />
-            <TextInput
-              label="Password:"
-              htmlType="password"
-              type="password"
+            
+            <Input.Password label="Password:"
+              htmltype="password"
+              type="Password"
+              placeholder="Password"
+              className={"input-main"}
+              addonBefore={<EyeOutlined></EyeOutlined>}
               name="password"
-              error={passwordError}
+              status={passwordError ==="" ?'':"error"}
               value={formData.password}
               onChange={handleChange}
-            />
-            <CButton htmlType="submit">
+              />
+              <span>{passwordError}</span>
+              
+              
+            <CButton htmlType="submit" >
               Sign Up
             </CButton>
+            </Space>
         </form>
+        
+        </Card>
+        <p>Already have an account?</p><span><a><CButton>Sign In</CButton></a></span>
     </div>
   );
 };

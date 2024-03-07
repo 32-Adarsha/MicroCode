@@ -7,7 +7,15 @@ using MicroCode.Dependency;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddCors();
+builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("CorsPolicy",
+                builder => builder
+                    .AllowAnyMethod()
+                    .AllowCredentials()
+                    .SetIsOriginAllowed((host) => true)
+                    .AllowAnyHeader());
+        });
 
 builder.Services.AddControllers();
 var Configuration = builder.Configuration;
@@ -41,17 +49,11 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<ISubmission>(option => new Submission(builder.Configuration["JudgeAPI:Key"]));
 var app = builder.Build();
 
-
-
 // Configure the HTTP request pipeline.
 
 app.UseSwagger();
 app.UseSwaggerUI();
-app.UseCors(o => {
-    o.AllowAnyOrigin()
-    .AllowAnyHeader()
-    .AllowAnyMethod();
-});
+app.UseCors("CorsPolicy");
 
 app.UseHttpsRedirection();
 
