@@ -133,7 +133,7 @@ const SignUpForm = () => {
   };
 
   return (
-    <div className='border-solid'>
+    <div className='border-solid sign-body'>
       {contextHolder}
       <h1>Welcome to MicroCode</h1>
       <Card title="Sign up" bordered="false"

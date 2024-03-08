@@ -1,6 +1,23 @@
-body{
+.sign-body {
     background-image: url(../../assets/images/background.jpg);
-}
+    background-size: cover;
+    background-position: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+  
+  .sign-body > * {
+    max-width: 100%;
+  }
 
 .card-signup{
     background-color: rgb(48, 42, 42);

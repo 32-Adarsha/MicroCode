@@ -6,8 +6,8 @@ POST  http://localhost:8080/api/auth HTTP/1.1
 Content-Type: application/json
 
 {
-    "Email" : "mmuu@email.com",
-    "Password" : "Trsc"
+    "Email" : "fdada@email.com",
+    "Password" : "Sooryagayathri2!"
 }
 ###
 POST  http://localhost:8080/signup HTTP/1.1
@@ -47,6 +47,10 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzZGYiLCJlb
   "input": "string",
   "output": "string"
 }
+
+
+
+
 
 ###
 GET https://judge0-ce.p.rapidapi.com/about,
