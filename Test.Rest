@@ -6,8 +6,8 @@ POST  http://localhost:8080/api/auth HTTP/1.1
 Content-Type: application/json
 
 {
-    "Email" : "mmuu@email.com",
-    "Password" : "Trsc"
+    "Email" : "fdada@email.com",
+    "Password" : "Sooryagayathri2!"
 }
 ###
 POST  http://localhost:8080/signup HTTP/1.1
@@ -59,14 +59,16 @@ POST  http://localhost:5031/pushSubmission HTTP/1.1
 Content-Type: application/json
 
 {
-  "language_id": 70,
-  "source_code": "print(\"Hello World h\")",
+  "language_id": 71,
+  "source_code": "print(\"Hello World\")",
   "stdin": "",
-  "expected_output": "Hello World"
+  "expected_output": "null"
 }
 
 
 ###
+## Be aware of the port number
+## This is to get the submission based on the 
 Get  http://localhost:5031/getSubmission HTTP/1.1
 Content-Type: application/json
-Token : ecb46ed6-8b45-47c8-8690-83f242c5bcde
+Token : 169e2bff-084e-458c-96bc-0fb1f03ab4cf

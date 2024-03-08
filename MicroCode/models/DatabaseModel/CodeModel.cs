@@ -14,7 +14,6 @@ namespace MicroCode.models
         [ForeignKey(nameof(Program_id))]
         public virtual ProgramModel ProgramModel { get; set; }
         public bool verified {get ;set;}
-        
     }
 
 }

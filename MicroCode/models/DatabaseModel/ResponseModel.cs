@@ -13,11 +13,7 @@ namespace MicroCode.models
         [Required]
         public Guid ResponseID {get ; set;}
         public string UserCode {get ; set;}
-        public string customInput { get; set; }
-        public bool verified {get ;set;}
-        public DateTime submission_data {get; set;}
         public Nullable<Guid> user_id {get ;set;}
-        public string language { get; set; }
         
         [ForeignKey(nameof(user_id))]
         public virtual UserModel UserModel {get ; set;}

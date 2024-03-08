@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MicroCode.Data;
 using MicroCode.Dependency;
+using MicroCode.CusMiddleWare;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -52,7 +53,7 @@ app.UseCors(o => {
     .AllowAnyHeader()
     .AllowAnyMethod();
 });
-
+app.UseMiddleware<JwtMiddleware>();
 app.UseHttpsRedirection();
 
 app.UseAuthentication();

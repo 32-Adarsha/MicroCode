@@ -3,6 +3,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MicroCode.models
 {
+    public enum Diffulty {
+        Easy,
+        Medium,
+        Hard
+    };
+
     public class ProgramModel {
 
         public ProgramModel () {
@@ -15,6 +21,7 @@ namespace MicroCode.models
         public string title {get ; set;}
         [Column(TypeName="text")]
         public string discription {get ;set;}
+        public Diffulty diffulty { get; set; }
         public bool verified {get ;set;}
         public bool isPrivate {get;set;}
         public bool flagged { get; set; }
