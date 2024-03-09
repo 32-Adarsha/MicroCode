@@ -9,6 +9,7 @@ public class MicroCodeContext : DbContext
     public DbSet<UserModel> UserModel { get; set; }
     public DbSet<ProgramModel> ProgramModel { get; set; }
     public DbSet<CodeModel> CodeModels { get; set; }
+    public DbSet<ResponseModel> ResponseModels { get; set; }
     
     
 }

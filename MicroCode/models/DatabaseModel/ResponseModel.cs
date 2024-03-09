@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Security.Cryptography.X509Certificates;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Razor;
 
 namespace MicroCode.models
 {
@@ -11,9 +12,10 @@ namespace MicroCode.models
 
         [Key]
         [Required]
-        public Guid ResponseID {get ; set;}
-        public Guid JudgeId { get; set; }
+        public string JudgeId { get; set; }
         public Nullable<Guid> user_id {get ;set;}
+        public DateTime CompletedDate {get; set;}
+        public string language { get; set; }
         
         [ForeignKey(nameof(user_id))]
         public virtual UserModel UserModel {get ; set;}
