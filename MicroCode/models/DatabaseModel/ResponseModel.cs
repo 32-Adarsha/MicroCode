@@ -12,7 +12,7 @@ namespace MicroCode.models
         [Key]
         [Required]
         public Guid ResponseID {get ; set;}
-        public string UserCode {get ; set;}
+        public Guid JudgeId { get; set; }
         public Nullable<Guid> user_id {get ;set;}
         
         [ForeignKey(nameof(user_id))]

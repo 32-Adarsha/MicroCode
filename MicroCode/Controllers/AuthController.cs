@@ -71,18 +71,16 @@ namespace CustomJwtAuth.Controller
                     var token = tokenHandler.CreateToken(tokenDescriptor);
                     var jwtToken = tokenHandler.WriteToken(token);
 
-                    // Create an HTTP-only cookie
+                    
                     var cookieOptions = new CookieOptions
                     {
                         HttpOnly = true,
-                        SameSite = SameSiteMode.Strict, // Adjust as needed
-                                                        // Other properties (e.g., secure) can be set here
+                        SameSite = SameSiteMode.Strict, 
                     };
 
-                    // Set the cookie
-                    Response.Cookies.Append("jwtToken", jwtToken, cookieOptions);
+                    
+                    Response.Cookies.Append("Token", jwtToken, cookieOptions);
 
-                    // Return the response
                     return Ok();
                 }
             }
