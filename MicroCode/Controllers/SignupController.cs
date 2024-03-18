@@ -43,7 +43,7 @@ public class SignUpController : ControllerBase
                 ErrorMessage = "Invalid Email"
             };
         }
-        else if (dbContext.UserModel.Any(o => o.eamil == thisEmail))
+        else if (dbContext.UserModel.Any(o => o.email == thisEmail))
         {
             return new ErrCode
             {
@@ -134,7 +134,7 @@ public class SignUpController : ControllerBase
         return new ErrorModel
         {
             username = CheckUserName(ThisPerson.username),
-            eamil = CheckEmail(ThisPerson.eamil),
+            email = CheckEmail(ThisPerson.email),
             password = CheckPassword(ThisPerson.password),
             phone_no = CheckPhoneNo(ThisPerson.phone_no),
             first_name = CheckName(ThisPerson.first_name),
@@ -148,8 +148,8 @@ public class SignUpController : ControllerBase
     [AllowAnonymous]
     public async Task<IActionResult> AddUser([FromBody] ProfileModel profile)
     {
-        if (CheckUserName(profile.username).HasError || CheckEmail(profile.eamil).HasError){
-            ErrCode [] message = {CheckUserName(profile.username) , CheckEmail(profile.eamil)};
+        if (CheckUserName(profile.username).HasError || CheckEmail(profile.email).HasError){
+            ErrCode [] message = {CheckUserName(profile.username) , CheckEmail(profile.email)};
             return BadRequest(message);
         }
         string salt = BCrypt.Net.BCrypt.GenerateSalt(12);
@@ -161,7 +161,7 @@ public class SignUpController : ControllerBase
             first_name = profile.first_name,
             last_name = profile.last_name,
             phone_no = profile.phone_no,
-            eamil = profile.eamil,
+            email = profile.email,
             password_hash = hashedPassword,
             registration_data = DateTime.UtcNow,
         };

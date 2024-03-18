@@ -1,6 +1,8 @@
 
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using MicroCode.Data;
+using MicroCode.Dependency;
 using MicroCode.models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,37 +16,65 @@ namespace MicroCode.Controllers;
 public class ProblemController : ControllerBase
 {
     private readonly MicroCodeContext dbContext;
-    public ProblemController(MicroCodeContext dbContext)
+    private readonly ISubmission _submission;
+    public ProblemController(MicroCodeContext dbContext , ISubmission submission)
     {
         this.dbContext = dbContext;
+        this._submission = submission;
     }
 
-    [Route("/cProblem")]
+    [Route("/saveProblem")]
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> cProblem([FromBody] ProgramGetModel qst)
+    public async Task<IActionResult> saveProblem([FromBody] ProgramGetModel qst)
     {
         try {
-        var thisUser = HttpContext.User;
-        var pID = Guid.NewGuid();
-        var id = thisUser.Claims.Where(claim => claim.Type == JwtRegisteredClaimNames.Sid).Select(claim => claim.Value).FirstOrDefault();
-        var newProgram = new ProgramModel
+            var id = User.FindFirst(ClaimTypes.Sid)?.Value;
+            var thisProblem = dbContext.ProgramModel.FirstOrDefault(p => p.program_id == new Guid(qst.pID));
+            var thisCode = dbContext.CodeModels.FirstOrDefault(p => p.Program_id == new Guid(qst.pID));
+            if (thisProblem != null) {
+                thisProblem.title = qst.title;
+                thisProblem.discription = qst.discription;
+                thisCode.input = qst.input;
+                thisCode.output = qst.output;
+                thisCode.callerFunction = qst.callerFunction;
+                thisCode.mainCode = qst.mainCode;
+                await dbContext.SaveChangesAsync();
+            }
+            
+            return Ok();
+        }
+        catch (Exception e){
+            return BadRequest(e);
+        }
+    }
+
+
+    [Route("/createProblem")]
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> createProblem([FromHeader] string title)
+    {
+        try {
+            var pID = Guid.NewGuid();
+            var id = User.FindFirst(ClaimTypes.Sid)?.Value;
+            var newProgram = new ProgramModel
         {
-            Program_id = pID,
-            title = qst.title,
-            discription = qst.discription,
+            program_id = pID,
+            title = title,
+            discription = "",
             verified = false,
-            isPrivate = true,
+            isPublic = true,
+            judgeId = null,
             registration_data = DateTime.UtcNow,
             user_id = new Guid(id),
         };
         var newCode = new CodeModel {
             Program_id = pID,
-            mainCode = qst.mainCode,
-            template = qst.template,
-            input = qst.input,
-            output = qst.output,
-            verified = false,
+            mainCode = "",
+            callerFunction = "",
+            input = "",
+            output = "",
         };
 
         newProgram.UserModel =  dbContext.UserModel.FirstOrDefault(u => u.user_id == new Guid(id));
@@ -58,6 +88,33 @@ public class ProblemController : ControllerBase
         catch (Exception e){
             return BadRequest(e);
         }
+    }
+
+
+    [Route("/verifyProblem")]
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> testProblem([FromHeader] ProgramGetModel qst)
+    {
+        try {
+            var id = User.FindFirst(ClaimTypes.Sid)?.Value;
+            var thisProblem = dbContext.ProgramModel.FirstOrDefault(p => p.program_id == new Guid(qst.pID));
+
+            return Ok();
+        }
+        catch (Exception e){
+            return BadRequest(e);
+        }
+    }
+
+
+    [Route("/watchSubmission")]
+    [HttpGet]
+    [AllowAnonymous]
+    public async Task<IActionResult> getSubmission([FromHeader] string Token)
+    {
+        string getValue = _submission.SendGetRequest(Token);
+        return Ok(getValue);
     }
 
 

@@ -40,7 +40,7 @@ public class ProfileController : ControllerBase
                 u.last_name,
                 u.phone_no,
                 u.username,
-                u.eamil
+                u.email
             })
             .FirstOrDefault();
 

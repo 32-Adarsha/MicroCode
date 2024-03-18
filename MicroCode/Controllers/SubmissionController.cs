@@ -5,7 +5,6 @@ using MicroCode.Dependency;
 using MicroCode.models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing.Template;
 using System.Security.Claims;
 
 
@@ -38,7 +37,7 @@ public class SubmissionController : ControllerBase
             CompletedDate = DateTime.UtcNow,
         };
         rsp.UserModel = dbContext.UserModel.FirstOrDefault(u => u.user_id == new Guid(id));
-        rsp.ProgramModel = dbContext.ProgramModel.FirstOrDefault(u => u.Program_id == new Guid(BModel.Program_id));
+        rsp.ProgramModel = dbContext.ProgramModel.FirstOrDefault(u => u.program_id == new Guid(BModel.Program_id));
         await dbContext.ResponseModels.AddAsync(rsp);
         await dbContext.SaveChangesAsync();
         return Ok(value);
@@ -51,7 +50,8 @@ public class SubmissionController : ControllerBase
     [AllowAnonymous]
     public async Task<IActionResult> getSubmission([FromHeader] string Token)
     {
-        string getValue = _submission.SendGetRequest(Token);
+        string fields = "status,language,time";
+        string getValue = _submission.SendCustomGetRequest(Token ,fields);
         return Ok(getValue);
     }
 }

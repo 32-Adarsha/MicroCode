@@ -11,7 +11,7 @@ namespace MicroCode.models
         public ErrCode last_name {get ;set;}
         public ErrCode phone_no {get ; set;}
         public ErrCode username {get ; set;}
-        public ErrCode eamil  {get ; set;}
+        public ErrCode email  {get ; set;}
         public ErrCode password {get ;set;}
     }
 

@@ -11,7 +11,7 @@ namespace MicroCode.CusMiddleWare {
 
             if (cntx.Request.Cookies["Token"] != null){
                 var value = cntx.Request.Cookies["Token"];
-                cntx.Request.Headers.Append("Token", String.Format("Bearer {0}", value));
+                cntx.Request.Headers["Authorization"] = "Bearer " + value;
             }
             await _next(cntx);
 

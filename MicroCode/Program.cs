@@ -45,7 +45,7 @@ var app = builder.Build();
 
 
 // Configure the HTTP request pipeline.
-
+app.UseMiddleware<JwtMiddleware>();
 app.UseSwagger();
 app.UseSwaggerUI();
 app.UseCors(o => {
@@ -53,7 +53,7 @@ app.UseCors(o => {
     .AllowAnyHeader()
     .AllowAnyMethod();
 });
-app.UseMiddleware<JwtMiddleware>();
+
 app.UseHttpsRedirection();
 
 app.UseAuthentication();

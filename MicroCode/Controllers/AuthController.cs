@@ -32,7 +32,7 @@ namespace CustomJwtAuth.Controller
         public IActionResult Auth([FromBody] LoginModel person)
         {
             IActionResult response = Unauthorized();
-            var user = dbContext.UserModel.FirstOrDefault(u => u.eamil == person.Email);
+            var user = dbContext.UserModel.FirstOrDefault(u => u.email == person.Email);
 
             if (user != null)
             {
@@ -52,7 +52,7 @@ namespace CustomJwtAuth.Controller
                     var subject = new ClaimsIdentity(new[]
                     {
                 new Claim(JwtRegisteredClaimNames.Sub, user.username),
-                new Claim(JwtRegisteredClaimNames.Email, user.eamil),
+                new Claim(JwtRegisteredClaimNames.Email, user.email),
                 new Claim(JwtRegisteredClaimNames.Sid, user.user_id.ToString()),
             });
 

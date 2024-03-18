@@ -1,6 +1,6 @@
 GET http://localhost:8080/WeatherForecast HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJraXJhbiIsImVtYWlsIjoibW1AZW1haWwuY29tIiwic2lkIjoiYjJhNWRlNmUtYWZlZC00NTU0LWJiNGItYTIzNWI0ZGI2MWFjIiwibmJmIjoxNzA3NDk2OTc5LCJleHAiOjE3MDc0OTc1NzksImlhdCI6MTcwNzQ5Njk3OSwiaXNzIjoiSXNzdWVyIiwiYXVkIjoiQXVkaWVuY2UifQ.LqsSHIYciMaxq0Aye594uLEYDegGgyxPNJkgBQYhcfOAqD7UzUKpzNH9ATSTDWN0RpJy7DmMTJVjNnXD4wCITw
+Cookie: Token=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzZGRkZiIsImVtYWlsIjoiZmRhZGFAZW1haWwuY29tIiwic2lkIjoiMGFkMWU4YzYtYTM4NS00ZWFjLWFiYjgtMGRkYWRiMDAxNjA4IiwibmJmIjoxNzEwMTg2OTMxLCJleHAiOjE3MTAxODc1MzEsImlhdCI6MTcxMDE4NjkzMSwiaXNzIjoiSXNzdWVyIiwiYXVkIjoiQXVkaWVuY2UifQ.JeblV19ctuhVYeQQwESGWlAClYjT4hd0wLnyAeXITlyrwHqppUxGDYgykK6yIFWEM8aP2_M9Yh_8qep5RhEvRw
 ###
 POST  http://localhost:8080/api/auth HTTP/1.1
 Content-Type: application/json
@@ -18,7 +18,7 @@ Content-Type: application/json
     "last_name" : "s",
     "phone_no": "98495",
     "username": "sdddf",
-    "eamil" : "fdada@email.com",
+    "email" : "fdada@email.com",
     "password" : "Sooryagayathri2!"
 }
 ###
@@ -36,7 +36,6 @@ Content-Type: application/json
 
 POST  http://localhost:8080/cProblem HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzZGYiLCJlbWFpbCI6ImZkYUBlbWFpbC5jb20iLCJzaWQiOiIzNzQyODYzZi05ZjAwLTQyOTMtYThkYi1hZTgzNjI4MTc2MzIiLCJuYmYiOjE3MDg5NjU3NjgsImV4cCI6MTcwODk2NjM2OCwiaWF0IjoxNzA4OTY1NzY4LCJpc3MiOiJJc3N1ZXIiLCJhdWQiOiJBdWRpZW5jZSJ9.yI4u7SbxNYeJTnRXLNkOXeiG3bH8E-Uehlf8aBtngK5-uvILVYK92X-cCKIV76F2_M01e6aiee8PFY-IvDW0NA
 
 {
 
@@ -55,7 +54,7 @@ X-RapidAPI-Host: 'judge0-ce.p.rapidapi.com'
 
 
 ###
-POST  http://localhost:5031/pushSubmission HTTP/1.1
+POST  http://localhost:8080/pushSubmission HTTP/1.1
 Content-Type: application/json
 
 {
@@ -66,9 +65,7 @@ Content-Type: application/json
 }
 
 
-###
-## Be aware of the port number
-## This is to get the submission based on the 
-Get  http://localhost:5031/getSubmission HTTP/1.1
+
+Get  http://localhost:8080/getSubmission HTTP/1.1
 Content-Type: application/json
 Token : 169e2bff-084e-458c-96bc-0fb1f03ab4cf
