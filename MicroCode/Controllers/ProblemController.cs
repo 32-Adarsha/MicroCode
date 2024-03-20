@@ -7,6 +7,7 @@ using MicroCode.models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing.Template;
+using Microsoft.EntityFrameworkCore;
 
 
 
@@ -129,11 +130,51 @@ public class ProblemController : ControllerBase
 
     [Route("/watchSubmission")]
     [HttpGet]
-    [AllowAnonymous]
+    [Authorize]
     public async Task<IActionResult> getSubmission([FromHeader] string Token)
     {
         string getValue = _submission.SendGetRequest(Token);
         return Ok(getValue);
+    }
+
+
+    [Route("/getAllProblem")]
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> getAllProblem([FromHeader] string Token)
+    {
+        var userIdClaim = HttpContext.User.Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Sid);
+        if (userIdClaim != null)
+        {
+            var allProgram = dbContext.ProgramModel.Where(p => p.user_id == new Guid(userIdClaim.Value)).Include(p=>p.CodeModel).ToList();
+            return Ok(allProgram);
+        }
+        else
+        {
+            return BadRequest();
+        }
+
+
+    }
+
+
+
+    [Route("/getCode")]
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> getProblem([FromHeader] string Token)
+    {
+        
+        if (Token != null)
+        {
+            var code = dbContext.CodeModels.Where(p => p.program_id == new Guid(Token));
+            return Ok(code);
+        }
+        else
+        {
+            return BadRequest();
+        }
+
     }
 
 

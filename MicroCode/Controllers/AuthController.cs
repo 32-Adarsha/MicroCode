@@ -14,7 +14,6 @@ namespace CustomJwtAuth.Controller
 {
 
 
-    [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
     {
@@ -29,6 +28,7 @@ namespace CustomJwtAuth.Controller
 
         [AllowAnonymous]
         [HttpPost]
+        [Route("/api/Auth")]
         public IActionResult Auth([FromBody] LoginModel person)
         {
             IActionResult response = Unauthorized();
@@ -88,6 +88,13 @@ namespace CustomJwtAuth.Controller
             return response;
         }
 
+
+        [Authorize]
+        [HttpGet]
+        [Route("/isLoggedIn")]
+        public IActionResult IsLoggedIn(){
+            return Ok("User Is Logged In");
+        }
 
     }
 }
