@@ -4,7 +4,7 @@ import { useState } from 'react';
 import CButton from "../../components/Button";
 import SplitPane from 'react-split-pane';
 import { Select, message } from "antd";
-import '../EditorPage/editorpage.css'
+import '../CustomTestPage/custom.css'
 import axios from "axios";
 import config  from "../../config/config.jsx";
 
@@ -30,7 +30,7 @@ const headerStyle = {
 
 
 
-const EditorPage = ({ props }) => {
+const CustomTestPage = ({ props }) => {
   const [value, setValue] = useState("");
   const [lang, setLang] = useState("cpp");
   const [testcase, setTestCase] = useState("");
@@ -48,7 +48,7 @@ const EditorPage = ({ props }) => {
 
   };
   const handleEditorDidMount = (v) => {
-    console.log("Here");
+   
   }
 
   ////////////////////////
@@ -112,7 +112,7 @@ const EditorPage = ({ props }) => {
           }> </Select>
           <div className="test-out-container">
             <div> <p>Testcases</p>
-            <textarea className="testcase-area" name="input" id="input" cols="30" rows="10" onChange={(e)=>{ e.preventDefault();setTest(e.target.value);}} value={test}></textarea>
+            <textarea name="input" id="input" cols="30" rows="10" onChange={(e)=>{ e.preventDefault();setTest(e.target.value);}} value={test}></textarea>
             </div>
             <div>
               <p>Output</p>
@@ -131,14 +131,12 @@ const EditorPage = ({ props }) => {
     <div style={layoutStyle} className="edit-body">
       <SplitPane split="vertical" defaultSize="50%" minSize={400} maxSize={900} >
         <div className="left-pane" style={contentStyle}>
-          <div className="left-pane-wrapper">
-            <SplitPane split="horizontal" defaultSize="50%" minSize={200} >
-              <div className="upper-half">Problem Descripton</div>
-              <div className="lower-half">
+          <div className="left-pane-wrapper-custom">
+        
+              
                 {TestcasePane}
 
-              </div>
-            </SplitPane>
+            
           </div>
         </div>
         <div className="right-pane" style={contentStyle}>
@@ -159,4 +157,4 @@ const EditorPage = ({ props }) => {
     </div>
   );
 };
-export default EditorPage;
+export default CustomTestPage;

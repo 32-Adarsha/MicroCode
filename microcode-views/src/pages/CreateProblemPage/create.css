@@ -1,0 +1,9 @@
+#left-pane-create,.right-pane-create {
+    overflow-y: auto;
+    height: 100%;
+  }
+
+  .markdown-preview{
+    min-height: 50vh;
+    overflow-y: auto;
+  }

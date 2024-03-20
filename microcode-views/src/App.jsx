@@ -4,6 +4,8 @@ import "./App.css";
 import SignUp from "./pages/SignUp";
 import SignIn from "./pages/SignIn";
 import EditorPage from "./pages/EditorPage";
+import CreateProblemPage from "./pages/CreateProblemPage";
+import CustomTestPage from "./pages/CustomTestPage";
 
 function App() {
   const [email, setName] = useState("");
@@ -34,7 +36,8 @@ function App() {
 
   return (
     <div>
-      {jwt ? <EditorPage/>:<SignIn/>}
+      
+      <CustomTestPage/>
     </div>
 
       
