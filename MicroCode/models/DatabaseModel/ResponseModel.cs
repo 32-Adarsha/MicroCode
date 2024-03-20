@@ -13,6 +13,8 @@ namespace MicroCode.models
         [Key]
         [Required]
         public string JudgeId { get; set; }
+        
+        public Nullable<Boolean> completed { get; set; }
         public Nullable<Guid> user_id {get ;set;}
         public DateTime CompletedDate {get; set;}
         public string language { get; set; }

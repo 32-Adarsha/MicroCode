@@ -8,7 +8,7 @@ namespace MicroCode.models
 
     }
     public class BigSubmissionModel {
-        public string Program_id { get; set;} 
+        public string program_id { get; set;} 
         public SubmissionModel sModel { get; set;}
     }
 
