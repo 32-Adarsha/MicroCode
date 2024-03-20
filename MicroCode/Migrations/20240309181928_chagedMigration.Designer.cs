@@ -3,6 +3,7 @@ using System;
 using MicroCode.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MicroCode.Migrations
 {
     [DbContext(typeof(MicroCodeContext))]
-    partial class MicroCodeContextModelSnapshot : ModelSnapshot
+    [Migration("20240309181928_chagedMigration")]
+    partial class chagedMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,12 +27,8 @@ namespace MicroCode.Migrations
 
             modelBuilder.Entity("MicroCode.models.CodeModel", b =>
                 {
-                    b.Property<Guid>("program_id")
+                    b.Property<Guid>("Program_id")
                         .HasColumnType("uuid");
-
-                    b.Property<string>("callerFunction")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<string>("input")
                         .IsRequired()
@@ -43,14 +42,21 @@ namespace MicroCode.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.HasKey("program_id");
+                    b.Property<string>("template")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("verified")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("Program_id");
 
                     b.ToTable("CodeModels");
                 });
 
             modelBuilder.Entity("MicroCode.models.ProgramModel", b =>
                 {
-                    b.Property<Guid>("program_id")
+                    b.Property<Guid>("Program_id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
@@ -61,22 +67,11 @@ namespace MicroCode.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("errorMessage")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<bool>("flagged")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("hasError")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<bool>("isPublic")
+                    b.Property<bool>("isPrivate")
                         .HasColumnType("boolean");
-
-                    b.Property<Guid?>("judgeId")
-                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("registration_data")
                         .HasColumnType("timestamp with time zone");
@@ -92,7 +87,7 @@ namespace MicroCode.Migrations
                     b.Property<bool>("verified")
                         .HasColumnType("boolean");
 
-                    b.HasKey("program_id");
+                    b.HasKey("Program_id");
 
                     b.HasIndex("user_id");
 
@@ -172,7 +167,7 @@ namespace MicroCode.Migrations
                 {
                     b.HasOne("MicroCode.models.ProgramModel", "ProgramModel")
                         .WithOne("CodeModel")
-                        .HasForeignKey("MicroCode.models.CodeModel", "program_id")
+                        .HasForeignKey("MicroCode.models.CodeModel", "Program_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

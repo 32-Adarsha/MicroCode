@@ -3,6 +3,7 @@ using System;
 using MicroCode.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MicroCode.Migrations
 {
     [DbContext(typeof(MicroCodeContext))]
-    partial class MicroCodeContextModelSnapshot : ModelSnapshot
+    [Migration("20240318211802_changedDatabase")]
+    partial class changedDatabase
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,7 +27,7 @@ namespace MicroCode.Migrations
 
             modelBuilder.Entity("MicroCode.models.CodeModel", b =>
                 {
-                    b.Property<Guid>("program_id")
+                    b.Property<Guid>("Program_id")
                         .HasColumnType("uuid");
 
                     b.Property<string>("callerFunction")
@@ -43,7 +46,7 @@ namespace MicroCode.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.HasKey("program_id");
+                    b.HasKey("Program_id");
 
                     b.ToTable("CodeModels");
                 });
@@ -172,7 +175,7 @@ namespace MicroCode.Migrations
                 {
                     b.HasOne("MicroCode.models.ProgramModel", "ProgramModel")
                         .WithOne("CodeModel")
-                        .HasForeignKey("MicroCode.models.CodeModel", "program_id")
+                        .HasForeignKey("MicroCode.models.CodeModel", "Program_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
