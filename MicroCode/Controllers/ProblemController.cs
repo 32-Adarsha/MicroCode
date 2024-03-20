@@ -17,7 +17,7 @@ public class ProblemController : ControllerBase
 {
     private readonly MicroCodeContext dbContext;
     private readonly ISubmission _submission;
-    public ProblemController(MicroCodeContext dbContext , ISubmission submission)
+    public ProblemController(MicroCodeContext dbContext, ISubmission submission)
     {
         this.dbContext = dbContext;
         this._submission = submission;
@@ -28,11 +28,13 @@ public class ProblemController : ControllerBase
     [Authorize]
     public async Task<IActionResult> saveProblem([FromBody] ProgramGetModel qst)
     {
-        try {
+        try
+        {
             var id = User.FindFirst(ClaimTypes.Sid)?.Value;
             var thisProblem = dbContext.ProgramModel.FirstOrDefault(p => p.program_id == new Guid(qst.pID));
             var thisCode = dbContext.CodeModels.FirstOrDefault(p => p.program_id == new Guid(qst.pID));
-            if (thisProblem != null) {
+            if (thisProblem != null)
+            {
                 thisProblem.title = qst.title;
                 thisProblem.discription = qst.discription;
                 thisCode.input = qst.input;
@@ -41,10 +43,11 @@ public class ProblemController : ControllerBase
                 thisCode.mainCode = qst.mainCode;
                 await dbContext.SaveChangesAsync();
             }
-            
+
             return Ok();
         }
-        catch (Exception e){
+        catch (Exception e)
+        {
             return BadRequest(e);
         }
     }
@@ -75,7 +78,7 @@ public class ProblemController : ControllerBase
                     registration_data = DateTime.UtcNow,
                     user_id = new Guid(id),
                     hasError = "",
-                    errorMessage ="",
+                    errorMessage = "",
                     flagged = false,
 
                 };
@@ -103,10 +106,11 @@ public class ProblemController : ControllerBase
                 return Unauthorized();
             }
         }
-        catch (Exception ex) {
+        catch (Exception ex)
+        {
             return Ok(ex);
         }
-        
+
     }
 
 
@@ -115,13 +119,14 @@ public class ProblemController : ControllerBase
     [Authorize]
     public async Task<IActionResult> testProblem([FromHeader] ProgramGetModel qst)
     {
-        try {
+        try
+        {
             var id = User.FindFirst(ClaimTypes.Sid)?.Value;
             var thisProblem = dbContext.ProgramModel.FirstOrDefault(p => p.program_id == new Guid(qst.pID));
-
             return Ok();
         }
-        catch (Exception e){
+        catch (Exception e)
+        {
             return BadRequest(e);
         }
     }
@@ -137,4 +142,22 @@ public class ProblemController : ControllerBase
     }
 
 
+    [Route("/getAllProblem")]
+    [HttpGet]
+    [AllowAnonymous]
+    public async Task<IActionResult> getAllProblem([FromHeader] string Token)
+    {
+        var userIdClaim = HttpContext.User.Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Sid);
+        if (userIdClaim != null)
+        {
+            var allProgram = dbContext.ProgramModel.Where(p => p.user_id == new Guid(userIdClaim.Value)).ToList();
+            return Ok(allProgram);
+        }
+        else
+        {
+            return BadRequest();
+        }
+
+
+    }
 }
