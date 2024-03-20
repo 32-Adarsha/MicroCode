@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing.Template;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 
 
 
@@ -111,29 +112,23 @@ public class ProblemController : ControllerBase
     }
 
 
-    [Route("/verifyProblem")]
+    [Route("/executeProblem")]
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> testProblem([FromHeader] ProgramGetModel qst)
+    public async Task<IActionResult> executeProblem([FromBody] SubmissionModel mdl)
     {
-        try {
-            var id = User.FindFirst(ClaimTypes.Sid)?.Value;
-            var thisProblem = dbContext.ProgramModel.FirstOrDefault(p => p.program_id == new Guid(qst.pID));
-
-            return Ok();
-        }
-        catch (Exception e){
-            return BadRequest(e);
-        }
+        string value = _submission.SendPostRequest(mdl);
+        return Ok(value);
     }
 
 
-    [Route("/watchSubmission")]
+    [Route("/checkProblem")]
     [HttpGet]
     [Authorize]
     public async Task<IActionResult> getSubmission([FromHeader] string Token)
     {
-        string getValue = _submission.SendGetRequest(Token);
+        string fields = "status,language,time,memory,stdin,expected_output,stdout,created_at,finished_at,source_code";
+        string getValue = _submission.SendCustomGetRequest(Token, fields);
         return Ok(getValue);
     }
 
@@ -141,12 +136,12 @@ public class ProblemController : ControllerBase
     [Route("/getAllProblem")]
     [HttpGet]
     [Authorize]
-    public async Task<IActionResult> getAllProblem([FromHeader] string Token)
+    public async Task<IActionResult> getAllProblem()
     {
         var userIdClaim = HttpContext.User.Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Sid);
         if (userIdClaim != null)
         {
-            var allProgram = dbContext.ProgramModel.Where(p => p.user_id == new Guid(userIdClaim.Value)).Include(p=>p.CodeModel).ToList();
+            var allProgram = dbContext.ProgramModel.Where(p => p.user_id == new Guid(userIdClaim.Value)).Select(u => new {u.program_id , u.title, u.isPublic}).ToList();
             return Ok(allProgram);
         }
         else
@@ -162,7 +157,7 @@ public class ProblemController : ControllerBase
     [Route("/getCode")]
     [HttpGet]
     [Authorize]
-    public async Task<IActionResult> getProblem([FromHeader] string Token)
+    public async Task<IActionResult> getCode([FromHeader] string Token)
     {
         
         if (Token != null)

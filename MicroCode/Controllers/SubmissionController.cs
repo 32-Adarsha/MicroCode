@@ -24,20 +24,21 @@ public class SubmissionController : ControllerBase
 
     [Route("/pushSubmission")]
     [HttpPost]
-    [AllowAnonymous]
+    [Authorize]
     public async Task<IActionResult> pushSubmission([FromBody] BigSubmissionModel BModel)
     {
-        var id = User.FindFirst(ClaimTypes.Sid)?.Value;
+        var id =  HttpContext.User.Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Sid).Value;
         string value = _submission.SendPostRequest(BModel.sModel);
         ResponseModel rsp = new ResponseModel
         {
             JudgeId = value,
-            Program_id = new Guid(BModel.Program_id),
+            Program_id = new Guid(BModel.program_id),
             user_id = new Guid(id),
+            completed = false,
             CompletedDate = DateTime.UtcNow,
         };
         rsp.UserModel = dbContext.UserModel.FirstOrDefault(u => u.user_id == new Guid(id));
-        rsp.ProgramModel = dbContext.ProgramModel.FirstOrDefault(u => u.program_id == new Guid(BModel.Program_id));
+        rsp.ProgramModel = dbContext.ProgramModel.FirstOrDefault(u => u.program_id == new Guid(BModel.program_id));
         await dbContext.ResponseModels.AddAsync(rsp);
         await dbContext.SaveChangesAsync();
         return Ok(value);
@@ -47,7 +48,7 @@ public class SubmissionController : ControllerBase
     
     [Route("/getSubmission")]
     [HttpGet]
-    [AllowAnonymous]
+    [Authorize]
     public async Task<IActionResult> getSubmission([FromHeader] string Token)
     {
         string fields = "status,language,time";

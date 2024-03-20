@@ -31,7 +31,7 @@ public class ProfileController : ControllerBase
    [Authorize]
     public async Task<IActionResult> getDetail()
 {
-    var id = User.FindFirst(ClaimTypes.Sid)?.Value;
+    var id =  HttpContext.User.Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Sid).Value;
     var user = _cntx.UserModel
             .Where(u => u.user_id == new Guid(id))
             .Select(u => new 
@@ -48,6 +48,7 @@ public class ProfileController : ControllerBase
             .Where(x => x.user_id == new Guid(id))
             .Select(u => new {
                 u.Program_id,
+                u.completed,
                 u.JudgeId,
                 u.CompletedDate,
                 u.language
