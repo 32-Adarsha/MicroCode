@@ -20,7 +20,7 @@ Content-Type: application/json
    "last_name" : "s",
    "phone_no": "98495",
    "username": "sdddf",
-   "eamil" : "fdada@email.com",
+   "email" : "fdada@email.com",
    "password" : "Sooryagayathri2!"
 }
 ###
@@ -31,8 +31,8 @@ Content-Type: application/json
 
 
 {
-   "what": "username",
-   "value" : "Kiran"
+   "what": "email",
+   "value" : "lol@bol.co"
 }
 
 

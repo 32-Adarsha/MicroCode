@@ -5,6 +5,7 @@ import axios from 'axios';
 import {UserOutlined,MailOutlined, PhoneOutlined,PlusOutlined, EyeOutlined} from '@ant-design/icons'
 import '../SignUp/signup.css'
 import { Card , Space, Input,message} from 'antd';
+import { Link } from 'react-router-dom';
 
 
 const SignUpForm = () => {
@@ -212,7 +213,7 @@ const SignUpForm = () => {
         </form>
         
         </Card>
-        <p>Already have an account?</p><span><a><CButton>Sign In</CButton></a></span>
+        <p>Already have an account?</p><Link to={"/"}><CButton>Sign In</CButton></Link>
     </div>
   );
 };
