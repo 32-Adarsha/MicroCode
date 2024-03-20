@@ -31,7 +31,7 @@ public class ProblemController : ControllerBase
         try {
             var id = User.FindFirst(ClaimTypes.Sid)?.Value;
             var thisProblem = dbContext.ProgramModel.FirstOrDefault(p => p.program_id == new Guid(qst.pID));
-            var thisCode = dbContext.CodeModels.FirstOrDefault(p => p.Program_id == new Guid(qst.pID));
+            var thisCode = dbContext.CodeModels.FirstOrDefault(p => p.program_id == new Guid(qst.pID));
             if (thisProblem != null) {
                 thisProblem.title = qst.title;
                 thisProblem.discription = qst.discription;
@@ -51,43 +51,62 @@ public class ProblemController : ControllerBase
 
 
     [Route("/createProblem")]
-    [HttpPost]
+    [HttpGet]
     [Authorize]
     public async Task<IActionResult> createProblem([FromHeader] string title)
     {
-        try {
-            var pID = Guid.NewGuid();
-            var id = User.FindFirst(ClaimTypes.Sid)?.Value;
-            var newProgram = new ProgramModel
-        {
-            program_id = pID,
-            title = title,
-            discription = "",
-            verified = false,
-            isPublic = true,
-            judgeId = null,
-            registration_data = DateTime.UtcNow,
-            user_id = new Guid(id),
-        };
-        var newCode = new CodeModel {
-            Program_id = pID,
-            mainCode = "",
-            callerFunction = "",
-            input = "",
-            output = "",
-        };
 
-        newProgram.UserModel =  dbContext.UserModel.FirstOrDefault(u => u.user_id == new Guid(id));
-        newProgram.CodeModel = newCode;
-        newCode.ProgramModel = newProgram;
-        await dbContext.ProgramModel.AddAsync(newProgram);
-        await dbContext.CodeModels.AddAsync(newCode);
-        await dbContext.SaveChangesAsync();
-        return Ok();
+        try
+        {
+            var userIdClaim = HttpContext.User.Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Sid);
+            if (userIdClaim?.Value != null)
+            {
+                var pID = Guid.NewGuid();
+                var id = userIdClaim.Value;
+                var newProgram = new ProgramModel
+                {
+                    program_id = pID,
+                    title = title,
+                    discription = "",
+                    verified = false,
+                    isPublic = false,
+                    diffulty = Diffulty.Easy,
+                    judgeId = null,
+                    registration_data = DateTime.UtcNow,
+                    user_id = new Guid(id),
+                    hasError = "",
+                    errorMessage ="",
+                    flagged = false,
+
+                };
+
+                var newCode = new CodeModel
+                {
+                    program_id = pID,
+                    mainCode = "",
+                    callerFunction = "",
+                    input = "",
+                    output = "",
+                };
+
+                newProgram.UserModel = dbContext.UserModel.FirstOrDefault(u => u.user_id == new Guid(id));
+                newProgram.CodeModel = newCode;
+                newCode.ProgramModel = newProgram;
+                await dbContext.ProgramModel.AddAsync(newProgram);
+                await dbContext.CodeModels.AddAsync(newCode);
+                await dbContext.SaveChangesAsync();
+                return Ok();
+            }
+
+            else
+            {
+                return Unauthorized();
+            }
         }
-        catch (Exception e){
-            return BadRequest(e);
+        catch (Exception ex) {
+            return Ok(ex);
         }
+        
     }
 
 
