@@ -174,7 +174,7 @@ public class SignUpController : ControllerBase
     [Route("/exist")]
     [HttpPost]
     [AllowAnonymous]
-    public IActionResult AddUser([FromBody] ExistModel Obj )
+    public IActionResult AddUserExist([FromBody] ExistModel Obj )
     {
         if (Obj.what == "username"){
             return Ok(CheckUserName(Obj.value));
