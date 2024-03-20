@@ -6,15 +6,22 @@ import SignIn from "./pages/SignIn";
 import EditorPage from "./pages/EditorPage";
 import CreateProblemPage from "./pages/CreateProblemPage";
 import CustomTestPage from "./pages/CustomTestPage";
+import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 
 function App() {
   
 
   return (
-    <div>
-      
-      <CustomTestPage/>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<SignIn/>}/>
+        <Route path="/signup" element={<SignUp/>}/>
+        <Route path="/custom" element={<CustomTestPage/>}/>
+        <Route path="/createproblem" element={<CreateProblemPage/>}/>
+
+        
+      </Routes>
+      </Router>
 
       
   );
