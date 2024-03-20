@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import TextInput from '../../components/TextInput';
 import CButton from '../../components/Button';
 import axios from 'axios';
+import { Card, Space, Input, message } from 'antd';
+import { EyeOutlined, MailOutlined } from '@ant-design/icons'
+import EditorPage from '../EditorPage';
 
 const SignIn = () => {
   const [formData, setFormData] = useState({
@@ -10,110 +13,120 @@ const SignIn = () => {
   });
   const [emailError, setEmailError] = useState("")
   const [passwordError, setPasswordError] = useState("")
-  const [timerId, setTimerId] = useState(null)
   const [errorexist, setErrorExist] = useState(false)
+  const [messageApi, contextHolder] = message.useMessage();
 
   const url = `http://localhost:8080/api/auth`
-  const checkUrl =`http://localhost:8080/exist`
+  const checkUrl = `http://localhost:8080/exist`
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if(name=="password"){
-      const regmat=/^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/
-      if(regmat.test(value)){
+    if (name == "password") {
+      const regmat = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/
+      if (regmat.test(value)) {
         setPasswordError("")
         setErrorExist(false)
-      }else{
+      } else {
         setPasswordError("1 Uppercase, 1 Lowercase, 1 Symbol and 1 Number, 8 letters")
         setErrorExist(true)
       }
     }
-    else if(name == "email"){
-      if (timerId) {
-        clearTimeout(timerId);
-      }
-      const newTimerId = setTimeout(() => {
-        axios.post(checkUrl,{"what":"email","value":value}).then(e=>{
-          if(!e.data.hasError){
-            setEmailError("Email Does not exist")
-            setErrorExist(true)
-          }else{
-            if(e.data.errorMessage =="Invalid Email"){
-                setEmailError("Invalid Email")
-                setErrorExist(true)  
-            }else{
-                setEmailError("")
-                setErrorExist(false)
-            }
-            
-            
-          }
-        }
-        )
-      }, 2000);
-      setTimerId(newTimerId)
-    }
-    
-        setFormData({ ...formData, [name]: value });  
-    
 
 
-    
+    setFormData({ ...formData, [name]: value });
 
 
-    
+
+
+
+
+
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const errorCheck = () =>{
+    const errorCheck = () => {
       Object.keys(formData).forEach(k => {
-        if(!formData[k]){
+        if (!formData[k]) {
           return false
         }
-        
+
       });
       return true;
     }
-    if(errorCheck() && !errorexist){
-      axios.post(url,formData).then(e=>{
-        console.log(e.data)
+    if (errorCheck() && !errorexist) {
+      axios.post(url, formData).then(e => {
+        messageApi.loading("Signing in").then(ll =>{
+          if(e.status ==200){
+            messageApi.success("Signed in")
+            localStorage.setItem("logged_in_jwt",e.data)
+            document.cookie = `jwt=${e.data}; path=/; HttpOnly`
+            
+          }
+        }
+          
+        )
+      }).catch(error => {
+        if (error.response.data.status == 401) {
+          messageApi.error("Credentials error!")
+        } else {
+          messageApi.error("Some unknown error")
+        }
       })
-    }else{
-      console.log(errorexist,errorCheck());
+    } else {
+      messageApi.error("Error Exists in the form")
     }
-    
-    
-    
+
+
+
   };
 
   return (
-    <div>
-        <h1>Sign In</h1>
+    <div className='border-solid sign-body'>
+      {contextHolder}
+      <h1>Welcome to MicroCode</h1>
+      <Card title="Sign in" bordered="false"
+        className={"card-signup"}
+
+      >
+
         <form onSubmit={handleSubmit}>
-            
+          <Space direction="vertical" size="middle">
+
             <TextInput
               label="Email:"
-              type="email"
+              htmltype="email"
               name="email"
+              addonBefore={<MailOutlined></MailOutlined>}
+              placeholder="Email"
               error={emailError}
               value={formData.email}
               onChange={handleChange}
             />
-            
-            <TextInput
-              label="Password:"
-              type="password"
+
+
+            <Input.Password label="Password:"
+              htmltype="password"
+              type="Password"
+              placeholder="Password"
+              className={"input-main"}
+              addonBefore={<EyeOutlined></EyeOutlined>}
               name="password"
-              error={passwordError}
+              status={passwordError === "" ? '' : "error"}
               value={formData.password}
               onChange={handleChange}
             />
-            <CButton type="submit" colorScheme="blue">
+            <span>{passwordError}</span>
+
+
+            <CButton htmlType="submit" >
               Sign In
             </CButton>
+          </Space>
         </form>
 
+      </Card>
+      <p>Do not have an account?</p><span><a><CButton>Sign Up</CButton></a></span>
     </div>
   );
 };
