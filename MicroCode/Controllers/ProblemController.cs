@@ -187,6 +187,7 @@ public class ProblemController : ControllerBase
         {
             ProgramModel program = dbContext.ProgramModel.FirstOrDefault<ProgramModel>(p => p.program_id == new Guid(Token));
             program.verified = true;
+            await dbContext.SaveChangesAsync();
             return Ok("verified");
             
         }
@@ -196,6 +197,29 @@ public class ProblemController : ControllerBase
         }
 
     }
+
+
+    [Route("/makePublic")]
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> makePublic([FromHeader] string Token)
+    {
+        
+        if (Token != null)
+        {
+            ProgramModel program = dbContext.ProgramModel.FirstOrDefault<ProgramModel>(p => p.program_id == new Guid(Token));
+            program.isPublic = true;
+            await dbContext.SaveChangesAsync();
+            return Ok("made public available");
+            
+        }
+        else
+        {
+            return BadRequest();
+        }
+
+    }
+
 
 
     

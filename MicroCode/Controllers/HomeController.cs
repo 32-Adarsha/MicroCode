@@ -31,7 +31,7 @@ public class HomeController : ControllerBase
    [Authorize]
     public async Task<IActionResult> getProblem()
 {
-        var problems = dbcontext.ProgramModel.Where(p => p.isPublic == true).ToList();
+        var problems = dbcontext.ProgramModel.Where(p => p.isPublic == true && p.verified == true).ToList();
     
 
     return Ok(problems);
