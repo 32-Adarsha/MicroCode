@@ -31,7 +31,6 @@ public class ProblemController : ControllerBase
     public async Task<IActionResult> saveProblem([FromBody] ProgramGetModel qst)
     {
         try {
-            var id = User.FindFirst(ClaimTypes.Sid)?.Value;
             var thisProblem = dbContext.ProgramModel.FirstOrDefault(p => p.program_id == new Guid(qst.pID));
             var thisCode = dbContext.CodeModels.FirstOrDefault(p => p.program_id == new Guid(qst.pID));
             if (thisProblem != null) {
@@ -97,7 +96,13 @@ public class ProblemController : ControllerBase
                 await dbContext.ProgramModel.AddAsync(newProgram);
                 await dbContext.CodeModels.AddAsync(newCode);
                 await dbContext.SaveChangesAsync();
-                return Ok();
+                return Ok(new {
+                    program_id = pID,
+                    title = title,
+                    discription = "",
+                    verified = false,
+                    isPublic = false,
+                });
             }
 
             else
@@ -106,7 +111,7 @@ public class ProblemController : ControllerBase
             }
         }
         catch (Exception ex) {
-            return Ok(ex);
+            return BadRequest(ex);
         }
         
     }
@@ -148,8 +153,6 @@ public class ProblemController : ControllerBase
         {
             return BadRequest();
         }
-
-
     }
 
 
@@ -159,7 +162,7 @@ public class ProblemController : ControllerBase
     [Authorize]
     public async Task<IActionResult> getCode([FromHeader] string Token)
     {
-        
+
         if (Token != null)
         {
             var code = dbContext.CodeModels.Where(p => p.program_id == new Guid(Token));
@@ -171,6 +174,33 @@ public class ProblemController : ControllerBase
         }
 
     }
+
+
+
+    [Route("/verified")]
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> pushVerified([FromHeader] string Token)
+    {
+        
+        if (Token != null)
+        {
+            ProgramModel program = dbContext.ProgramModel.FirstOrDefault<ProgramModel>(p => p.program_id == new Guid(Token));
+            program.verified = true;
+            return Ok("verified");
+            
+        }
+        else
+        {
+            return BadRequest();
+        }
+
+    }
+
+
+    
+
+
 
 
 }
