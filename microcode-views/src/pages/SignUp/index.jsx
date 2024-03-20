@@ -11,7 +11,7 @@ const SignUpForm = () => {
   const [formData, setFormData] = useState({
     first_name: '',
     last_name: '',
-    email: '',
+    eamil: '',
     phone_no: '',
     username: '',
     password: '',
@@ -64,7 +64,7 @@ const SignUpForm = () => {
         clearTimeout(timerId);
       }
       const newTimerId = setTimeout(() => {
-        axios.post(checkUrl,{"what":"email","value":value}).then(e=>{
+        axios.post(checkUrl,{"what":"eamil","value":value}).then(e=>{
           if(e.data.hasError){
             setEmailError(e.data.errorMessage)
             setErrorExist(true)
@@ -164,11 +164,11 @@ const SignUpForm = () => {
             <TextInput
               label="Email:"
               htmltype="email"
-              name="email"
+              name="eamil"
               addonBefore={<MailOutlined></MailOutlined>}
               placeholder="Email"
               error={emailError}
-              value={formData.email}
+              value={formData.eamil}
               onChange={handleChange}
             />
             <TextInput

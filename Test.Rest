@@ -20,7 +20,7 @@ Content-Type: application/json
    "last_name" : "s",
    "phone_no": "98495",
    "username": "sdddf",
-   "email" : "fdada@email.com",
+   "eamil" : "fdada@email.com",
    "password" : "Sooryagayathri2!"
 }
 ###
