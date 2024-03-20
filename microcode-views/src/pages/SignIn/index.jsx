@@ -6,8 +6,10 @@ import { Card, Space, Input, message } from 'antd';
 import { EyeOutlined, MailOutlined } from '@ant-design/icons'
 import EditorPage from '../EditorPage';
 import { Link } from 'react-router-dom';
+import { useAuthCheck } from '../../config/auth';
 
 const SignIn = () => {
+  //useAuthCheck()
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -60,9 +62,9 @@ const SignIn = () => {
         messageApi.loading("Signing in").then(ll =>{
           if(e.status ==200){
             console.log("logged in")
-            messageApi.success("Signed inn").then(
+            messageApi.success("Signed in").then(
               ()=>{
-                window.location.href="/homepage"
+                window.location.href="/custom"
 
               }
             )

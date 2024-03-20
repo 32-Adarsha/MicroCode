@@ -29,7 +29,7 @@ export const useAuthCheck = () => {
         // Redirect to login page or handle authentication failure
         window.location.href = '/';
       }else{
-        window.location.href ="/createproblem"
+        window.location.href ="/custom"
       }
     };
 
