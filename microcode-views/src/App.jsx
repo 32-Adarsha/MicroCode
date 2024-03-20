@@ -18,6 +18,7 @@ function App() {
         <Route path="/signup" element={<SignUp/>}/>
         <Route path="/custom" element={<CustomTestPage/>}/>
         <Route path="/createproblem" element={<CreateProblemPage/>}/>
+        <Route path="/solve/:problemId" element={<EditorPage/>} />
 
         
       </Routes>

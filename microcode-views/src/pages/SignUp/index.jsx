@@ -5,13 +5,14 @@ import axios from 'axios';
 import {UserOutlined,MailOutlined, PhoneOutlined,PlusOutlined, EyeOutlined} from '@ant-design/icons'
 import '../SignUp/signup.css'
 import { Card , Space, Input,message} from 'antd';
+import { Link } from 'react-router-dom';
 
 
 const SignUpForm = () => {
   const [formData, setFormData] = useState({
     first_name: '',
     last_name: '',
-    eamil: '',
+    email: '',
     phone_no: '',
     username: '',
     password: '',
@@ -64,7 +65,7 @@ const SignUpForm = () => {
         clearTimeout(timerId);
       }
       const newTimerId = setTimeout(() => {
-        axios.post(checkUrl,{"what":"eamil","value":value}).then(e=>{
+        axios.post(checkUrl,{"what":"email","value":value}).then(e=>{
           if(e.data.hasError){
             setEmailError(e.data.errorMessage)
             setErrorExist(true)
@@ -164,11 +165,11 @@ const SignUpForm = () => {
             <TextInput
               label="Email:"
               htmltype="email"
-              name="eamil"
+              name="email"
               addonBefore={<MailOutlined></MailOutlined>}
               placeholder="Email"
               error={emailError}
-              value={formData.eamil}
+              value={formData.email}
               onChange={handleChange}
             />
             <TextInput
@@ -212,7 +213,7 @@ const SignUpForm = () => {
         </form>
         
         </Card>
-        <p>Already have an account?</p><span><a><CButton>Sign In</CButton></a></span>
+        <p>Already have an account?</p><Link to={"/"}><CButton>Sign In</CButton></Link>
     </div>
   );
 };

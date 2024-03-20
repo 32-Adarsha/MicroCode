@@ -6,6 +6,7 @@ import { useState } from 'react';
 import config from '../../config/config';
 import axios from 'axios';
 import './create.css'
+import { useAuthCheck } from '../../config/auth';
 
 
 const {TextArea} = Input;
@@ -14,6 +15,8 @@ const {TextArea} = Input;
 
 
 const CreateProblemPage=()=> {
+  useAuthCheck();
+
   const [problem, setProblem] = useState({
     title:"",
     discription:"",

@@ -5,6 +5,7 @@ import axios from 'axios';
 import { Card, Space, Input, message } from 'antd';
 import { EyeOutlined, MailOutlined } from '@ant-design/icons'
 import EditorPage from '../EditorPage';
+import { Link } from 'react-router-dom';
 
 const SignIn = () => {
   const [formData, setFormData] = useState({
@@ -58,9 +59,16 @@ const SignIn = () => {
       axios.post(url, formData).then(e => {
         messageApi.loading("Signing in").then(ll =>{
           if(e.status ==200){
-            messageApi.success("Signed in")
-            localStorage.setItem("logged_in_jwt",e.data)
-            document.cookie = `jwt=${e.data}; path=/; HttpOnly`
+            console.log("logged in")
+            messageApi.success("Signed inn").then(
+              ()=>{
+                window.location.href="/homepage"
+
+              }
+            )
+            
+            
+            
             
           }
         }
@@ -126,7 +134,12 @@ const SignIn = () => {
         </form>
 
       </Card>
-      <p>Do not have an account?</p><span><a><CButton>Sign Up</CButton></a></span>
+      <p>Do not have an account?</p><span>
+        <Link to={"/signup"}>
+        <CButton>Sign Up</CButton>
+        </Link>
+        
+        </span>
     </div>
   );
 };
