@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MicroCode.Migrations
 {
     /// <inheritdoc />
-    public partial class initmigration : Migration
+    public partial class change2 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -74,9 +74,47 @@ namespace MicroCode.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "ResponseModel",
+                columns: table => new
+                {
+                    ResponseID = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserCode = table.Column<string>(type: "text", nullable: false),
+                    customInput = table.Column<string>(type: "text", nullable: false),
+                    verified = table.Column<bool>(type: "boolean", nullable: false),
+                    submission_data = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    user_id = table.Column<Guid>(type: "uuid", nullable: true),
+                    language = table.Column<string>(type: "text", nullable: false),
+                    Program_id = table.Column<Guid>(type: "uuid", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ResponseModel", x => x.ResponseID);
+                    table.ForeignKey(
+                        name: "FK_ResponseModel_ProgramModel_Program_id",
+                        column: x => x.Program_id,
+                        principalTable: "ProgramModel",
+                        principalColumn: "Program_id");
+                    table.ForeignKey(
+                        name: "FK_ResponseModel_UserModel_user_id",
+                        column: x => x.user_id,
+                        principalTable: "UserModel",
+                        principalColumn: "user_id");
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_ProgramModel_user_id",
                 table: "ProgramModel",
+                column: "user_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ResponseModel_Program_id",
+                table: "ResponseModel",
+                column: "Program_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ResponseModel_user_id",
+                table: "ResponseModel",
                 column: "user_id");
         }
 
@@ -85,6 +123,9 @@ namespace MicroCode.Migrations
         {
             migrationBuilder.DropTable(
                 name: "CodeModels");
+
+            migrationBuilder.DropTable(
+                name: "ResponseModel");
 
             migrationBuilder.DropTable(
                 name: "ProgramModel");

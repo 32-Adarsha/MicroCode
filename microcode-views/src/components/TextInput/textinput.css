@@ -1,0 +1,13 @@
+.abc {
+    outline: 0;
+    border-width: 0 0 2px;
+    border-color: blue
+  }
+  .abc:focus {
+    border-color: green;
+    outline: 1px dotted #000
+  }
+
+.input-main{
+  background-color: bisque;
+}

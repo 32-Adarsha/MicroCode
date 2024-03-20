@@ -6,20 +6,20 @@ POST  http://localhost:8080/api/auth HTTP/1.1
 Content-Type: application/json
 
 {
-    "Email" : "mmuu@email.com",
-    "Password" : "Trsc"
+    "Email" : "fdada@email.com",
+    "Password" : "Sooryagayathri2!"
 }
 ###
 POST  http://localhost:8080/signup HTTP/1.1
 Content-Type: application/json
 
 {
-    "first_name" : "Adarsha",
-    "last_name" : "Breav",
+    "first_name" : "G",
+    "last_name" : "s",
     "phone_no": "98495",
-    "username": "Kiran",
-    "eamil" : "mmuu@email.com",
-    "password" : "Trsc"
+    "username": "sdddf",
+    "eamil" : "fdada@email.com",
+    "password" : "Sooryagayathri2!"
 }
 ###
 // validates username and eamil
@@ -36,7 +36,7 @@ Content-Type: application/json
 
 POST  http://localhost:8080/cProblem HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJLaXJhbiIsImVtYWlsIjoibW11dUBlbWFpbC5jb20iLCJzaWQiOiIzNTQ3ZGM4Ni1hZDVkLTRmM2UtOTM4Yy1mMjVlZjkxMjYyM2EiLCJuYmYiOjE3MDgyMTQ2MTksImV4cCI6MTcwODIxNTIxOSwiaWF0IjoxNzA4MjE0NjE5LCJpc3MiOiJJc3N1ZXIiLCJhdWQiOiJBdWRpZW5jZSJ9.KxEPZwDRtBMUhuK5W1xnR76xP4YsgeiPZ_a-BzrtKdQn1hRjC-y4_1l7rSK9d6a9Mf6Doon7IS5UTGTzvQZh1Q
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzZGRkZiIsImVtYWlsIjoiZmRhZGFAZW1haWwuY29tIiwic2lkIjoiZmJjMWNiOWYtNmM2ZS00YmJlLThkZGUtYjk5NzAxY2M1YTY2IiwibmJmIjoxNzEwMDM0OTU0LCJleHAiOjE3MTAwMzU1NTQsImlhdCI6MTcxMDAzNDk1NCwiaXNzIjoiSXNzdWVyIiwiYXVkIjoiQXVkaWVuY2UifQ.wbVDYqWtHcX3tc-6RH4KI8xE3bYc4SSv3hFUkXNSbT5LCKswzyUTdYTKh1Fz9wFtWoaz2EJK7Uo6JSmminWUdA
 
 {
 
@@ -46,7 +46,31 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJLaXJhbiIsI
   "template": "string",
   "input": "string",
   "output": "string"
-
 }
 
+
+
+
+
 ###
+GET https://judge0-ce.p.rapidapi.com/about,
+X-RapidAPI-Key: 'f008f458fbmsh6461d2ec9b97427p11018ajsn57aabd191f57',
+X-RapidAPI-Host: 'judge0-ce.p.rapidapi.com'
+
+
+###
+POST  http://localhost:5031/pushSubmission HTTP/1.1
+Content-Type: application/json
+
+{
+  "language_id": 70,
+  "source_code": "print(\"Hello World h\")",
+  "stdin": "",
+  "expected_output": "Hello World"
+}
+
+
+###
+Get  http://localhost:5031/getSubmission HTTP/1.1
+Content-Type: application/json
+Token : ecb46ed6-8b45-47c8-8690-83f242c5bcde
