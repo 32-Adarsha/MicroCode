@@ -39,7 +39,11 @@ const CustomTestPage = ({ props }) => {
   const [mess,setMess] = useState("")
 
   const language_id = {
-    'cpp':54
+    'cpp':54,
+    'python':70,
+    'java':62,
+    'javascript':63,
+    'csharp':51
   }
 
 
@@ -76,7 +80,12 @@ const CustomTestPage = ({ props }) => {
              }
              if(a==13) {
               setMess(f.data.status.description)
-              return f.data.message};
+              return f.data.message
+            };
+            if(a==11) {
+              setMess(f.data.status.description)
+              return f.data.message
+            };
             setMess(f.data.status.description)
              setTimeout(() => {
               alt();
@@ -108,7 +117,7 @@ const CustomTestPage = ({ props }) => {
         <Select defaultValue={lang}
           style={{ width: "300px" }}
           options={items} onChange={
-            (value) => { setLang(value) }
+            (value) => { setLang(value); console.log(value); }
           }> </Select>
           <div className="test-out-container">
             <div> <p>Testcases</p>

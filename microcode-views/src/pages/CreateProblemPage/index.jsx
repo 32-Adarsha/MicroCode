@@ -15,7 +15,7 @@ const {TextArea} = Input;
 
 
 const CreateProblemPage=()=> {
-  useAuthCheck();
+  //useAuthCheck();
 
   const [problem, setProblem] = useState({
     title:"",

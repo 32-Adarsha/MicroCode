@@ -9,11 +9,14 @@ const AUTH_URL = "http://localhost:8080/isLoggedIn"
 // Function to check if the user is logged in
 export const checkLoggedIn =  () => {
   axios.get(AUTH_URL).then((res)=>{
-    if(res.data.isLoggedIn === true){
+    console.log(res);
+    if(res.status === 200){
         return true;
-    }else{
-        return false;
     }
+
+  }).catch(err=>{
+    console.log(err);
+    return false;
 
   })
 };
@@ -28,11 +31,23 @@ export const useAuthCheck = () => {
       if (!isLoggedIn) {
         // Redirect to login page or handle authentication failure
         window.location.href = '/';
-      }else{
-        window.location.href ="/custom"
       }
     };
 
     checkAuth();
   }, []);
 };
+
+export const useAuthCheckSignin = () => {
+    useEffect(() => {
+      const checkAuth = async () => {
+        const isLoggedIn =  checkLoggedIn();
+        if (isLoggedIn) {
+          // Redirect to login page or handle authentication failure
+          window.location.href = '/custom';
+        }
+      };
+  
+      checkAuth();
+    }, []);
+  };

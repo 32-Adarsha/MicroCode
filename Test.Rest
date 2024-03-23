@@ -96,7 +96,9 @@ Content-Type: application/json
 Token : 169e2bff-084e-458c-96bc-0fb1f03ab4cf
 
 
-
+###
+GET http://localhost:8080/isLoggedIn HTTP/1.1
+Content-Type: application/json
 
 
 

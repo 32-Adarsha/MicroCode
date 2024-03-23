@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import TextInput from '../../components/TextInput';
 import CButton from '../../components/Button';
 import axios from 'axios';
-import {UserOutlined,MailOutlined, PhoneOutlined,PlusOutlined, EyeOutlined} from '@ant-design/icons'
+import {UserOutlined,MailOutlined, PhoneOutlined,LockOutlined, EyeOutlined} from '@ant-design/icons'
 import '../SignUp/signup.css'
-import { Card , Space, Input,message} from 'antd';
+import { Button, Card, Form, Grid, Input, theme, Typography,message } from "antd";
 import { Link } from 'react-router-dom';
 
 
@@ -23,6 +23,44 @@ const SignUpForm = () => {
   const [timerId, setTimerId] = useState(null)
   const [errorexist, setErrorExist] = useState(false)
   const [messageApi, contextHolder] = message.useMessage();
+  const { useToken } = theme;
+  const { useBreakpoint } = Grid;
+  const { Text, Title } = Typography;
+  const { token } = useToken();
+  const screens = useBreakpoint();
+
+  const styles = {
+    cardContainer: {
+      position: "fixed",
+      top: 0,
+      right: 0,
+      bottom: 0,
+      width: "480px",
+      padding: "20px",
+      height:"700px",
+      boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+      borderRadius: "8px",
+      background: "linear-gradient(-20deg, #dddeee 0%, #666777 100%)",
+      marginRight:"13%",
+      marginTop:"30px",
+      alignItems:"center",
+      zIndex: 1,
+    },
+    section: {
+      padding: screens.md ? `${token.sizeXXL}px 0px` : "0px"
+    },
+    footer: {
+      marginTop: token.marginLG,
+      textAlign: "center",
+      width: "100%"
+    },
+    text: {
+      color: token.colorTextSecondary
+    },
+    title: {
+      fontSize: screens.md ? token.fontSizeHeading2 : token.fontSizeHeading3
+    }
+  };
 
 
   const url = `http://localhost:8080/signup`
@@ -107,7 +145,7 @@ const SignUpForm = () => {
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+    
     const errorCheck = () =>{
       Object.keys(formData).forEach(k => {
         if(!formData[k]){
@@ -119,7 +157,21 @@ const SignUpForm = () => {
     }
     if(errorCheck() && !errorexist){
       axios.post(url,formData).then(e=>{
-        console.log(e.data)
+        messageApi.loading("Creating account").then(()=>{
+          messageApi.success("Successful").then(()=>{
+            window.location.href="/";
+          })
+        })
+      }).catch((err)=>{
+        console.log(err)
+        messageApi.error(
+          err.response.data.map((e)=>{
+            if(e.hasError==true){
+              return `${e.errorMessage}\n`
+            }
+
+          })
+        )
       })
     }else{
       messageApi.open({
@@ -134,86 +186,144 @@ const SignUpForm = () => {
   };
 
   return (
-    <div className='border-solid sign-body'>
-      {contextHolder}
-      <h1>Welcome to MicroCode</h1>
-      <Card title="Sign up" bordered="false"
-      className={"card-signup"}
-      
+    <div className='sign-body'>
+    {contextHolder}
+    <Card style={styles.cardContainer}>
+      <div style={styles.header}>
+        <img src="../../assets/images/logo.png" alt="" />
+        <Title style={styles.title}>Sign Up</Title>
+        <Text style={styles.text}>
+          Welcome back to MicroCode! Please enter your details below to create an account.
+        </Text>
+      </div>
+      <Form
+        name="normal_signup"
+        initialValues={{
+          remember: true,
+        }}
+        onFinish={handleSubmit}
+        layout="vertical"
+        requiredMark="optional"
       >
+        <Form.Item
+          name="first_name"
+          rules={[
+            {
+              type: "text",
+              required: true,
+              message: "Please input your first name!",
+            },
+          ]}
+        >
+          <Input
+            prefix={<UserOutlined />}
+            placeholder="First Name"
+            name='first_name'
+            onChange={handleChange}
+          />
+        </Form.Item>
+
+        <Form.Item
+          name="last_name"
+          rules={[
+            {
+              type: "text",
+              required: true,
+              message: "Please input your Last name!",
+            },
+          ]}
+        >
+          <Input
+            prefix={<UserOutlined />}
+            placeholder="Last Name"
+            name='last_name'
+            onChange={handleChange}
+          />
+        </Form.Item>
+
+        <Form.Item
+          name="phone_no"
+          rules={[
+            {
+              type: "tel",
+              required: true,
+              message: "Please input your Phone No!",
+            },
+          ]}
+        >
+          <Input
+            prefix={<PhoneOutlined />}
+            placeholder="Phone No"
+            name='phone_no'
+            onChange={handleChange}
+          />
+        </Form.Item>
+
+
+
+        <Form.Item
+          name="email"
+          rules={[
+            {
+              type: "email",
+              required: true,
+              message: "Please input your Email!",
+            },
+          ]}
+        >
+          <Input
+            prefix={<MailOutlined />}
+            placeholder="Email"
+            name='email'
+            onChange={handleChange}
+          />
+        </Form.Item>
+        <Form.Item
+          name="username"
+          rules={[
+            {
+              type: "text",
+              required: true,
+              message: "Please input your first name!",
+            },
+          ]}
+        >
+          <Input
+            prefix={<UserOutlined />}
+            placeholder="username"
+            name='username'
+            onChange={handleChange}
+          />
+        </Form.Item>
         
-        <form onSubmit={handleSubmit}>
-        <Space direction="vertical" size="middle">
-            <TextInput
-              label="First Name:"
-              htmltype="text"
-              addonBefore={<UserOutlined></UserOutlined>}
-              placeholder="First Name"
-              name="first_name"
-              value={formData.first_name}
-              onChange={handleChange}
-            />
-            <TextInput
-              label="Last Name:"
-              htmltype="text"
-              addonBefore={<UserOutlined></UserOutlined>}
-              placeholder="Last Name"
-              name="last_name"
-              value={formData.last_name}
-              onChange={handleChange}
-            />
-            <TextInput
-              label="Email:"
-              htmltype="email"
-              name="email"
-              addonBefore={<MailOutlined></MailOutlined>}
-              placeholder="Email"
-              error={emailError}
-              value={formData.email}
-              onChange={handleChange}
-            />
-            <TextInput
-              label="Phone Number:"
-              htmltype="tel"
-              name="phone_no"
-              addonBefore={<PhoneOutlined></PhoneOutlined>}
-              placeholder="Phone Number"
-              value={formData.phone_no}
-              onChange={handleChange}
-            />
-            <TextInput
-              label="Username:"
-              htmltype="text"
-              error={usernameError}
-              addonBefore={<PlusOutlined></PlusOutlined>}
-              placeholder="username"
-              name="username"
-              value={formData.username}
-              onChange={handleChange}
-            />
-            
-            <Input.Password label="Password:"
-              htmltype="password"
-              type="Password"
-              placeholder="Password"
-              className={"input-main"}
-              addonBefore={<EyeOutlined></EyeOutlined>}
-              name="password"
-              status={passwordError ==="" ?'':"error"}
-              value={formData.password}
-              onChange={handleChange}
-              />
-              <span>{passwordError}</span>
-              
-              
-            <CButton htmlType="submit" >
-              Sign Up
-            </CButton>
-            </Space>
-        </form>
-        
-        </Card>
-        <p>Already have an account?</p><Link to={"/"}><CButton>Sign In</CButton></Link>
+        <Form.Item
+          name="password"
+          rules={[
+            {
+              required: true,
+              message: "Please input your Password!",
+            },
+          ]}
+        >
+          <Input.Password
+            prefix={<LockOutlined />}
+            type="password"
+            name='password'
+            placeholder="Password"
+            onChange={handleChange}
+          />
+        </Form.Item>
+        <Form.Item style={{ marginBottom: "0px" }}>
+          <Button block="true" type="primary" htmlType="submit">
+            Sign Up
+          </Button>
+          <div style={styles.footer}>
+            <Text style={styles.text}>Already have an account?</Text>{" "}
+            <Link to={"/"}>Sign in</Link>
+          </div>
+        </Form.Item>
+      </Form>
+    </Card>
     </div>
   );
 };
