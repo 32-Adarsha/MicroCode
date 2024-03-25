@@ -3,28 +3,23 @@ import Editor from "@monaco-editor/react";
 import { useState } from 'react';
 import CButton from "../../components/Button";
 import SplitPane from 'react-split-pane';
-import { Select, message } from "antd";
+import { Select, message,Layout } from "antd";
 import '../CustomTestPage/custom.css'
 import axios from "axios";
 import config  from "../../config/config.jsx";
+import NavBar from "../../components/NavBar/index.jsx";
 
 
 
 const layoutStyle = {
-  height: '100vh',
+
 };
 
 const contentStyle = {
-  width: '80vw',
-  flex: 1,
+
 };
 const headerStyle = {
-  height: '60px',
-  backgroundColor: '#f5f5f5',
-  width: '100vw',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
+
 };
 
 
@@ -37,6 +32,8 @@ const CustomTestPage = ({ props }) => {
   const [test,setTest] = useState("");
   const [substat, setsubstat] = useState("");
   const [mess,setMess] = useState("")
+  const {Header, Content} = Layout;
+  const [width, setWidth] = useState(1400)
 
   const language_id = {
     'cpp':54,
@@ -137,8 +134,16 @@ const CustomTestPage = ({ props }) => {
   
 
   return (
-    <div style={layoutStyle} className="edit-body">
-      <SplitPane split="vertical" defaultSize="50%" minSize={400} maxSize={900} >
+    <Layout>
+      <Header width="100%">
+      <NavBar/>
+      </Header>
+            
+
+      <Content>
+      <SplitPane split="vertical" defaultSize="50%"  onChange={(e)=>{
+        setWidth(1870-e)
+      }} >
         <div className="left-pane" style={contentStyle}>
           <div className="left-pane-wrapper-custom">
         
@@ -150,8 +155,8 @@ const CustomTestPage = ({ props }) => {
         </div>
         <div className="right-pane" style={contentStyle}>
           <Editor
-            height={'100vh'}
-            width={'100%'}
+            height={'90vh'}
+            width={width}
             language={lang}
             theme="vs-dark"
             automaticLayout={true}
@@ -163,7 +168,9 @@ const CustomTestPage = ({ props }) => {
           />
         </div>
       </SplitPane>
-    </div>
+    </Content>
+    </Layout>
+    
   );
 };
 export default CustomTestPage;

@@ -157,7 +157,6 @@
   }
 
   .test-out-container{
-    display: table-row;
     
   }
 
@@ -170,4 +169,16 @@
   .testcase-area{
     border: #000 2px solid;
     border-radius: 10px;
+  }
+
+  .whole-container{
+    padding: auto;
+    margin: 20px;
+  }
+  .right-pane {
+    border-radius: 10px; /* Adjust the value as per your preference */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Adjust the shadow as per your preference */
+    padding: 20px; /* Adjust the padding as per your preference */
+    overflow: hidden; /* Prevent content overflow */
+    width: fit-content; /* Optional: Adjust the width based on content */
   }

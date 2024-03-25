@@ -7,6 +7,7 @@ import EditorPage from "./pages/EditorPage";
 import CreateProblemPage from "./pages/CreateProblemPage";
 import CustomTestPage from "./pages/CustomTestPage";
 import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
+import NavBar from "./components/NavBar";
 
 function App() {
   
@@ -18,6 +19,8 @@ function App() {
         <Route path="/signup" element={<SignUp/>}/>
         <Route path="/custom" element={<CustomTestPage/>}/>
         <Route path="/createproblem" element={<CreateProblemPage/>}/>
+        <Route path="/navbar" element={<NavBar/>}/>
+        
         <Route path="/solve/:problemId" element={<EditorPage/>} />
 
         
