@@ -66,10 +66,10 @@ const Homepage = () => {
           <h1>List of Problems</h1>
           <Row gutter={[16, 16]}>
             {problemsData.map(problem => (
-              <Col key={problem.id} span={24}>
+              <Col key={problem.program_id} span={24}>
                 <Card>
                   <h3>{problem.title}</h3>
-                  <p>{problem.description}</p>
+                  <p>{problem.registration_data}</p>
                 </Card>
               </Col>
             ))}
