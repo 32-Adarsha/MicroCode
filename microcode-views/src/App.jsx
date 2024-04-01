@@ -8,10 +8,6 @@ import CreateProblemPage from "./pages/CreateProblemPage";
 import CustomTestPage from "./pages/CustomTestPage";
 import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 import NavBar from "./components/NavBar";
-import Auth from "./config/Auth";
-import Homepage from "./pages/HomePage";
-import SolveProblemPage from "./pages/SolveProblemPage";
-import Profile from "./pages/Profile";
 
 function App() {
   
@@ -25,8 +21,7 @@ function App() {
         <Route path="/createproblem" element={<CreateProblemPage/>}/>
         <Route path="/navbar" element={<NavBar/>}/>
         
-        <Route path="/solve/:problemId" element={<SolveProblemPage/>} />
-        <Route path="/profile" element={<Profile/>}/>
+        <Route path="/solve/:problemId" element={<EditorPage/>} />
 
         
       </Routes>
