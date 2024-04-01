@@ -4,6 +4,7 @@ import { Button, Grid, Image, Menu, Space, theme } from "antd";
 
 import { MenuOutlined } from "@ant-design/icons";
 
+
 import Logo from '../../assets/images/logo.png'
 
 const { useToken } = theme;
@@ -17,19 +18,23 @@ const { useBreakpoint } = Grid;
     {
       label: "Home",
       key: "home",
+      to:"/"
     },
     {
       label: "Custom Test",
       key: "ctest",
+      to:"/custom"
     },
     {
       label: "Create Problem",
       key: "cproblem",
+      to:"/createproblem"
       
     },
     {
       label: "Profile",
       key: "profile",
+      to:"/profile"
     },
   ];
 
@@ -85,7 +90,7 @@ const { useBreakpoint } = Grid;
             style={styles.menu}
             mode="horizontal"
             items={menuItems}
-            onClick={()=>{}}
+            onClick={(item)=>{window.location.href=(item.item.props.to)}}
             selectedKeys={screens.md ? [props.current] : ""}
             overflowedIndicator={
               <Button type="text" icon={<MenuOutlined />}></Button>

@@ -174,6 +174,30 @@ public class ProblemController : ControllerBase
         }
 
     }
+    [Route("/getCodetoSolve")]
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> getCodetoSolve([FromHeader] string Token)
+    {
+
+        if (Token != null)
+        {
+            var code = dbContext.ProgramModel.Where(p =>p.program_id == new Guid(Token)).Select(p=> new{
+                p.discription,
+                p.diffulty,
+                p.registration_data,
+                p.title,
+                p.user_id,
+                p.CodeModel.mainCode,
+            });
+            return Ok(code);
+        }
+        else
+        {
+            return BadRequest();
+        }
+
+    }
 
 
 

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Layout, Row, Col, Card, Divider } from 'antd';
 import NavBar from '../../components/NavBar';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 const { Header, Content, Footer } = Layout;
 
@@ -11,7 +12,7 @@ const Homepage = () => {
   })
 
   // Dummy data for problems
-  const [problemsData, serProblemdata] = useState([{id:1,title:"a",description:"ads"}]);
+  const [problemsData, serProblemdata] = useState([{problem_id:1,title:"a",description:"ads"}]);
 
   useEffect(() => {
     const siteDataUrl =`http://localhost:8080/getsitestats`
@@ -19,10 +20,12 @@ const Homepage = () => {
     const getdata =() =>{
         axios.post(siteDataUrl).then(res=>{
             setStatsData(res.data)
+
         })
 
         axios.post(problemsUrl).then((res)=>{
             serProblemdata(res.data)
+            console.log(res.data)
         })
 
     }
@@ -67,10 +70,12 @@ const Homepage = () => {
           <Row gutter={[16, 16]}>
             {problemsData.map(problem => (
               <Col key={problem.program_id} span={24}>
+                <Link to={`/solve/${problem.program_id}`}>
                 <Card>
                   <h3>{problem.title}</h3>
                   <p>{problem.registration_data}</p>
                 </Card>
+                </Link>
               </Col>
             ))}
           </Row>

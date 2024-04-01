@@ -10,6 +10,7 @@ import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 import NavBar from "./components/NavBar";
 import Auth from "./config/Auth";
 import Homepage from "./pages/HomePage";
+import SolveProblemPage from "./pages/SolveProblemPage";
 
 function App() {
   
@@ -23,7 +24,7 @@ function App() {
         <Route path="/createproblem" element={<CreateProblemPage/>}/>
         <Route path="/navbar" element={<NavBar/>}/>
         
-        <Route path="/solve/:problemId" element={<EditorPage/>} />
+        <Route path="/solve/:problemId" element={<SolveProblemPage/>} />
 
         
       </Routes>
