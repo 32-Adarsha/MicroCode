@@ -8,6 +8,8 @@ import CreateProblemPage from "./pages/CreateProblemPage";
 import CustomTestPage from "./pages/CustomTestPage";
 import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 import NavBar from "./components/NavBar";
+import Auth from "./config/Auth";
+import Homepage from "./pages/HomePage";
 
 function App() {
   
@@ -15,7 +17,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<SignIn/>}/>
+        <Route path="/" element={<Auth page={<Homepage/>}/>}/>
         <Route path="/signup" element={<SignUp/>}/>
         <Route path="/custom" element={<CustomTestPage/>}/>
         <Route path="/createproblem" element={<CreateProblemPage/>}/>

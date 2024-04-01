@@ -21,21 +21,39 @@ namespace MicroCode.Controllers;
 
 public class HomeController : ControllerBase
 {
-   private readonly MicroCodeContext dbcontext;
-   public HomeController(MicroCodeContext dbcontext){
+    private readonly MicroCodeContext dbcontext;
+    public HomeController(MicroCodeContext dbcontext)
+    {
         this.dbcontext = dbcontext;
-   }
-   
-   [Route("/getProblem")]
-   [HttpPost]
-   [Authorize]
-    public async Task<IActionResult> getProblem()
-{
-        var problems = dbcontext.ProgramModel.Where(p => p.isPublic == true && p.verified == true).ToList();
-    
+    }
 
-    return Ok(problems);
-}
+    [Route("/getProblem")]
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> getProblem()
+    {
+        var problems = dbcontext.ProgramModel.Where(p => p.isPublic == true && p.verified == true).ToList();
+
+
+        return Ok(problems);
+    }
+    [Route("/getsitestats")]
+    [HttpPost]
+    [Authorize]
+    public IActionResult getSiteStats()
+    {
+        int total_users = dbcontext.UserModel.Count();
+        int total_problems = dbcontext.ProgramModel.Count(p=>p.isPublic && p.verified);
+
+
+            var stats = new
+            {
+                total_users = total_users,
+                total_problems = total_problems
+            };
+
+        return Ok(stats);
+    }
 
 
 

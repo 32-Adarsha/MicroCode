@@ -6,10 +6,10 @@ import { Button, Card, Form, Grid, Input, theme, Typography,message } from "antd
 import { LockOutlined, MailOutlined } from '@ant-design/icons'
 import EditorPage from '../EditorPage';
 import { Link } from 'react-router-dom';
-import { useAuthCheck, useAuthCheckSignin } from '../../config/auth';
+
+axios.defaults.withCredentials=true
 
 const SignIn = () => {
-  useAuthCheckSignin()
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -88,7 +88,6 @@ const SignIn = () => {
       axios.post(url, formData).then(e => {
         messageApi.loading("Signing in").then(ll =>{
           if(e.status ==200){
-            console.log("logged in")
             messageApi.success("Signed in").then(
               ()=>{
                 window.location.href="/custom"

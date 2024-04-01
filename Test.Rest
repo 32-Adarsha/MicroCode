@@ -64,13 +64,13 @@ X-RapidAPI-Host: 'judge0-ce.p.rapidapi.com'
 
 
 ###
-GET http://localhost:8080/createProblem
+POST  http://localhost:8080/createProblem
 Content-Type: application/json
 Cookie: Token=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzZGRkZiIsImVtYWlsIjoiZmRhZGFAZW1haWwuY29tIiwic2lkIjoiMjFmYjk2OTEtNjBlNi00Mzc2LThhNGEtZTZlZDQxY2M0MjQ1IiwibmJmIjoxNzEwODEyNTM2LCJleHAiOjE3MTA4MTMxMzYsImlhdCI6MTcxMDgxMjUzNiwiaXNzIjoiSXNzdWVyIiwiYXVkIjoiQXVkaWVuY2UifQ.AJDg85n1GtPJSaTYsm0uuyG14vxkQ00_kkUYDmRTwud0Q5AtOZUWFv5VsPM1rvzYTUbE_vKE0UOtpLiM6QdDJQ
 title: "Two Sum Problem"
 
 
-
+###
 GET http://localhost:8080/createProblem
 Content-Type: application/json
 Cookie: Token=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzZGRkZiIsImVtYWlsIjoiZmRhZGFAZW1haWwuY29tIiwic2lkIjoiMjFmYjk2OTEtNjBlNi00Mzc2LThhNGEtZTZlZDQxY2M0MjQ1IiwibmJmIjoxNzEwODEyNTM2LCJleHAiOjE3MTA4MTMxMzYsImlhdCI6MTcxMDgxMjUzNiwiaXNzIjoiSXNzdWVyIiwiYXVkIjoiQXVkaWVuY2UifQ.AJDg85n1GtPJSaTYsm0uuyG14vxkQ00_kkUYDmRTwud0Q5AtOZUWFv5VsPM1rvzYTUbE_vKE0UOtpLiM6QdDJQ
@@ -81,8 +81,6 @@ title: "Two Sum Problem"
 ###
 Get  http://localhost:8080/getSubmission HTTP/1.1
 Content-Type: application/json
-
-
 Token : 169e2bff-084e-458c-96bc-0fb1f03ab4cf
 
 

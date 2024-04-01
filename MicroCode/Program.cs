@@ -50,11 +50,13 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<ISubmission>(option => new Submission(builder.Configuration["JudgeAPI:Key"]));
 var app = builder.Build();
 
+
 // Configure the HTTP request pipeline.
+app.UseCors("CorsPolicy");
 app.UseMiddleware<JwtMiddleware>();
 app.UseSwagger();
 app.UseSwaggerUI();
-app.UseCors("CorsPolicy");
+
 
 app.UseHttpsRedirection();
 

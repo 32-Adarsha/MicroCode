@@ -37,7 +37,7 @@ const { useBreakpoint } = Grid;
   const styles = {
     container: {
       alignItems: "center",
-      display: "flex",
+      display: "flex", // Corrected from "relative" to "flex"
       justifyContent: "space-between",
       margin: "0 auto",
       maxWidth: token.screenXL,
@@ -93,7 +93,8 @@ const { useBreakpoint } = Grid;
           />
         </div>
         <Space>
-          {screens.md ? "" : ""}
+          {screens.md ? props.leftChildren[0] : ""}
+          {props.leftChildren[1]}
           
         </Space>
       </div>

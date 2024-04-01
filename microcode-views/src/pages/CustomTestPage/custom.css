@@ -1,11 +1,4 @@
-.left-pane-wrapper-custom{
-    padding: 20px;
-    margin: 20px;
-    border-radius: 5px;
-    background-color: aqua;
-    width: fit-content;
-    height: 90vh;
-}
+
 
 .Resizer {
     background: #000;
@@ -116,69 +109,7 @@
     border-color: transparent;
   }
 
-/* ...existing styles... */
 
-.upper-half {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: lightblue;
-    height: 100%;
-    border-bottom: 1px solid gray;
-  }
-  
-  .lower-half {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    background: lightcoral;
-  }
 
-  .edit-body {
 
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    box-sizing: border-box;
-  }
-  
-  .edit-body > * {
-    max-width: 100%;
-  }
 
-  .test-out-container{
-    
-  }
-
-  .test-out-container > div{
-    display: table-cell;
-    padding: 10px;
-    margin: 10px;
-  }
-
-  .testcase-area{
-    border: #000 2px solid;
-    border-radius: 10px;
-  }
-
-  .whole-container{
-    padding: auto;
-    margin: 20px;
-  }
-  .right-pane {
-    border-radius: 10px; /* Adjust the value as per your preference */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Adjust the shadow as per your preference */
-    padding: 20px; /* Adjust the padding as per your preference */
-    overflow: hidden; /* Prevent content overflow */
-    width: fit-content; /* Optional: Adjust the width based on content */
-  }
