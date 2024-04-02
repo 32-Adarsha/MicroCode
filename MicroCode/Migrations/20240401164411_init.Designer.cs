@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MicroCode.Migrations
 {
     [DbContext(typeof(MicroCodeContext))]
-    [Migration("20240320063311_minorChange")]
-    partial class minorChange
+    [Migration("20240401164411_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -30,11 +30,11 @@ namespace MicroCode.Migrations
                     b.Property<Guid>("program_id")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("callerFunction")
+                    b.Property<string>("hidden_input")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("input")
+                    b.Property<string>("hidden_output")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -42,7 +42,11 @@ namespace MicroCode.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("output")
+                    b.Property<string>("public_input")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("public_output")
                         .IsRequired()
                         .HasColumnType("text");
 

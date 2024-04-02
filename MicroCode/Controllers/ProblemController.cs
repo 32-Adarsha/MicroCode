@@ -4,6 +4,7 @@ using System.Security.Claims;
 using MicroCode.Data;
 using MicroCode.Dependency;
 using MicroCode.models;
+using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing.Template;
@@ -36,9 +37,10 @@ public class ProblemController : ControllerBase
             if (thisProblem != null) {
                 thisProblem.title = qst.title;
                 thisProblem.discription = qst.discription;
-                thisCode.input = qst.input;
-                thisCode.output = qst.output;
-                thisCode.callerFunction = qst.callerFunction;
+                thisCode.hidden_input = qst.hidden_input;
+                thisCode.hidden_output = qst.hidden_output;
+                thisCode.public_input = qst.public_input;
+                thisCode.public_output = qst.public_output;
                 thisCode.mainCode = qst.mainCode;
                 await dbContext.SaveChangesAsync();
             }
@@ -85,9 +87,10 @@ public class ProblemController : ControllerBase
                 {
                     program_id = pID,
                     mainCode = "",
-                    callerFunction = "",
-                    input = "",
-                    output = "",
+                    hidden_input = "",
+                    hidden_output = "",
+                    public_input = "",
+                    public_output = ""
                 };
 
                 newProgram.UserModel = dbContext.UserModel.FirstOrDefault(u => u.user_id == new Guid(id));
@@ -117,13 +120,40 @@ public class ProblemController : ControllerBase
     }
 
 
+//Helper Function
+    private async Task<string> waitOutput(string token){
+        bool isProcessing = true;
+        int attempt = 0;
+        while(isProcessing && (attempt <= 5)){
+            await Task.Delay(3000);
+            isProcessing = exe(token);
+            attempt++;
+        }
+        string fields = "status,language,time,memory,stdin,expected_output,stdout,created_at,finished_at,source_code,message";
+        string getValue = _submission.SendGetRequest(token);
+        return getValue;
+    }
+    private bool exe (string token){
+        string fields = "status";
+        string getValue = _submission.SendCustomGetRequest(token, fields);
+        checkModel obj = JsonSerializer.Deserialize<checkModel>(getValue);
+        if (obj.status.description == "Processing"){
+            return true;
+        }else {
+            return false;
+        }
+    }
+   
+
+
     [Route("/executeProblem")]
     [HttpPost]
     [Authorize]
     public async Task<IActionResult> executeProblem([FromBody] SubmissionModel mdl)
     {
         string value = _submission.SendPostRequest(mdl);
-        return Ok(value);
+        string fields = "status,language,time,memory,stdin,expected_output,stdout,created_at,finished_at,source_code";
+        return Ok(await waitOutput(value));
     }
 
 
@@ -174,6 +204,7 @@ public class ProblemController : ControllerBase
         }
 
     }
+
     [Route("/getCodetoSolve")]
     [HttpPost]
     [Authorize]

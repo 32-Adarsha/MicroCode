@@ -27,11 +27,11 @@ namespace MicroCode.Migrations
                     b.Property<Guid>("program_id")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("callerFunction")
+                    b.Property<string>("hidden_input")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("input")
+                    b.Property<string>("hidden_output")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -39,7 +39,11 @@ namespace MicroCode.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("output")
+                    b.Property<string>("public_input")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("public_output")
                         .IsRequired()
                         .HasColumnType("text");
 

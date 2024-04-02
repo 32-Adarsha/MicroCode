@@ -7,9 +7,10 @@ namespace MicroCode.models
         [Key]
         public Guid program_id {get; set;}
         public string mainCode {get ; set;}
-        public string callerFunction {get ; set;}
-        public string input {get; set;}
-        public string output {get; set;}
+        public string hidden_input {get; set;}
+        public string public_input { get; set; }
+        public string hidden_output {get; set;}
+        public string public_output { get; set; }
 
         [ForeignKey(nameof(program_id))]
         public virtual ProgramModel ProgramModel { get; set; }

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MicroCode.Migrations
 {
     /// <inheritdoc />
-    public partial class change2 : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -20,7 +20,7 @@ namespace MicroCode.Migrations
                     last_name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     phone_no = table.Column<string>(type: "text", nullable: false),
                     username = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    eamil = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    email = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     password_hash = table.Column<string>(type: "text", nullable: false),
                     registration_data = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
@@ -33,18 +33,22 @@ namespace MicroCode.Migrations
                 name: "ProgramModel",
                 columns: table => new
                 {
-                    Program_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    program_id = table.Column<Guid>(type: "uuid", nullable: false),
                     title = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     discription = table.Column<string>(type: "text", nullable: false),
+                    diffulty = table.Column<int>(type: "integer", nullable: false),
+                    judgeId = table.Column<Guid>(type: "uuid", nullable: true),
                     verified = table.Column<bool>(type: "boolean", nullable: false),
-                    isPrivate = table.Column<bool>(type: "boolean", nullable: false),
+                    isPublic = table.Column<bool>(type: "boolean", nullable: false),
                     flagged = table.Column<bool>(type: "boolean", nullable: false),
                     registration_data = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    user_id = table.Column<Guid>(type: "uuid", nullable: true)
+                    user_id = table.Column<Guid>(type: "uuid", nullable: true),
+                    hasError = table.Column<string>(type: "text", nullable: false),
+                    errorMessage = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProgramModel", x => x.Program_id);
+                    table.PrimaryKey("PK_ProgramModel", x => x.program_id);
                     table.ForeignKey(
                         name: "FK_ProgramModel_UserModel_user_id",
                         column: x => x.user_id,
@@ -56,47 +60,45 @@ namespace MicroCode.Migrations
                 name: "CodeModels",
                 columns: table => new
                 {
-                    Program_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    program_id = table.Column<Guid>(type: "uuid", nullable: false),
                     mainCode = table.Column<string>(type: "text", nullable: false),
-                    template = table.Column<string>(type: "text", nullable: false),
-                    input = table.Column<string>(type: "text", nullable: false),
-                    output = table.Column<string>(type: "text", nullable: false),
-                    verified = table.Column<bool>(type: "boolean", nullable: false)
+                    hidden_input = table.Column<string>(type: "text", nullable: false),
+                    public_input = table.Column<string>(type: "text", nullable: false),
+                    hidden_output = table.Column<string>(type: "text", nullable: false),
+                    public_output = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CodeModels", x => x.Program_id);
+                    table.PrimaryKey("PK_CodeModels", x => x.program_id);
                     table.ForeignKey(
-                        name: "FK_CodeModels_ProgramModel_Program_id",
-                        column: x => x.Program_id,
+                        name: "FK_CodeModels_ProgramModel_program_id",
+                        column: x => x.program_id,
                         principalTable: "ProgramModel",
-                        principalColumn: "Program_id",
+                        principalColumn: "program_id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "ResponseModel",
+                name: "ResponseModels",
                 columns: table => new
                 {
-                    ResponseID = table.Column<Guid>(type: "uuid", nullable: false),
-                    UserCode = table.Column<string>(type: "text", nullable: false),
-                    customInput = table.Column<string>(type: "text", nullable: false),
-                    verified = table.Column<bool>(type: "boolean", nullable: false),
-                    submission_data = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    JudgeId = table.Column<string>(type: "text", nullable: false),
+                    completed = table.Column<bool>(type: "boolean", nullable: true),
                     user_id = table.Column<Guid>(type: "uuid", nullable: true),
+                    CompletedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     language = table.Column<string>(type: "text", nullable: false),
                     Program_id = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ResponseModel", x => x.ResponseID);
+                    table.PrimaryKey("PK_ResponseModels", x => x.JudgeId);
                     table.ForeignKey(
-                        name: "FK_ResponseModel_ProgramModel_Program_id",
+                        name: "FK_ResponseModels_ProgramModel_Program_id",
                         column: x => x.Program_id,
                         principalTable: "ProgramModel",
-                        principalColumn: "Program_id");
+                        principalColumn: "program_id");
                     table.ForeignKey(
-                        name: "FK_ResponseModel_UserModel_user_id",
+                        name: "FK_ResponseModels_UserModel_user_id",
                         column: x => x.user_id,
                         principalTable: "UserModel",
                         principalColumn: "user_id");
@@ -108,13 +110,13 @@ namespace MicroCode.Migrations
                 column: "user_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ResponseModel_Program_id",
-                table: "ResponseModel",
+                name: "IX_ResponseModels_Program_id",
+                table: "ResponseModels",
                 column: "Program_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ResponseModel_user_id",
-                table: "ResponseModel",
+                name: "IX_ResponseModels_user_id",
+                table: "ResponseModels",
                 column: "user_id");
         }
 
@@ -125,7 +127,7 @@ namespace MicroCode.Migrations
                 name: "CodeModels");
 
             migrationBuilder.DropTable(
-                name: "ResponseModel");
+                name: "ResponseModels");
 
             migrationBuilder.DropTable(
                 name: "ProgramModel");
