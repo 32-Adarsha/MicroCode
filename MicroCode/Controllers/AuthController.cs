@@ -71,14 +71,14 @@ namespace CustomJwtAuth.Controller
                     var token = tokenHandler.CreateToken(tokenDescriptor);
                     var jwtToken = tokenHandler.WriteToken(token);
 
-                    
+
                     var cookieOptions = new CookieOptions
                     {
                         HttpOnly = true,
-                        SameSite = SameSiteMode.Strict, 
+                        SameSite = SameSiteMode.Strict,
                     };
 
-                    
+
                     Response.Cookies.Append("Token", jwtToken, cookieOptions);
 
                     return Ok();
@@ -92,8 +92,17 @@ namespace CustomJwtAuth.Controller
         [Authorize]
         [HttpGet]
         [Route("/isLoggedIn")]
-        public IActionResult IsLoggedIn(){
+        public IActionResult IsLoggedIn()
+        {
             return Ok("User Is Logged In");
+        }
+
+        [HttpPost]
+        [Route("/api/Logout")] // Define a route for logout
+        public IActionResult Logout()
+        {
+            Response.Cookies.Delete("Token");
+            return Ok("Logged out successfully");
         }
 
     }

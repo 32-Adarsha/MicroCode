@@ -86,11 +86,11 @@ const SignIn = () => {
     }
     if (errorCheck() && !errorexist) {
       axios.post(url, formData).then(e => {
-        messageApi.loading("Signing in").then(ll =>{
+        messageApi.loading("Signing in",1).then(ll =>{
           if(e.status ==200){
-            messageApi.success("Signed in").then(
+            messageApi.success("Signed in",1).then(
               ()=>{
-                window.location.href="/custom"
+                window.location.href="/"
               }
             ) 
           }
