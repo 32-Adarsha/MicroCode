@@ -40,6 +40,7 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuerSigningKey = true
     };
 });
+
 builder.Services.AddAuthorization();
 
 builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
@@ -49,10 +50,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<ISubmission>(option => new Submission(builder.Configuration["JudgeAPI:Key"]));
 var app = builder.Build();
+app.UseCors("CorsPolicy");
 
 
 // Configure the HTTP request pipeline.
-app.UseCors("CorsPolicy");
+
 app.UseMiddleware<JwtMiddleware>();
 app.UseSwagger();
 app.UseSwaggerUI();

@@ -37,10 +37,10 @@ public class ProblemController : ControllerBase
             if (thisProblem != null) {
                 thisProblem.title = qst.title;
                 thisProblem.discription = qst.discription;
-                thisCode.hidden_input = qst.hidden_input;
-                thisCode.hidden_output = qst.hidden_output;
-                thisCode.public_input = qst.public_input;
-                thisCode.public_output = qst.public_output;
+                thisCode.hidden_testcase = qst.hidden_testcase;
+                thisCode.public_testcase = qst.public_testcase;
+                thisCode.max_memory = qst.max_memory;
+                thisCode.max_time = qst.max_time;
                 thisCode.mainCode = qst.mainCode;
                 await dbContext.SaveChangesAsync();
             }
@@ -87,10 +87,11 @@ public class ProblemController : ControllerBase
                 {
                     program_id = pID,
                     mainCode = "",
-                    hidden_input = "",
-                    hidden_output = "",
-                    public_input = "",
-                    public_output = ""
+                    hidden_testcase= "",
+                    public_testcase = "",
+                    
+                    max_time=10,
+                    max_memory=2,
                 };
 
                 newProgram.UserModel = dbContext.UserModel.FirstOrDefault(u => u.user_id == new Guid(id));

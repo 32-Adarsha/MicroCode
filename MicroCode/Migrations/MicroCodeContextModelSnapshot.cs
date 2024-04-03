@@ -27,11 +27,7 @@ namespace MicroCode.Migrations
                     b.Property<Guid>("program_id")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("hidden_input")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("hidden_output")
+                    b.Property<string>("hidden_testcase")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -39,11 +35,13 @@ namespace MicroCode.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("public_input")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("max_memory")
+                        .HasColumnType("integer");
 
-                    b.Property<string>("public_output")
+                    b.Property<int>("max_time")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("public_testcase")
                         .IsRequired()
                         .HasColumnType("text");
 

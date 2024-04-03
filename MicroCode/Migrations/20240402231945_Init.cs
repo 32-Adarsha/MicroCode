@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MicroCode.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -62,10 +62,10 @@ namespace MicroCode.Migrations
                 {
                     program_id = table.Column<Guid>(type: "uuid", nullable: false),
                     mainCode = table.Column<string>(type: "text", nullable: false),
-                    hidden_input = table.Column<string>(type: "text", nullable: false),
-                    public_input = table.Column<string>(type: "text", nullable: false),
-                    hidden_output = table.Column<string>(type: "text", nullable: false),
-                    public_output = table.Column<string>(type: "text", nullable: false)
+                    hidden_testcase = table.Column<string>(type: "text", nullable: false),
+                    public_testcase = table.Column<string>(type: "text", nullable: false),
+                    max_time = table.Column<int>(type: "integer", nullable: false),
+                    max_memory = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
