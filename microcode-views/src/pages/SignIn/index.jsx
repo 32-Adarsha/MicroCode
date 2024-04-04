@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import TextInput from '../../components/TextInput';
-import CButton from '../../components/Button';
+import '../SignIn/signin.css'
 import axios from 'axios';
-import { Button, Card, Form, Grid, Input, theme, Typography,message } from "antd";
-import { LockOutlined, MailOutlined } from '@ant-design/icons'
-import EditorPage from '../EditorPage';
+import logo from '../../assets/images/logo.png'
+import { Button, Checkbox, Form, Grid, Input, theme, Typography, message, Divider } from "antd";
+import { MailOutlined, LockOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
+import BlueBox from '../../components/BlueBox';
 
-axios.defaults.withCredentials=true
+axios.defaults.withCredentials = true
 
 const SignIn = () => {
   const [formData, setFormData] = useState({
@@ -35,13 +35,13 @@ const SignIn = () => {
       bottom: 0,
       width: "480px",
       padding: "20px",
-      height:"480px",
+      height: "480px",
       boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
       borderRadius: "8px",
       background: "linear-gradient(-20deg, #dddeee 0%, #666777 100%)",
-      marginRight:"13%",
-      marginTop:"30px",
-      alignItems:"center",
+      marginRight: "13%",
+      marginTop: "30px",
+      alignItems: "center",
       zIndex: 1,
     },
     section: {
@@ -86,13 +86,13 @@ const SignIn = () => {
     }
     if (errorCheck() && !errorexist) {
       axios.post(url, formData).then(e => {
-        messageApi.loading("Signing in",1).then(ll =>{
-          if(e.status ==200){
-            messageApi.success("Signed in",1).then(
-              ()=>{
-                window.location.href="/"
+        messageApi.loading("Signing in", 1).then(ll => {
+          if (e.status == 200) {
+            messageApi.success("Signed in", 1).then(
+              () => {
+                window.location.href = "/"
               }
-            ) 
+            )
           }
         })
       }).catch(error => {
@@ -108,37 +108,90 @@ const SignIn = () => {
   };
 
   return (
-      <div className='sign-body'>
-        {contextHolder}
-        <Card style={styles.cardContainer}>
-          <div style={styles.header}>
-            <img src="../../assets/images/logo.png" alt="" />
-            <Title style={styles.title}>Sign in</Title>
-            <Text style={styles.text}>
-              Welcome back to MicroCode! Please enter your details below to sign in.
-            </Text>
-          </div>
+    // <div className='sign-body'>
+    //   {contextHolder}
+    //   <Card style={styles.cardContainer}>
+    //     <div style={styles.header}>
+    //       <img src="../../assets/images/logo.png" alt="" />
+    //       <Title style={styles.title}>Sign in</Title>
+    //       <Text style={styles.text}>
+    //         Welcome back to MicroCode! Please enter your details below to sign in.
+    //       </Text>
+    //     </div>
+    //     <Form
+    //       name="normal_login"
+    //       initialValues={{
+    //         remember: true,
+    //       }}
+    //       onFinish={handleSubmit}
+    //       layout="vertical"
+    //       requiredMark="optional"
+    //     >
+    //       <Form.Item
+    //         name="email"
+    //         rules={[
+    //           {
+    //             type: "email",
+    //             required: true,
+    //             message: "Please input your Email!",
+    //           },
+    //         ]}
+    //       >
+    //         <Input
+    //           prefix={<MailOutlined />}
+    //           placeholder="Email"
+    //           name='email'
+    //           onChange={handleChange}
+    //         />
+    //       </Form.Item>
+    //       <Form.Item
+    //         name="password"
+    //         rules={[
+    //           {
+    //             required: true,
+    //             message: "Please input your Password!",
+    //           },
+    //         ]}
+    //       >
+    //         <Input.Password
+    //           prefix={<LockOutlined />}
+    //           type="password"
+    //           name='password'
+    //           placeholder="Password"
+    //           onChange={handleChange}
+    //         />
+    //       </Form.Item>
+    //       <Form.Item style={{ marginBottom: "0px" }}>
+    //         <Button block="true" type="primary" htmlType="submit">
+    //           Log in
+    //         </Button>
+    //         <div style={styles.footer}>
+    //           <Text style={styles.text}>Don't have an account?</Text>{" "}
+    //           <Link to={"/signup"}>Sign up now</Link>
+    //         </div>
+    //       </Form.Item>
+    //     </Form>
+    //   </Card>
+    //   </div>
+
+    <div className="sign-in-page">
+      {contextHolder}
+      <div className="sign-in-page-content left-section">
+        <BlueBox />
+        <div className='sign-in-form'>
+          <h1 className='text-signin'>Sign In</h1>
           <Form
+
             name="normal_login"
-            initialValues={{
-              remember: true,
-            }}
+            initialValues={{ remember: true }}
             onFinish={handleSubmit}
-            layout="vertical"
-            requiredMark="optional"
           >
             <Form.Item
               name="email"
-              rules={[
-                {
-                  type: "email",
-                  required: true,
-                  message: "Please input your Email!",
-                },
-              ]}
+              rules={[{ required: true, message: 'Please input your Email!' }]}
             >
               <Input
-                prefix={<MailOutlined />}
+                prefix={<MailOutlined className="site-form-item-icon" />}
                 placeholder="Email"
                 name='email'
                 onChange={handleChange}
@@ -146,34 +199,52 @@ const SignIn = () => {
             </Form.Item>
             <Form.Item
               name="password"
-              rules={[
-                {
-                  required: true,
-                  message: "Please input your Password!",
-                },
-              ]}
+              rules={[{ required: true, message: 'Please input your Password!' }]}
             >
-              <Input.Password
-                prefix={<LockOutlined />}
+              <Input
+                prefix={<LockOutlined className="site-form-item-icon" />}
                 type="password"
                 name='password'
                 placeholder="Password"
                 onChange={handleChange}
               />
             </Form.Item>
-            <Form.Item style={{ marginBottom: "0px" }}>
-              <Button block="true" type="primary" htmlType="submit">
-                Log in
-              </Button>
-              <div style={styles.footer}>
-                <Text style={styles.text}>Don't have an account?</Text>{" "}
-                <Link to={"/signup"}>Sign up now</Link>
-              </div>
+            <Form.Item>
+              
+
+              <a className="login-form-forgot" href="">
+                Forgot password?
+              </a>
             </Form.Item>
+
+            <Form.Item>
+              <Button
+                type="primary"
+                htmlType="submit"
+                className="login-form-button"
+                block
+              >
+                Sign In
+              </Button>
+            </Form.Item>
+            <Divider > OR</Divider>
+            <Link to={"/signup"}>
+              <Form.Item>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  className="login-form-button"
+                  block
+                >
+                  Create Account
+                </Button>
+              </Form.Item>
+            </Link>
           </Form>
-        </Card>
         </div>
-      
+      </div>
+    </div>
+
   );
 };
 

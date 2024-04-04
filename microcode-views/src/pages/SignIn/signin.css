@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap');
 
-.sign-up-page {
+.sign-in-page {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -8,7 +8,7 @@
     background:linear-gradient(to right, #b1b5ec, #ffffff);
 }
 
-.sign-up-page-content {
+.sign-in-page-content {
     display: flex;
     width: 800px;
     border-radius: 4px;
@@ -19,7 +19,7 @@
 
 
 
-.sign-up-form {
+.sign-in-form {
     flex: 1;
     background-color: #fff;
     padding: 32px;
@@ -27,7 +27,7 @@
     border-bottom-right-radius: 4px;
 }
 
-.text-signup {
+.text-signin {
     font-family: "Montserrat", -system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
 
 }
