@@ -92,6 +92,7 @@ ${createMarkdownTable(problem.hidden_testcase[1])}` : ""}
         // Append row to Markdown table string
         markdownTable += `| ${input.trim()} | ${output.trim()} |\n`;
       }
+      
 
       return markdownTable;
 
