@@ -239,7 +239,8 @@ public class ProblemController : ControllerBase
                 p.registration_data,
                 p.title,
                 p.user_id,
-                p.CodeModel.public_testcase
+                p.CodeModel.public_testcase,
+                p.CodeModel.hidden_testcase
             });
             return Ok(code);
         }
