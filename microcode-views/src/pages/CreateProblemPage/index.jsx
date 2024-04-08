@@ -1,6 +1,6 @@
 import SplitPane from 'react-split-pane';
 import { Form, Input, Typography, Button, message, Tabs, Card, Space, Divider, List } from 'antd';
-import { DeleteOutlined, PlusOutlined} from '@ant-design/icons'
+import { DeleteOutlined, PlusOutlined, SyncOutlined, CloseOutlined, CheckOutlined } from '@ant-design/icons'
 import Markdown from 'react-markdown';
 import Editor from '@monaco-editor/react';
 import { useState } from 'react';
@@ -68,9 +68,10 @@ ${createMarkdownTable(problem.hidden_testcase[1])}` : ""}
   const [hasToken, setHasToken] = useState(props.token ? true : false)
   const [input, setInput] = useState("")
   const [output, setOutput] = useState("")
-  const [time,setTime] = useState(0)
-  const [activeKey , setActiveKey] = useState("0")
-  const [mem,setMem] = useState(0)
+  const [time, setTime] = useState(0)
+  const [activeKey, setActiveKey] = useState("0")
+  const [mem, setMem] = useState(0)
+  const [verifying, setVerifying] = useState(0)
 
 
   const [solLang, setSolLang] = useState("cpp")
@@ -92,7 +93,7 @@ ${createMarkdownTable(problem.hidden_testcase[1])}` : ""}
         // Append row to Markdown table string
         markdownTable += `| ${input.trim()} | ${output.trim()} |\n`;
       }
-      
+
 
       return markdownTable;
 
@@ -146,53 +147,134 @@ ${createMarkdownTable(problem.hidden_testcase[1])}` : ""}
   ]
 
   const handleSubmit = () => {
-    setProblem({...problem,public_testcase:[problem.hidden_testcase[0],problem.hidden_testcase[1]]})
+    setProblem({ ...problem, public_testcase: [problem.hidden_testcase[0], problem.hidden_testcase[1]] });
     const validateProblem = () => {
       if (!problem.discription) {
-        message.error("Description cannot be empty",2);
+        message.error("Description cannot be empty", 2);
         return false;
       }
-    
+
       if (problem.hidden_testcase.length < 2) {
-        message.error("There should be at least 2 testcases",2);
+        message.error("There should be at least 2 testcases", 2);
         return false;
       }
-    
+
       if (problem.max_memory < 1) {
-        message.error("Max memory must be greater than or equal to 1",2);
+        message.error("Max memory must be greater than or equal to 1", 2);
         return false;
       }
-    
+
       if (problem.max_time < 1) {
-        message.error("Max time must be greater than or equal to 1",2);
+        message.error("Max time must be greater than or equal to 1", 2);
         return false;
       }
-    
+
       return true;
     };
-    if(validateProblem()){
+
+    if (validateProblem()) {
       var newp = problem;
       newp.discription = dis;
-      newp.public_testcase[0] = newp.hidden_testcase[0]
-      newp.public_testcase[1] = newp.hidden_testcase[1]
-      newp.hidden_testcase = JSON.stringify(problem.hidden_testcase)
-      newp.public_testcase = JSON.stringify(problem.public_testcase)
-      
-      axios.post(`http://localhost:8080/saveProblem`,newp).then((res)=>{
-        if (res.status===200) {
-          message.success("Created problem",2).then(()=>{
-            window.location.href ="/profile"
-          })
-          
-        }else{
-          console.log(res)
-        }
-      }).catch(err=>{
-        console.log(err)
-      })
-    }
+      newp.public_testcase[0] = newp.hidden_testcase[0];
+      newp.public_testcase[1] = newp.hidden_testcase[1];
+      newp.hidden_testcase = JSON.stringify(problem.hidden_testcase);
+      newp.public_testcase = JSON.stringify(problem.public_testcase);
 
-  }
+      var verificationDict = [];
+      setVerifying(1);
+
+      JSON.parse(problem.hidden_testcase).forEach(e => {
+        verificationDict.push({
+          stdin: btoa(e.input),
+          expected_output: btoa(e.output),
+          source_code: btoa(newp.mainCode),
+          language_id: 54
+        });
+      });
+
+      var tokens = [];
+      var hasV = true;
+
+      axios.post(`http://localhost:2358/submissions/batch/?base64_encoded=true`, { "submissions": verificationDict }, { withCredentials: false }).then((res) => {
+        res.data.map(e => {
+          tokens.push(e.token);
+        });
+
+        // Define a function to handle token processing
+        function processToken() {
+          if (tokens.length === 0 || !hasV) {
+            clearInterval(intervalId);
+            if (hasV) {
+              axios.get('http://localhost:8080/verified', {
+                headers: {
+                  'accept': '*/*',
+                  'Token': token
+                }
+              }).then(() => {
+                setVerifying(2)
+                axios.post(`http://localhost:8080/saveProblem`, newp).then((res) => {
+                  if (res.status === 200) {
+                    message.success("Created problem and verified", 2).then(() => {
+                      window.location.href ="/"
+                    });
+                  } else {
+                    console.log(res);
+                  }
+                }).catch(err => {
+                  console.log(err);
+                });
+              }).catch(e => {
+                setVerifying(3)
+                axios.post(`http://localhost:8080/saveProblem`, newp).then((res) => {
+                  if (res.status === 200) {
+                    message.success("Created problem but could not verify, Someone at Microcode will look at it", 3).then(() => {
+                      //window.location.href ="/"
+                    });
+                  } else {
+                    console.log(res);
+                  }
+                }).catch(err => {
+                  console.log(err);
+                });
+              })
+
+            } else {
+              setVerifying(3)
+            }
+            return;
+
+          }
+
+          axios.get(`http://localhost:2358/submissions/${tokens[0]}/?base64_encoded=true`, { withCredentials: false }).then(res => {
+            if (res.data.status.id == 1 || res.data.status.id == 2) {
+              tokens.push(tokens[0]);
+              console.log("Verifying");
+            } else if (res.data.status.id == 3) {
+              tokens.shift();
+            } else {
+              hasV = false;
+              console.log("failed to verify")
+            }
+
+
+          })
+
+        }
+
+        // Call the processToken function repeatedly with setInterval
+        var intervalId = setInterval(processToken, 1000)
+        console.log(hasV)
+
+
+
+
+      });
+
+
+    }
+  };
+
+
   const getToken = () => {
     axios.get('http://localhost:8080/createProblem', {
       headers: {
@@ -219,12 +301,29 @@ ${createMarkdownTable(problem.hidden_testcase[1])}` : ""}
 
 
   }
+  const left = () => {
+    switch (verifying) {
+      case 0: return <Button disabled={!hasToken} onClick={handleSubmit} icon={<PlusOutlined />} type='primary'>Create</Button>
+
+        break;
+      case 1: return <Button disabled={!hasToken} onClick={handleSubmit} icon={<SyncOutlined spin />} type='primary'>Verifying</Button>
+        break;
+      case 2: return <Button disabled={!hasToken} onClick={handleSubmit} icon={<CheckOutlined />} type='primary'>Verified</Button>
+        break;
+      case 3: return <Button danger disabled={!hasToken} onClick={handleSubmit} icon={<CloseOutlined />} type='primary'>Can't Verify</Button>
+        break;
+
+      default: return <Button disabled={!hasToken} onClick={handleSubmit} icon={<PlusOutlined />} type='primary'>Create</Button>
+        break;
+    }
+    return <Button />
+  }
 
 
   return (
     <>
       {contextHolder}
-      <NavBar leftChildren={[<Button disabled={!hasToken} onClick={handleSubmit} type='primary'>Create</Button>, <br></br>]}></NavBar>
+      <NavBar leftChildren={[left(), <br></br>]}></NavBar>
       <SplitPane split="vertical" defaultSize="50%" minSize={300} maxSize={1200}>
         <div>
           <div className='left'>
@@ -246,7 +345,7 @@ ${createMarkdownTable(problem.hidden_testcase[1])}` : ""}
                     <Tabs type='card' items={tabsMenu} >
 
                     </Tabs>
-                    <Button shape='circle' color='green' size='large' onClick={addTestcase} style={{ float: "right" }} icon={<PlusOutlined/>}></Button>
+                    <Button shape='circle' color='green' size='large' onClick={addTestcase} style={{ float: "right" }} icon={<PlusOutlined />}></Button>
 
                   </Form.Item >
                   <Divider orientation="left">Testcases</Divider>
@@ -273,16 +372,16 @@ ${createMarkdownTable(problem.hidden_testcase[1])}` : ""}
 
 
                   <Form.Item label="Time Limit">
-                    <Input placeholder='Time Limit in seconds' name="time-limit" value={problem.max_time} type='number' onChange={(e)=>{setProblem({...problem,max_time:parseInt(e.target.value)})}} />
+                    <Input placeholder='Time Limit in seconds' name="time-limit" value={problem.max_time} type='number' onChange={(e) => { setProblem({ ...problem, max_time: parseInt(e.target.value) }) }} />
 
                   </Form.Item>
                   <Form.Item label="Memory Limit">
-                    <Input name="memory limit" placeholder='Memory Limit in Mb' value={problem.max_memory} type='number' onChange={(e)=>{setProblem({...problem,max_memory:parseInt(e.target.value)})}}/>
+                    <Input name="memory limit" placeholder='Memory Limit in Mb' value={problem.max_memory} type='number' onChange={(e) => { setProblem({ ...problem, max_memory: parseInt(e.target.value) }) }} />
 
                   </Form.Item>
                   <Divider orientation="left">Solution Code in CPP</Divider>
-                  <Editor value={problem.mainCode} theme='vs-dark' language='cpp' height={500} onChange={(val)=>{
-                    setProblem({...problem, mainCode:val})
+                  <Editor value={problem.mainCode} theme='vs-dark' language='cpp' height={500} onChange={(val) => {
+                    setProblem({ ...problem, mainCode: val })
                   }} width={"100%"} ></Editor>
                   <Divider orientation="left"></Divider>
 

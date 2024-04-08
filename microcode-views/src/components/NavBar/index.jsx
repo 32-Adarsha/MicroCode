@@ -1,109 +1,94 @@
-import React, { useState } from "react";
-
-import { Button, Grid, Image, Menu, Space, theme } from "antd";
-
+import React from "react";
+import { Menu, Button, Space, Grid, theme } from "antd";
 import { MenuOutlined } from "@ant-design/icons";
-
-
-import Logo from '../../assets/images/logo.png'
+import Logo from "../../assets/images/logo.png";
 
 const { useToken } = theme;
-const { useBreakpoint } = Grid;
 
- const NavBar=( props )=> {
+const NavBar = (props) => {
   const { token } = useToken();
-  const screens = useBreakpoint();
 
   const menuItems = [
     {
       label: "Home",
       key: "home",
-      to:"/"
+      to: "/"
     },
     {
       label: "Custom Test",
       key: "ctest",
-      to:"/custom"
+      to: "/custom"
     },
     {
       label: "Create Problem",
       key: "cproblem",
-      to:"/createproblem"
-      
+      to: "/createproblem"
     },
     {
       label: "Profile",
       key: "profile",
-      to:"/profile"
-    },
+      to: "/profile"
+    }
   ];
 
-
   const styles = {
-    container: {
-      alignItems: "center",
-      display: "flex", // Corrected from "relative" to "flex"
-      justifyContent: "space-between",
-      margin: "0 auto",
-      maxWidth: token.screenXL,
-      padding: screens.md ? `0px ${token.paddingLG}px` : `0px ${token.padding}px`
-    },
     header: {
       backgroundColor: token.colorBgContainer,
-      borderBottom: `${token.lineWidth}px ${token.lineType} ${token.colorSplit}`,
-      position: "relative"
+      borderBottom: `${token.lineWidth}px ${token.lineType} ${token.colorSplit}`
+    },
+    container: {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      margin: "0 auto",
+      padding: `0 ${token.paddingLG}px`,
+      maxWidth: token.screenXL
     },
     logo: {
-      display: "block",
       height: "50px",
-      width:"50px",
-      left: "50%",
-      color:"blue",
-      filter: "drop-shadow(0 0 0 blue)",
-      position: screens.md ? "static" : "absolute",
-      marginBottom:"5px",
-      transform: screens.md ? " " : "translate(-50%, -50%)"
+      width: "auto", // Adjusted width to maintain aspect ratio
+      marginRight: "10px", // Added margin to separate logo from menu items
     },
     menu: {
       backgroundColor: "transparent",
       borderBottom: "none",
-      lineHeight: screens.sm ? "4rem" : "3.5rem",
-      marginLeft: screens.md ? "0px" : `-${token.size}px`,
-      width: screens.md ? "inherit" : token.sizeXXL
+      lineHeight: "3.5rem"
     },
-    menuContainer: {
-      alignItems: "center",
-      display: "flex",
-      gap: token.size,
-      width: "100%"
+    menuItem: {
+      padding: "0 15px",
+      fontWeight: "bold",
+      color: token.colorText,
+      transition: "color 0.3s",
+      "&:hover": {
+        color: token.colorPrimary
+      }
+    },
+    menuIcon: {
+      fontSize: "20px",
+      color: token.colorPrimary
     }
   };
 
   return (
     <nav style={styles.header}>
       <div style={styles.container}>
-        <div style={styles.menuContainer}>
-          
-          <img style={styles.logo}  src={Logo} preview="false"/>
-          
+        <Space>
+          <img style={styles.logo} src={Logo} alt="Logo" />
           <Menu
             style={styles.menu}
             mode="horizontal"
+            onClick={(item) => {
+              window.location.href = item.item.props.to;
+            }}
             items={menuItems}
-            onClick={(item)=>{window.location.href=(item.item.props.to)}}
-            selectedKeys={screens.md ? [props.current] : ""}
-            overflowedIndicator={
-              <Button type="text" icon={<MenuOutlined />}></Button>
-            }
-          />
-        </div>
-        <Space>
-          {screens.md ? props.leftChildren[0] : ""}
-          {props.leftChildren[1]}
-          
+            selectedKeys={[props.current]}
+            overflowedIndicator={<Button type="text" icon={<MenuOutlined style={styles.menuIcon} />} />}
+          ></Menu>
         </Space>
+        <Space>{props.leftChildren}</Space>
       </div>
     </nav>
   );
-}
+};
+
 export default NavBar;

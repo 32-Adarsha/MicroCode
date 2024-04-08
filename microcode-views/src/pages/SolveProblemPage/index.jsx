@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Editor from '@monaco-editor/react';
 import CButton from '../../components/Button';
 import SplitPane from 'react-split-pane';
-import { Select, message, Layout, Tabs, Button, Card, Flex, Space, Upload } from 'antd';
+import { Select, Layout, Tabs, Button, Card, Flex, Space, Upload } from 'antd';
 import axios from 'axios';
 import config from '../../config/config.jsx';
 import NavBar from '../../components/NavBar/index.jsx';
@@ -44,14 +44,14 @@ const SolveProblemPage = ({ props }) => {
     const [value, setValue] = useState(localStorage.getItem(`code_${problemId}`));
     const [lang, setLang] = useState('cpp');
     const [time, setTime] = useState('');
-    const [test, setTest] = useState('');
+    const [test, setTest] = useState([{}]);
     const [activetab, setActiveTab] = useState("1");
     const [memory, setMemory] = useState('');
     const [error, setError] = useState("Compile your code to see the result")
     const [outputValue, setOutputValue] = useState("")
+    const [inputValue, setInputValue] = useState("")
     const [height, setHeight] = useState(448);
     const [problem, setProblem] = useState({})
-    const [fileContents, setFileContents] = useState('');
     const linktoproblem = `http://localhost:8080/getCodetoSolve`
 
 
@@ -96,11 +96,10 @@ const SolveProblemPage = ({ props }) => {
         const getproblem = () => {
             axios.post(linktoproblem, null, { headers: { 'Token': problemId } }).then((res) => {
                 setProblem(res.data[0])
-                if (localStorage.getItem(`code_${problemId}`)) {
-                    setValue(localStorage.getItem(`code_${problemId}`))
-                } else {
-                    setValue(res.data[0].mainCode)
-                }
+                console.log(res.data[0])
+                setTest(JSON.parse(res.data[0].public_testcase))
+                console.log(JSON.parse(res.data[0].public_testcase));
+
             })
         }
         getproblem();
@@ -194,10 +193,18 @@ const SolveProblemPage = ({ props }) => {
             key: '1',
             label: 'Input',
             children: <div>
+                <div style={{ backgroundColor: '#f0f2f5', padding: '2px' }}>
+                    <Space>
+                        <p>Set:</p>
+                        <Button onClick={()=>{setInputValue(test[0].input)}}>Testcase 1</Button>
+                        <Button onClick={()=>{setInputValue(test[1].input)}}>Testcase 2</Button>
+                    </Space>
+                </div>
                 <Editor height={780 - height} width={"99vw"} theme='vs-dark'
                     onChange={(v) => {
-                        setTest(v)
+                        setInputValue(v)
                     }}
+                    value={inputValue}
                 />
             </div>,
         },

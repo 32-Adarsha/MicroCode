@@ -10,7 +10,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing.Template;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
-
+using System.Net.Http;
+using Microsoft.AspNetCore.Identity;
+using System.Text;
 
 
 namespace MicroCode.Controllers;
@@ -20,7 +22,7 @@ public class ProblemController : ControllerBase
 {
     private readonly MicroCodeContext dbContext;
     private readonly ISubmission _submission;
-    public ProblemController(MicroCodeContext dbContext , ISubmission submission)
+    public ProblemController(MicroCodeContext dbContext, ISubmission submission)
     {
         this.dbContext = dbContext;
         this._submission = submission;
@@ -31,10 +33,12 @@ public class ProblemController : ControllerBase
     [Authorize]
     public async Task<IActionResult> saveProblem([FromBody] ProgramGetModel qst)
     {
-        try {
+        try
+        {
             var thisProblem = dbContext.ProgramModel.FirstOrDefault(p => p.program_id == new Guid(qst.pID));
             var thisCode = dbContext.CodeModels.FirstOrDefault(p => p.program_id == new Guid(qst.pID));
-            if (thisProblem != null) {
+            if (thisProblem != null)
+            {
                 thisProblem.title = qst.title;
                 thisProblem.discription = qst.discription;
                 thisCode.hidden_testcase = qst.hidden_testcase;
@@ -44,10 +48,13 @@ public class ProblemController : ControllerBase
                 thisCode.mainCode = qst.mainCode;
                 await dbContext.SaveChangesAsync();
             }
-            
+           
+
+
             return Ok();
         }
-        catch (Exception e){
+        catch (Exception e)
+        {
             return BadRequest(e);
         }
     }
@@ -78,7 +85,7 @@ public class ProblemController : ControllerBase
                     registration_data = DateTime.UtcNow,
                     user_id = new Guid(id),
                     hasError = "",
-                    errorMessage ="",
+                    errorMessage = "",
                     flagged = false,
 
                 };
@@ -87,11 +94,11 @@ public class ProblemController : ControllerBase
                 {
                     program_id = pID,
                     mainCode = "",
-                    hidden_testcase= "",
+                    hidden_testcase = "",
                     public_testcase = "",
-                    
-                    max_time=10,
-                    max_memory=2,
+
+                    max_time = 10,
+                    max_memory = 2,
                 };
 
                 newProgram.UserModel = dbContext.UserModel.FirstOrDefault(u => u.user_id == new Guid(id));
@@ -100,7 +107,11 @@ public class ProblemController : ControllerBase
                 await dbContext.ProgramModel.AddAsync(newProgram);
                 await dbContext.CodeModels.AddAsync(newCode);
                 await dbContext.SaveChangesAsync();
-                return Ok(new {
+
+
+
+                return Ok(new
+                {
                     program_id = pID,
                     title = title,
                     discription = "",
@@ -114,18 +125,21 @@ public class ProblemController : ControllerBase
                 return Unauthorized();
             }
         }
-        catch (Exception ex) {
+        catch (Exception ex)
+        {
             return BadRequest(ex);
         }
-        
+
     }
 
 
-//Helper Function
-    private async Task<string> waitOutput(string token){
+    //Helper Function
+    private async Task<string> waitOutput(string token)
+    {
         bool isProcessing = true;
         int attempt = 0;
-        while(isProcessing && (attempt <= 5)){
+        while (isProcessing && (attempt <= 5))
+        {
             await Task.Delay(3000);
             isProcessing = exe(token);
             attempt++;
@@ -134,17 +148,21 @@ public class ProblemController : ControllerBase
         string getValue = _submission.SendGetRequest(token);
         return getValue;
     }
-    private bool exe (string token){
+    private bool exe(string token)
+    {
         string fields = "status";
         string getValue = _submission.SendCustomGetRequest(token, fields);
         checkModel obj = JsonSerializer.Deserialize<checkModel>(getValue);
-        if (obj.status.description == "Processing"){
+        if (obj.status.description == "Processing")
+        {
             return true;
-        }else {
+        }
+        else
+        {
             return false;
         }
     }
-   
+
 
 
     [Route("/executeProblem")]
@@ -177,7 +195,7 @@ public class ProblemController : ControllerBase
         var userIdClaim = HttpContext.User.Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Sid);
         if (userIdClaim != null)
         {
-            var allProgram = dbContext.ProgramModel.Where(p => p.user_id == new Guid(userIdClaim.Value)).Select(u => new {u.program_id , u.title, u.isPublic}).ToList();
+            var allProgram = dbContext.ProgramModel.Where(p => p.user_id == new Guid(userIdClaim.Value)).Select(u => new { u.program_id, u.title, u.isPublic }).ToList();
             return Ok(allProgram);
         }
         else
@@ -214,13 +232,14 @@ public class ProblemController : ControllerBase
 
         if (Token != null)
         {
-            var code = dbContext.ProgramModel.Where(p =>p.program_id == new Guid(Token)).Select(p=> new{
+            var code = dbContext.ProgramModel.Where(p => p.program_id == new Guid(Token)).Select(p => new
+            {
                 p.discription,
                 p.diffulty,
                 p.registration_data,
                 p.title,
                 p.user_id,
-                p.CodeModel.mainCode,
+                p.CodeModel.public_testcase
             });
             return Ok(code);
         }
@@ -238,14 +257,14 @@ public class ProblemController : ControllerBase
     [Authorize]
     public async Task<IActionResult> pushVerified([FromHeader] string Token)
     {
-        
+
         if (Token != null)
         {
             ProgramModel program = dbContext.ProgramModel.FirstOrDefault<ProgramModel>(p => p.program_id == new Guid(Token));
             program.verified = true;
             await dbContext.SaveChangesAsync();
             return Ok("verified");
-            
+
         }
         else
         {
@@ -260,14 +279,14 @@ public class ProblemController : ControllerBase
     [Authorize]
     public async Task<IActionResult> makePublic([FromHeader] string Token)
     {
-        
+
         if (Token != null)
         {
             ProgramModel program = dbContext.ProgramModel.FirstOrDefault<ProgramModel>(p => p.program_id == new Guid(Token));
             program.isPublic = true;
             await dbContext.SaveChangesAsync();
             return Ok("made public available");
-            
+
         }
         else
         {
@@ -278,7 +297,7 @@ public class ProblemController : ControllerBase
 
 
 
-    
+
 
 
 
