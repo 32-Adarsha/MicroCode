@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Editor from '@monaco-editor/react';
 import CButton from '../../components/Button';
 import SplitPane from 'react-split-pane';
-import { Select, Layout, Tabs, Button, Card, Flex, Space, Upload } from 'antd';
+import { Select, Layout, Tabs, Button, Card, Flex, Space, Upload, Modal } from 'antd';
 import axios from 'axios';
 import config from '../../config/config.jsx';
 import NavBar from '../../components/NavBar/index.jsx';
@@ -11,7 +11,7 @@ import remarkGfm from 'remark-gfm'
 import supersub from 'remark-supersub'
 import remarkRehype from 'remark-rehype'
 
-import { UploadOutlined, CloudDownloadOutlined, PlaySquareFilled } from '@ant-design/icons'
+import { UploadOutlined, CloudDownloadOutlined, PlaySquareFilled, SyncOutlined, CloseOutlined, CheckOutlined } from '@ant-design/icons'
 import { useParams } from 'react-router-dom';
 const { Header, Content, Footer } = Layout;
 
@@ -53,6 +53,11 @@ const SolveProblemPage = ({ props }) => {
     const [height, setHeight] = useState(448);
     const [problem, setProblem] = useState({})
     const linktoproblem = `http://localhost:8080/getCodetoSolve`
+    const [solved, setSolved] = useState("Submitted")
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [total, settotal] = useState(0)
+    const [ passed, setpassed] = useState(0)
+    const [err, setErr] = useState(0)
 
 
 
@@ -121,8 +126,95 @@ const SolveProblemPage = ({ props }) => {
 
     };
 
+    const openModal = () => {
+        setIsModalOpen(true);
+
+    }
+    const handleOk = () => {
+        setIsModalOpen(false);
+      };
+
     const submit_url = `http://0.0.0.0:2358/submissions?base64_encoded=true&wait=false`;
     const get_url = `http://0.0.0.0:2358/submissions/`;
+
+    const reallySubmitCode = () => {
+        setErr(1)
+        openModal();
+        function submitSolution() {
+            var submissionDict = [];
+            const hid_test = JSON.parse(problem.hidden_testcase);
+            settotal(hid_test.length)
+            const ttt = hid_test.length
+
+            hid_test.forEach(testcase => {
+                submissionDict.push({
+                    stdin: btoa(testcase.input),
+                    expected_output: btoa(testcase.output),
+                    source_code: btoa(value),
+                    language_id: language_id[lang]
+                });
+            });
+
+            var tokens = [];
+            var hasA = true;
+
+            axios.post(`http://localhost:2358/submissions/batch/?base64_encoded=true`, { "submissions": submissionDict }, { withCredentials: false })
+                .then((res) => {
+                    res.data.forEach(submission => {
+                        tokens.push(submission.token);
+                    });
+
+                    function processToken() {
+                        if (tokens.length === 0 || !hasA) {
+                            clearInterval(intervalId);
+                            if (hasA) {
+                                setErr(2)
+                                setSolved("All Testcases Passed.")
+                            } else {
+                                setErr(3)
+                                setSolved("Error")
+                            }
+                            return;
+                        }
+
+                        axios.get(`http://localhost:2358/submissions/${tokens[0]}/?base64_encoded=true`, { withCredentials: false })
+                            .then(res => {
+                                if (res.data.status.id == 1 || res.data.status.id == 2) {
+                                    tokens.push(tokens[0])
+
+                                } else if (res.data.status.id == 3) {
+
+                                } else {
+                                    hasA = false;
+                                    setSolved("Compilation Error")
+
+                                }
+                            })
+                            .catch(error => {
+                                hasA = false;
+                                setSolved("Problem on our side")
+                            })
+                            .finally(() => {
+                                tokens.shift();
+                                setpassed(ttt - tokens.length)
+                            });
+                    }
+
+                    var intervalId = setInterval(processToken, 1000);
+                    hasA = true;
+                })
+                .catch(error => {
+                    console.error("Error submitting solution:", error);
+                    setSolved("Problem on our side")
+                });
+        }
+        submitSolution()
+    }
+
+
+
+
+
     const submitCode = () => {
         axios
             .post(submit_url, {
@@ -170,9 +262,18 @@ const SolveProblemPage = ({ props }) => {
     };
 
     const items = config().plangs;
+    const statusformodal = () => {
+        switch (err) {
+            case 0: return <p>Result </p>
+            case 1: return <p><SyncOutlined spin></SyncOutlined> Processing</p>
+            case 2: return <p><CheckOutlined></CheckOutlined> Accepted</p>
+            case 3: return <p><CloseOutlined spin></CloseOutlined> Not Accepted</p>
+
+        }
+    }
 
     const leftnavchilds = [
-        <Button type='primary'>Submit</Button>,
+        <Button type='primary' onClick={reallySubmitCode}>Submit</Button>,
         <Flex style={{ marginRight: 5, padding: 2 }}>
             <Button type='primary' icon={<PlaySquareFilled />} onClick={() => {
                 submitCode();
@@ -196,8 +297,8 @@ const SolveProblemPage = ({ props }) => {
                 <div style={{ backgroundColor: '#f0f2f5', padding: '2px' }}>
                     <Space>
                         <p>Set:</p>
-                        <Button onClick={()=>{setInputValue(test[0].input)}}>Testcase 1</Button>
-                        <Button onClick={()=>{setInputValue(test[1].input)}}>Testcase 2</Button>
+                        <Button onClick={() => { setInputValue(test[0].input) }}>Testcase 1</Button>
+                        <Button onClick={() => { setInputValue(test[1].input) }}>Testcase 2</Button>
                     </Space>
                 </div>
                 <Editor height={780 - height} width={"99vw"} theme='vs-dark'
@@ -242,6 +343,10 @@ const SolveProblemPage = ({ props }) => {
         <div>
             <div style={headerStyle}>
                 <NavBar leftChildren={leftnavchilds} />
+                <Modal title="Submission Status" open={isModalOpen} onOk={handleOk} >
+                    <p>{passed} on {total}  processed...</p>
+                    <p>{solved}</p>
+                </Modal>
             </div>
             <div>
                 <SplitPane split='vertical' size={700} minSize={200} style={{ position: "static" }}>
