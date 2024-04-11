@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
-import { Flex, Heading, VStack } from '@chakra-ui/react';
 import TextInput from '../../components/TextInput';
 import CButton from '../../components/Button';
 import axios from 'axios';
+import {UserOutlined,MailOutlined, PhoneOutlined,PlusOutlined} from '@ant-design/icons'
+import '../SignUp/signup.css'
 
 const SignUpForm = () => {
   const [formData, setFormData] = useState({
     first_name: '',
     last_name: '',
-    eamil: '',
+    email: '',
     phone_no: '',
     username: '',
     password: '',
@@ -16,6 +17,8 @@ const SignUpForm = () => {
   const [usernameError, setUsernameError] = useState("")
   const [emailError, setEmailError] = useState("")
   const [passwordError, setPasswordError] = useState("")
+  const [timerId, setTimerId] = useState(null)
+  const [errorexist, setErrorExist] = useState(false)
 
   const url = `http://localhost:8080/signup`
   const checkUrl =`http://localhost:8080/exist`
@@ -23,25 +26,74 @@ const SignUpForm = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     if(name=="username"){
-      axios.post(checkUrl,{"what":name,"value":value}).then(e=>{
-        if(e.data.hasError){
-          setUsernameError("Username already exists")
-        }else{
-          setUsernameError("")
-          
-        }
+      if (timerId) {
+        clearTimeout(timerId);
       }
-      )
+      const newTimerId = setTimeout(() => {
+        axios.post(checkUrl,{"what":name,"value":value}).then(e=>{
+          if(e.data.hasError){
+            setUsernameError(e.data.errorMessage)
+            setErrorExist(true)
+          }else{
+            setUsernameError("")
+            setErrorExist(false)
+            
+          }
+        }
+        )
+      }, 2000);
+      setTimerId(newTimerId)
 
     }
      else if(name=="password"){
       const regmat=/^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/
       if(regmat.test(value)){
         setPasswordError("")
+        setErrorExist(false)
       }else{
         setPasswordError("1 Uppercase, 1 Lowercase, 1 Symbol and 1 Number, 8 letters")
+        setErrorExist(true)
       }
     }
+    else if(name == "email"){
+      if (timerId) {
+        clearTimeout(timerId);
+      }
+      const newTimerId = setTimeout(() => {
+        axios.post(checkUrl,{"what":"email","value":value}).then(e=>{
+          if(e.data.hasError){
+            setEmailError(e.data.errorMessage)
+            setErrorExist(true)
+          }else{
+            setEmailError("")
+            setErrorExist(false)
+            
+          }
+        }
+        )
+      }, 2000);
+      setTimerId(newTimerId)
+    }else if(name =="first_name"){
+      if (value=="") {
+        setErrorExist(true)
+      }else{
+        setErrorExist(false)
+      }
+    }else if(name =="last_name"){
+      if (value=="") {
+        setErrorExist(true)
+      }else{
+        setErrorExist(false)
+      }
+    }else if(name == "phone_no"){
+      const phone_reg = /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$/
+      if (!phone_reg.test(value)) {
+        setErrorExist(true)
+      }else{
+        setErrorExist(false)
+      }
+    }
+
 
     setFormData({ ...formData, [name]: value });
 
@@ -51,72 +103,93 @@ const SignUpForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post(url,formData).then(e=>{
-      console.log(e.data)
-    })
+    const errorCheck = () =>{
+      Object.keys(formData).forEach(k => {
+        if(!formData[k]){
+          return false
+        }
+        
+      });
+      return true;
+    }
+    if(errorCheck() && !errorexist){
+      axios.post(url,formData).then(e=>{
+        console.log(e.data)
+      })
+    }else{
+      console.log(errorexist,errorCheck());
+    }
+    
     
     
   };
 
   return (
-    <Flex align="center" justify="center" height="100vh">
-      <VStack spacing={8}>
-        <Heading as="h1" size="xl">
-          Sign Up
-        </Heading>
+    <div className='border-solid'>
+      <h1>Sign Up</h1>
         <form onSubmit={handleSubmit}>
-          <VStack spacing={4}>
             <TextInput
               label="First Name:"
-              type="text"
+              htmlType="text"
+              addonBefore={<UserOutlined></UserOutlined>}
+              className={"abc"}
+              placeholder="First Name"
               name="first_name"
               value={formData.first_name}
               onChange={handleChange}
             />
             <TextInput
               label="Last Name:"
-              type="text"
+              htmlType="text"
+              addonBefore={<UserOutlined></UserOutlined>}
+              placeholder="Last Name"
               name="last_name"
               value={formData.last_name}
               onChange={handleChange}
             />
             <TextInput
               label="Email:"
-              type="email"
-              name="eamil"
-              value={formData.eamil}
+              htmlType="email"
+              name="email"
+              addonBefore={<MailOutlined></MailOutlined>}
+              placeholder="Email"
+              error={emailError}
+              value={formData.email}
               onChange={handleChange}
             />
             <TextInput
               label="Phone Number:"
-              type="tel"
+              htmlType="tel"
               name="phone_no"
+              addonBefore={<PhoneOutlined></PhoneOutlined>}
+              placeholder="Phone Number"
               value={formData.phone_no}
               onChange={handleChange}
             />
             <TextInput
               label="Username:"
-              type="text"
+              htmlType="text"
               error={usernameError}
+              addonBefore={<PlusOutlined></PlusOutlined>}
+              placeholder="username"
               name="username"
               value={formData.username}
               onChange={handleChange}
             />
             <TextInput
               label="Password:"
+              htmlType="password"
               type="password"
               name="password"
               error={passwordError}
               value={formData.password}
               onChange={handleChange}
             />
-            <CButton type="submit" colorScheme="blue">
+            <CButton htmlType="submit">
               Sign Up
             </CButton>
-          </VStack>
         </form>
-      </VStack>
-    </Flex>
+    </div>
   );
 };
 

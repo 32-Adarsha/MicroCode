@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MicroCode.Data;
 using MicroCode.Dependency;
+using MicroCode.CusMiddleWare;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,10 +33,10 @@ builder.Services.AddAuthentication(options =>
     };
 });
 builder.Services.AddAuthorization();
-// Add configuration from appsettings.json
+
 builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
     .AddEnvironmentVariables();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<ISubmission>(option => new Submission(builder.Configuration["JudgeAPI:Key"]));
@@ -44,7 +45,7 @@ var app = builder.Build();
 
 
 // Configure the HTTP request pipeline.
-
+app.UseMiddleware<JwtMiddleware>();
 app.UseSwagger();
 app.UseSwaggerUI();
 app.UseCors(o => {

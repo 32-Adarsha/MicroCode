@@ -21,7 +21,7 @@ namespace MicroCode.models
         public string username {get ; set;}
         [MaxLength(50)]
         [Required]
-        public string eamil  {get ; set;}
+        public string email  {get ; set;}
         [Required]
         public string password_hash {get ;set;}
         public DateTime registration_data {get; set;}
