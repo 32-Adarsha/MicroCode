@@ -1,6 +1,0 @@
-@MicroCode_HostAddress = http://localhost:5031
-
-GET {{MicroCode_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
