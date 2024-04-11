@@ -34,6 +34,19 @@ Content-Type: application/json
    "what": "email",
    "value" : "lol@bol.co"
 }
+###
+POST http://localhost:2358/submissions/?base64_encoded=false&wait=false HTTP/1.1
+Content-Type: application/json
+
+{
+  "source_code": "#include <bits/stdc++.h>\n using namespace std; \nint main() {\n  \n  cout<<12345<<endl;\n  \n  \n}",
+  "language_id": 54,
+  "stdin": "Judge0",
+  "expected_output": "hello, Judge"
+}
+
+###
+GET http://localhost:2358/submissions/7c82c056-c875-481b-b696-fdf68405c057/?base64_encoded=true
 
 
 ###
