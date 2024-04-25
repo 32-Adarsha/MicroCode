@@ -32,14 +32,23 @@ public class HomeController : ControllerBase
     [Authorize]
     public async Task<IActionResult> getProblem()
     {
-        var problems = dbcontext.ProgramModel.Where(p => p.isPublic == true && p.verified == true).ToList();
-
-
-        return Ok(problems);
+        try
+        {
+            var problems = dbcontext.ProgramModel.Where(p => p.isPublic == true && p.verified == true).ToList();
+            return Ok(problems);
+        } 
+        catch
+        {
+            return NotFound("Requested content is unavailable");
+        }
+        
     }
-    [Route("/getsitestats")]
+
+
+
+    [Route("/getInfo")]
     [HttpPost]
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public IActionResult getSiteStats()
     {
         int total_users = dbcontext.UserModel.Count();

@@ -7,14 +7,14 @@ using Microsoft.AspNetCore.Mvc.Razor;
 namespace MicroCode.models
 {
     
-    public class ResponseModel {
+    public class CodeSubmission {
 
 
         [Key]
         [Required]
-        public string JudgeId { get; set; }
+        public string JudgeId { get; set;}
         
-        public Nullable<Boolean> completed { get; set; }
+        public Nullable<Boolean> codeStatus { get; set; }
         public Nullable<Guid> user_id {get ;set;}
         public DateTime CompletedDate {get; set;}
         public string language { get; set; }

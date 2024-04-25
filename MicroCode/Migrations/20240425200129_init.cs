@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MicroCode.Migrations
 {
     /// <inheritdoc />
-    public partial class Init : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,6 +16,7 @@ namespace MicroCode.Migrations
                 columns: table => new
                 {
                     user_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    roles = table.Column<string>(type: "text", nullable: true),
                     first_name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     last_name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     phone_no = table.Column<string>(type: "text", nullable: false),
@@ -30,6 +31,28 @@ namespace MicroCode.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ExamModel",
+                columns: table => new
+                {
+                    examId = table.Column<Guid>(type: "uuid", nullable: false),
+                    name = table.Column<string>(type: "text", nullable: false),
+                    totaScore = table.Column<int>(type: "integer", nullable: false),
+                    discription = table.Column<string>(type: "text", nullable: false),
+                    allProblems = table.Column<string>(type: "text", nullable: true),
+                    accessCode = table.Column<string>(type: "text", nullable: false),
+                    user_id = table.Column<Guid>(type: "uuid", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ExamModel", x => x.examId);
+                    table.ForeignKey(
+                        name: "FK_ExamModel_UserModel_user_id",
+                        column: x => x.user_id,
+                        principalTable: "UserModel",
+                        principalColumn: "user_id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ProgramModel",
                 columns: table => new
                 {
@@ -38,6 +61,7 @@ namespace MicroCode.Migrations
                     discription = table.Column<string>(type: "text", nullable: false),
                     diffulty = table.Column<int>(type: "integer", nullable: false),
                     judgeId = table.Column<Guid>(type: "uuid", nullable: true),
+                    tag = table.Column<string>(type: "text", nullable: true),
                     verified = table.Column<bool>(type: "boolean", nullable: false),
                     isPublic = table.Column<bool>(type: "boolean", nullable: false),
                     flagged = table.Column<bool>(type: "boolean", nullable: false),
@@ -57,15 +81,44 @@ namespace MicroCode.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ExamSubmissionModel",
+                columns: table => new
+                {
+                    eSubmissionId = table.Column<Guid>(type: "uuid", nullable: false),
+                    expires = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    user_id = table.Column<Guid>(type: "uuid", nullable: true),
+                    judgeId = table.Column<Guid>(type: "uuid", nullable: false),
+                    examId = table.Column<Guid>(type: "uuid", nullable: false),
+                    totalScore = table.Column<int>(type: "integer", nullable: false),
+                    trackProblem = table.Column<string>(type: "text", nullable: true),
+                    CompletedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ExamSubmissionModel", x => x.eSubmissionId);
+                    table.ForeignKey(
+                        name: "FK_ExamSubmissionModel_ExamModel_examId",
+                        column: x => x.examId,
+                        principalTable: "ExamModel",
+                        principalColumn: "examId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ExamSubmissionModel_UserModel_user_id",
+                        column: x => x.user_id,
+                        principalTable: "UserModel",
+                        principalColumn: "user_id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "CodeModels",
                 columns: table => new
                 {
                     program_id = table.Column<Guid>(type: "uuid", nullable: false),
                     mainCode = table.Column<string>(type: "text", nullable: false),
-                    hidden_testcase = table.Column<string>(type: "text", nullable: false),
-                    public_testcase = table.Column<string>(type: "text", nullable: false),
-                    max_time = table.Column<int>(type: "integer", nullable: false),
-                    max_memory = table.Column<int>(type: "integer", nullable: false)
+                    input = table.Column<string>(type: "text", nullable: true),
+                    output = table.Column<string>(type: "text", nullable: true),
+                    timeLimit = table.Column<int>(type: "integer", nullable: false),
+                    memoryLimit = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -79,11 +132,11 @@ namespace MicroCode.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ResponseModels",
+                name: "CodeSubmissions",
                 columns: table => new
                 {
                     JudgeId = table.Column<string>(type: "text", nullable: false),
-                    completed = table.Column<bool>(type: "boolean", nullable: true),
+                    codeStatus = table.Column<bool>(type: "boolean", nullable: true),
                     user_id = table.Column<Guid>(type: "uuid", nullable: true),
                     CompletedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     language = table.Column<string>(type: "text", nullable: false),
@@ -91,32 +144,47 @@ namespace MicroCode.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ResponseModels", x => x.JudgeId);
+                    table.PrimaryKey("PK_CodeSubmissions", x => x.JudgeId);
                     table.ForeignKey(
-                        name: "FK_ResponseModels_ProgramModel_Program_id",
+                        name: "FK_CodeSubmissions_ProgramModel_Program_id",
                         column: x => x.Program_id,
                         principalTable: "ProgramModel",
                         principalColumn: "program_id");
                     table.ForeignKey(
-                        name: "FK_ResponseModels_UserModel_user_id",
+                        name: "FK_CodeSubmissions_UserModel_user_id",
                         column: x => x.user_id,
                         principalTable: "UserModel",
                         principalColumn: "user_id");
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProgramModel_user_id",
-                table: "ProgramModel",
-                column: "user_id");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ResponseModels_Program_id",
-                table: "ResponseModels",
+                name: "IX_CodeSubmissions_Program_id",
+                table: "CodeSubmissions",
                 column: "Program_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ResponseModels_user_id",
-                table: "ResponseModels",
+                name: "IX_CodeSubmissions_user_id",
+                table: "CodeSubmissions",
+                column: "user_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ExamModel_user_id",
+                table: "ExamModel",
+                column: "user_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ExamSubmissionModel_examId",
+                table: "ExamSubmissionModel",
+                column: "examId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ExamSubmissionModel_user_id",
+                table: "ExamSubmissionModel",
+                column: "user_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProgramModel_user_id",
+                table: "ProgramModel",
                 column: "user_id");
         }
 
@@ -127,10 +195,16 @@ namespace MicroCode.Migrations
                 name: "CodeModels");
 
             migrationBuilder.DropTable(
-                name: "ResponseModels");
+                name: "CodeSubmissions");
+
+            migrationBuilder.DropTable(
+                name: "ExamSubmissionModel");
 
             migrationBuilder.DropTable(
                 name: "ProgramModel");
+
+            migrationBuilder.DropTable(
+                name: "ExamModel");
 
             migrationBuilder.DropTable(
                 name: "UserModel");

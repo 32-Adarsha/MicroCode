@@ -44,11 +44,11 @@ public class ProfileController : ControllerBase
             })
             .FirstOrDefault();
 
-    var problems =  _cntx.ResponseModels
+    var problems =  _cntx.CodeSubmissions
             .Where(x => x.user_id == new Guid(id))
             .Select(u => new {
                 u.Program_id,
-                u.completed,
+                u.codeStatus,
                 u.JudgeId,
                 u.CompletedDate,
                 u.language

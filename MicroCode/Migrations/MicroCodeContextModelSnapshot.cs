@@ -27,27 +27,125 @@ namespace MicroCode.Migrations
                     b.Property<Guid>("program_id")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("hidden_testcase")
-                        .IsRequired()
+                    b.Property<string>("input")
                         .HasColumnType("text");
 
                     b.Property<string>("mainCode")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("max_memory")
+                    b.Property<int>("memoryLimit")
                         .HasColumnType("integer");
 
-                    b.Property<int>("max_time")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("public_testcase")
-                        .IsRequired()
+                    b.Property<string>("output")
                         .HasColumnType("text");
+
+                    b.Property<int>("timeLimit")
+                        .HasColumnType("integer");
 
                     b.HasKey("program_id");
 
                     b.ToTable("CodeModels");
+                });
+
+            modelBuilder.Entity("MicroCode.models.CodeSubmission", b =>
+                {
+                    b.Property<string>("JudgeId")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CompletedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("Program_id")
+                        .HasColumnType("uuid");
+
+                    b.Property<bool?>("codeStatus")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("language")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid?>("user_id")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("JudgeId");
+
+                    b.HasIndex("Program_id");
+
+                    b.HasIndex("user_id");
+
+                    b.ToTable("CodeSubmissions");
+                });
+
+            modelBuilder.Entity("MicroCode.models.ExamModel", b =>
+                {
+                    b.Property<Guid>("examId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("accessCode")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("allProblems")
+                        .HasColumnType("text");
+
+                    b.Property<string>("discription")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("totaScore")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid?>("user_id")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("examId");
+
+                    b.HasIndex("user_id");
+
+                    b.ToTable("ExamModel");
+                });
+
+            modelBuilder.Entity("MicroCode.models.ExamSubmissionModel", b =>
+                {
+                    b.Property<Guid>("eSubmissionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CompletedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("examId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("expires")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("judgeId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("totalScore")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("trackProblem")
+                        .HasColumnType("text");
+
+                    b.Property<Guid?>("user_id")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("eSubmissionId");
+
+                    b.HasIndex("examId");
+
+                    b.HasIndex("user_id");
+
+                    b.ToTable("ExamSubmissionModel");
                 });
 
             modelBuilder.Entity("MicroCode.models.ProgramModel", b =>
@@ -83,6 +181,9 @@ namespace MicroCode.Migrations
                     b.Property<DateTime>("registration_data")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("tag")
+                        .HasColumnType("text");
+
                     b.Property<string>("title")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -99,36 +200,6 @@ namespace MicroCode.Migrations
                     b.HasIndex("user_id");
 
                     b.ToTable("ProgramModel");
-                });
-
-            modelBuilder.Entity("MicroCode.models.ResponseModel", b =>
-                {
-                    b.Property<string>("JudgeId")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("CompletedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid?>("Program_id")
-                        .HasColumnType("uuid");
-
-                    b.Property<bool?>("completed")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("language")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<Guid?>("user_id")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("JudgeId");
-
-                    b.HasIndex("Program_id");
-
-                    b.HasIndex("user_id");
-
-                    b.ToTable("ResponseModels");
                 });
 
             modelBuilder.Entity("MicroCode.models.UserModel", b =>
@@ -163,6 +234,9 @@ namespace MicroCode.Migrations
                     b.Property<DateTime>("registration_data")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("roles")
+                        .HasColumnType("text");
+
                     b.Property<string>("username")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -184,6 +258,47 @@ namespace MicroCode.Migrations
                     b.Navigation("ProgramModel");
                 });
 
+            modelBuilder.Entity("MicroCode.models.CodeSubmission", b =>
+                {
+                    b.HasOne("MicroCode.models.ProgramModel", "ProgramModel")
+                        .WithMany("ResponseModels")
+                        .HasForeignKey("Program_id");
+
+                    b.HasOne("MicroCode.models.UserModel", "UserModel")
+                        .WithMany("CodeSubmissions")
+                        .HasForeignKey("user_id");
+
+                    b.Navigation("ProgramModel");
+
+                    b.Navigation("UserModel");
+                });
+
+            modelBuilder.Entity("MicroCode.models.ExamModel", b =>
+                {
+                    b.HasOne("MicroCode.models.UserModel", "UserModel")
+                        .WithMany("ExamModels")
+                        .HasForeignKey("user_id");
+
+                    b.Navigation("UserModel");
+                });
+
+            modelBuilder.Entity("MicroCode.models.ExamSubmissionModel", b =>
+                {
+                    b.HasOne("MicroCode.models.ExamModel", "ExamModel")
+                        .WithMany("ExamSubmissionModel")
+                        .HasForeignKey("examId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MicroCode.models.UserModel", "UserModel")
+                        .WithMany("ExamSubmissionsModel")
+                        .HasForeignKey("user_id");
+
+                    b.Navigation("ExamModel");
+
+                    b.Navigation("UserModel");
+                });
+
             modelBuilder.Entity("MicroCode.models.ProgramModel", b =>
                 {
                     b.HasOne("MicroCode.models.UserModel", "UserModel")
@@ -193,19 +308,9 @@ namespace MicroCode.Migrations
                     b.Navigation("UserModel");
                 });
 
-            modelBuilder.Entity("MicroCode.models.ResponseModel", b =>
+            modelBuilder.Entity("MicroCode.models.ExamModel", b =>
                 {
-                    b.HasOne("MicroCode.models.ProgramModel", "ProgramModel")
-                        .WithMany("ResponseModels")
-                        .HasForeignKey("Program_id");
-
-                    b.HasOne("MicroCode.models.UserModel", "UserModel")
-                        .WithMany("ResponseModels")
-                        .HasForeignKey("user_id");
-
-                    b.Navigation("ProgramModel");
-
-                    b.Navigation("UserModel");
+                    b.Navigation("ExamSubmissionModel");
                 });
 
             modelBuilder.Entity("MicroCode.models.ProgramModel", b =>
@@ -218,9 +323,13 @@ namespace MicroCode.Migrations
 
             modelBuilder.Entity("MicroCode.models.UserModel", b =>
                 {
-                    b.Navigation("ProgramModels");
+                    b.Navigation("CodeSubmissions");
 
-                    b.Navigation("ResponseModels");
+                    b.Navigation("ExamModels");
+
+                    b.Navigation("ExamSubmissionsModel");
+
+                    b.Navigation("ProgramModels");
                 });
 #pragma warning restore 612, 618
         }

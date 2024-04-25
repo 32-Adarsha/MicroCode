@@ -46,6 +46,8 @@ builder.Services.AddAuthorization();
 builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
     .AddEnvironmentVariables();
 
+builder.Services.AddScoped<IAdminRepository, AdminRepository>();
+// builder.Services.AddScoped<IExamSubmission, ExamSubmission>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<ISubmission>(option => new Submission(builder.Configuration["JudgeAPI:Key"]));
