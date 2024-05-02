@@ -13,6 +13,7 @@ import remarkRehype from 'remark-rehype'
 
 import { UploadOutlined, CloudDownloadOutlined, PlaySquareFilled } from '@ant-design/icons'
 import { useParams } from 'react-router-dom';
+import ErrorPage from '../ErrorPage/index.jsx';
 const { Header, Content, Footer } = Layout;
 
 
@@ -50,7 +51,7 @@ const SolveProblemPage = ({ props }) => {
     const [error, setError] = useState("Compile your code to see the result")
     const [outputValue, setOutputValue] = useState("")
     const [inputValue, setInputValue] = useState("")
-    const [height, setHeight] = useState(448);
+    const [height, setHeight] = useState(548);
     const [problem, setProblem] = useState({})
     const linktoproblem = `http://localhost:8080/getCodetoSolve`
 
@@ -100,6 +101,8 @@ const SolveProblemPage = ({ props }) => {
                 setTest(JSON.parse(res.data[0].public_testcase))
                 console.log(JSON.parse(res.data[0].public_testcase));
 
+            }).catch(err=>{
+                window.location.href="/404"
             })
         }
         getproblem();

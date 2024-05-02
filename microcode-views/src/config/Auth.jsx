@@ -2,6 +2,7 @@
 import axios from 'axios';
 import SignIn from '../pages/SignIn';
 import { useEffect, useState } from 'react';
+import Loading from '../pages/Loading';
 
 
 const AUTH_URL = "http://localhost:8080/isLoggedIn"
@@ -10,7 +11,7 @@ const AUTH_URL = "http://localhost:8080/isLoggedIn"
 
 
 const Auth = ( props)=>{
-  const [l, setL] = useState(true);
+  const [l, setL] = useState(0);
 
 
 
@@ -19,12 +20,12 @@ const Auth = ( props)=>{
 
       axios.get(AUTH_URL).then((response) =>{
        if(response.status ===200){
-         setL(true)
+         setL(1)
        }else{
-         setL(false)
+         setL(2)
        }
       }).catch((err)=>{
-       setL(false)
+       setL(2)
       })
      
  };
@@ -35,7 +36,7 @@ const Auth = ( props)=>{
 
   return(
     <>
-      {l?props.page:<SignIn/>}
+      {l==0?<Loading/>:l==1?props.page:<SignIn/>}
     </>
   )
 
