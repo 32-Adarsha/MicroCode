@@ -1,13 +1,16 @@
 namespace MicroCode.models
 {
+  
 
+    public class HelpModel {
     
-    
-    public class SubHelpModel {
-    
-        public Guid examId{get; set;}
-        public List<SubmissionProblem>? trackProblem{ get; set; }
-        public DateTime CompletedDate {get; set;}
+        public string name{get; set;}
+        public List<ExamProblem> allProblem{ get; set; }
+        public int totalScore{get; set;}
+        public string accessCode{get; set;}
+        public string discription {get; set;}
+        public int timeLimit{get; set;}
+       
 
     }
 

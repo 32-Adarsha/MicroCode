@@ -296,4 +296,14 @@ public class ProblemController : ControllerBase
 
     }
 
+    [Route("/getSourceCode")]
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> getOnlyCode([FromHeader] String judgeID){
+        string fields = "source_code";
+        string getValue = _submission.SendCustomGetRequest(judgeID, fields);
+        var obj = JsonSerializer.Deserialize<string>(getValue);
+        return Ok(obj);
+    }
+
 }

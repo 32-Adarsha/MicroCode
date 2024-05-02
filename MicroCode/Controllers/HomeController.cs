@@ -22,8 +22,10 @@ namespace MicroCode.Controllers;
 public class HomeController : ControllerBase
 {
     private readonly MicroCodeContext dbcontext;
-    public HomeController(MicroCodeContext dbcontext)
+    private readonly IExamRepository _Exam;
+    public HomeController(MicroCodeContext dbcontext,IExamRepository Exam)
     {
+        _Exam = Exam;
         this.dbcontext = dbcontext;
     }
 
@@ -62,6 +64,19 @@ public class HomeController : ControllerBase
             };
 
         return Ok(stats);
+    }
+
+
+    [Route("/getAllExam")]
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> getAllExam() {
+        try {
+            var allExam = await _Exam.GetAllExamAsync();
+        return Ok(allExam);
+        } catch(Exception e){
+            return BadRequest(e.Message);
+        }
     }
 
 

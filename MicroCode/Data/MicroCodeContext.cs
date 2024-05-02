@@ -17,6 +17,7 @@ public class MicroCodeContext : DbContext
     public DbSet<CodeSubmission> CodeSubmissions { get; set; }
     public DbSet<ExamModel> ExamModel { get; set; }
     public DbSet<ExamSubmissionModel> ExamSubmissionModel { get; set; }
+    public DbSet<UserExamModel> UserExamModels { get; set;}
 
     
     public List<ExamProblem> ConversionFunction (String x){

@@ -15,9 +15,7 @@ namespace MicroCode.models
         [Key]
         [Required]
         public Guid eSubmissionId { get; set; }
-        public Nullable<DateTime> expires { get; set; }
         public Nullable<Guid> user_id {get ;set;}
-        public Guid judgeId { get; set; }
         public Guid examId{get; set;}
         public int totalScore { get; set; }
         public List<SubmissionProblem>? trackProblem{ get; set; }
@@ -29,6 +27,14 @@ namespace MicroCode.models
         [ForeignKey(nameof(examId))]
         public virtual ExamModel ExamModel{ get; set; }
 
+    }
+
+
+
+    public class submitExamFromUser {
+        public Guid examId{get; set;}
+        public int totalScore { get; set; }
+        public List<SubmissionProblem>? trackProblem{ get; set; }
     }
 
 }
