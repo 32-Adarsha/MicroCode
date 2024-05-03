@@ -12,7 +12,8 @@ import Auth from "./config/Auth";
 import Homepage from "./pages/HomePage";
 import SolveProblemPage from "./pages/SolveProblemPage";
 import Profile from "./pages/Profile";
-
+import TakeExam from "./pages/TakeExamPage";
+import CreateExam from "./pages/CreateExamPage";
 function App() {
   
 
@@ -27,7 +28,8 @@ function App() {
         
         <Route path="/solve/:problemId" element={<SolveProblemPage/>} />
         <Route path="/profile" element={<Profile/>}/>
-
+        <Route path="/takeExam" element = {<TakeExam/>} />
+        <Route path="/createExam" element = {<CreateExam/>} />
         
       </Routes>
       </Router>
