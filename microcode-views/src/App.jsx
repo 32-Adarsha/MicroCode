@@ -14,6 +14,7 @@ import SolveProblemPage from "./pages/SolveProblemPage";
 import Profile from "./pages/Profile";
 import TakeExam from "./pages/TakeExamPage";
 import CreateExam from "./pages/CreateExamPage";
+import AdminPage from "./pages/AdminPage";
 function App() {
   
 
@@ -30,6 +31,7 @@ function App() {
         <Route path="/profile" element={<Profile/>}/>
         <Route path="/takeExam" element = {<TakeExam/>} />
         <Route path="/createExam" element = {<CreateExam/>} />
+        <Route path="/adminPage" element = {<AdminPage/>} />
         
       </Routes>
       </Router>
