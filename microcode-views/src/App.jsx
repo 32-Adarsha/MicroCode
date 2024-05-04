@@ -12,6 +12,10 @@ import Auth from "./config/Auth";
 import Homepage from "./pages/HomePage";
 import SolveProblemPage from "./pages/SolveProblemPage";
 import Profile from "./pages/Profile";
+import TakeExam from "./pages/TakeExamPage";
+import CreateExam from "./pages/CreateExamPage";
+import AdminPage from "./pages/AdminPage";
+
 import ErrorPage from "./pages/ErrorPage";
 
 function App() {
@@ -20,6 +24,18 @@ function App() {
   return (
     <Router>
       <Routes>
+        <Route path="/" element={<Auth page={<Homepage/>}/>}/>
+        <Route path="/signup" element={<SignUp/>}/>
+        <Route path="/custom" element={<CustomTestPage/>}/>
+        <Route path="/createproblem" element={<CreateProblemPage/>}/>
+        <Route path="/navbar" element={<NavBar/>}/>
+        
+        <Route path="/solve/:problemId" element={<SolveProblemPage/>} />
+        <Route path="/profile" element={<Profile/>}/>
+        <Route path="/takeExam" element = {<TakeExam/>} />
+        <Route path="/createExam" element = {<CreateExam/>} />
+        <Route path="/adminPage" element = {<AdminPage/>} />
+
         <Route path="/" element={<Auth page={<Homepage />} />} />
         <Route path="/signup" element={<Auth page={<SignUp />} />} />
         <Route path="/custom" element={<Auth page={<CustomTestPage />} />} />

@@ -6,11 +6,14 @@ namespace MicroCode.models
 
         public UserModel () {
             this.ProgramModels = new HashSet<ProgramModel>();
-            this.ResponseModels = new HashSet<ResponseModel>();
+            this.CodeSubmissions = new HashSet<CodeSubmission>();
+            this.ExamSubmissionsModel = new HashSet<ExamSubmissionModel>();
+            this.ExamModels = new HashSet<ExamModel>();
         }
         [Key]
         [Required]
         public Guid user_id {get ; set;}
+        public List<String>? roles { get; set; }
         [MaxLength(50)]
         public string first_name {get ; set;}
         [MaxLength(50)]
@@ -26,7 +29,9 @@ namespace MicroCode.models
         public string password_hash {get ;set;}
         public DateTime registration_data {get; set;}
         public virtual ICollection<ProgramModel> ProgramModels { get; set; }
-        public virtual ICollection<ResponseModel> ResponseModels { get; set; }
+        public virtual ICollection<CodeSubmission> CodeSubmissions { get; set; }
+        public virtual ICollection<ExamSubmissionModel> ExamSubmissionsModel { get; set; }
+        public virtual ICollection<ExamModel> ExamModels {get; set;}
     }
 
 }

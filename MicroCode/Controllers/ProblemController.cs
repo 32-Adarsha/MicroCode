@@ -41,10 +41,10 @@ public class ProblemController : ControllerBase
             {
                 thisProblem.title = qst.title;
                 thisProblem.discription = qst.discription;
-                thisCode.hidden_testcase = qst.hidden_testcase;
-                thisCode.public_testcase = qst.public_testcase;
-                thisCode.max_memory = qst.max_memory;
-                thisCode.max_time = qst.max_time;
+                thisCode.input = qst.input;
+                thisCode.output = qst.output;
+                thisCode.memoryLimit = qst.memoryLimit;
+                thisCode.timeLimit = qst.timeLimit;
                 thisCode.mainCode = qst.mainCode;
                 await dbContext.SaveChangesAsync();
             }
@@ -94,11 +94,11 @@ public class ProblemController : ControllerBase
                 {
                     program_id = pID,
                     mainCode = "",
-                    hidden_testcase = "",
-                    public_testcase = "",
+                    input = [],
+                    output = [],
 
-                    max_time = 10,
-                    max_memory = 2,
+                    timeLimit = 10,
+                    memoryLimit = 2,
                 };
 
                 newProgram.UserModel = dbContext.UserModel.FirstOrDefault(u => u.user_id == new Guid(id));
@@ -239,8 +239,8 @@ public class ProblemController : ControllerBase
                 p.registration_data,
                 p.title,
                 p.user_id,
-                p.CodeModel.public_testcase,
-                p.CodeModel.hidden_testcase
+                p.CodeModel.input,
+                p.CodeModel.output
             });
             return Ok(code);
         }
@@ -296,11 +296,14 @@ public class ProblemController : ControllerBase
 
     }
 
-
-
-
-
-
-
+    [Route("/getSourceCode")]
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> getOnlyCode([FromHeader] String judgeID){
+        string fields = "source_code";
+        string getValue = _submission.SendCustomGetRequest(judgeID, fields);
+        var obj = JsonSerializer.Deserialize<string>(getValue);
+        return Ok(obj);
+    }
 
 }

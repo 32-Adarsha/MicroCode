@@ -22,8 +22,10 @@ namespace MicroCode.Controllers;
 public class HomeController : ControllerBase
 {
     private readonly MicroCodeContext dbcontext;
-    public HomeController(MicroCodeContext dbcontext)
+    private readonly IExamRepository _Exam;
+    public HomeController(MicroCodeContext dbcontext,IExamRepository Exam)
     {
+        _Exam = Exam;
         this.dbcontext = dbcontext;
     }
 
@@ -32,14 +34,23 @@ public class HomeController : ControllerBase
     [Authorize]
     public async Task<IActionResult> getProblem()
     {
-        var problems = dbcontext.ProgramModel.Where(p => p.isPublic == true && p.verified == true).ToList();
-
-
-        return Ok(problems);
+        try
+        {
+            var problems = dbcontext.ProgramModel.Where(p => p.isPublic == true && p.verified == true).ToList();
+            return Ok(problems);
+        } 
+        catch
+        {
+            return NotFound("Requested content is unavailable");
+        }
+        
     }
-    [Route("/getsitestats")]
+
+
+
+    [Route("/getInfo")]
     [HttpPost]
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public IActionResult getSiteStats()
     {
         int total_users = dbcontext.UserModel.Count();
@@ -53,6 +64,19 @@ public class HomeController : ControllerBase
             };
 
         return Ok(stats);
+    }
+
+
+    [Route("/getAllExam")]
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> getAllExam() {
+        try {
+            var allExam = await _Exam.GetAllExamAsync();
+        return Ok(allExam);
+        } catch(Exception e){
+            return BadRequest(e.Message);
+        }
     }
 
 

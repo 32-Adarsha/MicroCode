@@ -12,8 +12,9 @@ namespace MicroCode.models
     public class ProgramModel {
 
         public ProgramModel () {
-            this.ResponseModels = new HashSet<ResponseModel>();
+            this.ResponseModels = new HashSet<CodeSubmission>();
         }
+        
         [Key]
         [Required]
         public Guid program_id {get ; set;}
@@ -23,6 +24,7 @@ namespace MicroCode.models
         public string discription {get ;set;}
         public Diffulty diffulty { get; set; }
         public Nullable<Guid> judgeId{ get; set; }
+        public List<string>? tag { get; set; }
         public bool verified {get ;set;}
         public bool isPublic {get;set;}
         public bool flagged { get; set; }
@@ -31,8 +33,7 @@ namespace MicroCode.models
         public virtual CodeModel CodeModel { get; set; }
         [ForeignKey(nameof(user_id))]
         public virtual UserModel UserModel {get ; set;}
-        public virtual ICollection<ResponseModel> ResponseModels { get; set; }
-
+        public virtual ICollection<CodeSubmission> ResponseModels { get; set; }
         public string hasError { get; set;}
         public string errorMessage { get; set; }
 

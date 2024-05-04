@@ -7,11 +7,10 @@ namespace MicroCode.models
         [Key]
         public Guid program_id {get; set;}
         public string mainCode {get ; set;}
-        public string hidden_testcase {get; set;}
-        public string public_testcase { get; set; }
-        
-        public int max_time{get;set;}
-        public int max_memory{get; set;}
+        public List<string>? input {get; set;}
+        public List<string>? output { get; set;}
+        public int timeLimit {get;set;}
+        public int memoryLimit {get; set;}
 
         [ForeignKey(nameof(program_id))]
         public virtual ProgramModel ProgramModel { get; set; }

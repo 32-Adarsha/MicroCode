@@ -3,6 +3,7 @@ using System;
 using MicroCode.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MicroCode.Migrations
 {
     [DbContext(typeof(MicroCodeContext))]
-    partial class MicroCodeContextModelSnapshot : ModelSnapshot
+    [Migration("20240425200129_init")]
+    partial class init
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -89,7 +92,6 @@ namespace MicroCode.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("allProblems")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("discription")
@@ -99,9 +101,6 @@ namespace MicroCode.Migrations
                     b.Property<string>("name")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<int>("timeLimit")
-                        .HasColumnType("integer");
 
                     b.Property<int>("totaScore")
                         .HasColumnType("integer");
@@ -126,6 +125,12 @@ namespace MicroCode.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("examId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("expires")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("judgeId")
                         .HasColumnType("uuid");
 
                     b.Property<int>("totalScore")
@@ -198,36 +203,6 @@ namespace MicroCode.Migrations
                     b.HasIndex("user_id");
 
                     b.ToTable("ProgramModel");
-                });
-
-            modelBuilder.Entity("MicroCode.models.UserExamModel", b =>
-                {
-                    b.Property<Guid>("modelId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<int>("atmtCount")
-                        .HasColumnType("integer");
-
-                    b.Property<Guid>("examId")
-                        .HasColumnType("uuid");
-
-                    b.Property<int>("maxScore")
-                        .HasColumnType("integer");
-
-                    b.Property<bool>("taken")
-                        .HasColumnType("boolean");
-
-                    b.Property<Guid?>("user_id")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("modelId");
-
-                    b.HasIndex("examId");
-
-                    b.HasIndex("user_id");
-
-                    b.ToTable("UserExamModels");
                 });
 
             modelBuilder.Entity("MicroCode.models.UserModel", b =>
@@ -334,23 +309,6 @@ namespace MicroCode.Migrations
                         .HasForeignKey("user_id");
 
                     b.Navigation("UserModel");
-                });
-
-            modelBuilder.Entity("MicroCode.models.UserExamModel", b =>
-                {
-                    b.HasOne("MicroCode.models.ExamModel", "examModle")
-                        .WithMany()
-                        .HasForeignKey("examId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MicroCode.models.UserModel", "UserModel")
-                        .WithMany()
-                        .HasForeignKey("user_id");
-
-                    b.Navigation("UserModel");
-
-                    b.Navigation("examModle");
                 });
 
             modelBuilder.Entity("MicroCode.models.ExamModel", b =>
