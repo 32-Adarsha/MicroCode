@@ -46,6 +46,7 @@ public class ProblemController : ControllerBase
                 thisCode.memoryLimit = qst.memoryLimit;
                 thisCode.timeLimit = qst.timeLimit;
                 thisCode.mainCode = qst.mainCode;
+                thisProblem.tag = qst.tag;
                 await dbContext.SaveChangesAsync();
             }
            
@@ -96,6 +97,7 @@ public class ProblemController : ControllerBase
                     mainCode = "",
                     hidden_testcase = "",
                     public_testcase = "",
+                    language = "",
                     timeLimit = 10,
                     memoryLimit = 2,
                 };

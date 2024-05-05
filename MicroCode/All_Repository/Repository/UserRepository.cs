@@ -10,31 +10,28 @@ public class UserRepository:IUserRepository {
         _context = context;
     }
 
-    public async Task<PaginatedList<SolvedResponse>> GetSolvedProblems(Guid id , int pageIndex , int pageSize) {
-        var programs = await _context.CodeSubmissions
-                .Where(p => p.user_id == id)
-                .OrderBy(p => p.CompletedDate)
-                .Skip((pageIndex - 1) * pageSize)
-                .Take(pageSize)
-                .Join(_context.ProgramModel,
-                x => x.Program_id,
-                y => y.program_id,
-                (x,y) => new SolvedResponse {
-                    x = x,
-                    y = new SolvedProblemInfo{
-                        id = y.program_id,
-                        title = y.title,
-                        diffulty = y.diffulty,
-                        tag = y.tag,
-                    }
-                })
-                .ToListAsync();
-        var count = await _context.UserModel.CountAsync();
-        var totalPages = (int)Math.Ceiling(count / (double)pageSize);
-        return new PaginatedList<SolvedResponse>(programs,pageIndex,totalPages);
-    }
+    public async Task<PaginatedList<UserSolvedResponse>> GetSolvedProblems(Guid user_id, int pageNumber, int pageSize)
+{
+    var allSolvedProblem = await _context.CodeSubmissions
+        .Include(s => s.ProgramModel)
+        .Where(s => s.user_id == user_id)
+        .Select(s => new UserSolvedResponse
+        {
+            CodeSubId = s.codeSubmissionId,
+            Solved = s.solved,
+            problemId = (Guid)s.Program_id,
+            code = s.code,
+            language = s.language,
+            Title = s.ProgramModel.title,
+            Tag = s.ProgramModel.tag,
+        })
+        .Skip((pageNumber - 1) * pageSize)
+        .Take(pageSize)
+        .ToListAsync();
 
+    // You'll need to implement the PaginatedList class or use a library that provides it
+    return new PaginatedList<UserSolvedResponse>(allSolvedProblem, pageNumber, pageSize);
+}
 
-    
     
 }

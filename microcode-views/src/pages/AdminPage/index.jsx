@@ -3,19 +3,20 @@ const { Header, Content, Footer, Sider , } = Layout;
 import { useState ,useEffect } from 'react';
 import { Divider } from 'antd';
 import axios from 'axios';
-import { List, Avatar} from 'antd';
+import { List} from 'antd';
 const { Search } = Input;
 import remarkGfm from 'remark-gfm'
 import supersub from 'remark-supersub'
 import remarkRehype from 'remark-rehype'
 import Markdown from 'react-markdown';
+import { UserOutlined } from '@ant-design/icons';
+import { Avatar, Space } from 'antd';
 
 import {
     AppstoreOutlined,
     ContainerOutlined,
     DesktopOutlined,
     PieChartOutlined,
-    UserOutlined,
   } from '@ant-design/icons';
 
   const items = [
@@ -217,7 +218,8 @@ function ListWithDrawer({ data }) {
               ]}
             >
               <List.Item.Meta
-                title={<a href="#">{item.name}</a>}
+                avatar = {<Avatar shape="square" size="large" icon={<UserOutlined />} />}
+                title={item.name}
                 description={`${item.email}`}
               />
             </List.Item>
@@ -226,12 +228,27 @@ function ListWithDrawer({ data }) {
         <Drawer width={640} title="User" onClose={onClose} open={open}>
         {selectedItem !== null ? (
         <>
-          <p>{selectedItem.id}</p>
+          {/* <p>{selectedItem.id}</p>
           <p className="flex flex-row w-full mr-5 justify-between"><span className="text-3xl font-sans font-bold text-red-500">Username:</span> <span className="text-2xl font-sans font-bold">{selectedItem.username}</span></p>
           <p className="flex flex-row w-full mr-5 justify-between"><span className="text-3xl font-sans font-bold text-red-500">First Name:</span> <span className="text-2xl font-sans font-bold">{selectedItem.first_name}</span></p>
           <p className="flex flex-row w-full mr-5 justify-between"><span className="text-3xl font-sans font-bold text-red-500">Last Name:</span> <span className="text-2xl font-sans font-bold">{selectedItem.last_name}</span></p>
           <p className="flex flex-row w-full mr-5 justify-between"><span className="text-3xl font-sans font-bold text-red-500">Phone Number:</span> <span className="text-2xl font-sans font-bold">{selectedItem.phone_no}</span></p>
-          <p className="flex flex-row w-full mr-5 justify-between"><span className="text-3xl font-sans font-bold text-red-500">Email:</span> <span className="text-2xl font-sans font-bold">{selectedItem.email}</span></p>
+          <p className="flex flex-row w-full mr-5 justify-between"><span className="text-3xl font-sans font-bold text-red-500">Email:</span> <span className="text-2xl font-sans font-bold">{selectedItem.email}</span></p> */}
+
+          <Layout className="w-full h-full bg-white rounded-lg shadow-lg">
+            <Header className="text-black flex flex-row items-center bg-gray-300 my-1 rounded-lg">
+              <Avatar shape="square" size="large" className="bg-black" icon={<UserOutlined />} />
+              <span className="font-sans font-bold text-black text-2xl mx-5">
+                  {selectedItem.username.charAt(0).toLocaleUpperCase() + selectedItem.username.slice(1)}
+              </span>
+            </Header>
+          <Content className="w-full h-full">
+            <Divider orientation="left" orientationMargin={0}><span className="pl-2">Username</span></Divider>
+            
+          </Content>
+
+          </Layout>
+
         </>
         ) : (
           <p>No one selected</p>
@@ -326,11 +343,11 @@ function ListWithDrawer({ data }) {
               <Layout className="w-full h-full bg-transparent" >
                   <Header className="bg-black my-1 text-white rounded-lg font-bold">{selectedItem.title}</Header>
                   <Content className="p-2 rounded-lg bg-gray-200" >
-                    <Divider orientation="left">Description</Divider>
+                    <Divider orientation="left" orientationMargin={0}><span className="font-bold font-sans">DESCRIPTON</span></Divider>
                     <Markdown remarkPlugins={[remarkGfm, supersub, remarkRehype]}>{selectedItem.discription}</Markdown>
-                    <Divider orientation="left">Code</Divider>
-                    <Markdown remarkPlugins={[remarkGfm, supersub, remarkRehype]}>
-  {`\`\`\`\n${
+                    <Divider orientation="left" orientationMargin={0}><span className="font-bold font-sans">CODE</span></Divider>
+                    <Markdown  remarkPlugins={[remarkGfm, supersub, remarkRehype]}>
+  {`\`\`\`python\n${
     selectedItem && selectedItem.codeModel && selectedItem.codeModel.mainCode
       ? selectedItem.codeModel.mainCode
       : "not"

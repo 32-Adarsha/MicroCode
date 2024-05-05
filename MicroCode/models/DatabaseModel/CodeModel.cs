@@ -9,6 +9,7 @@ namespace MicroCode.models
         [ForeignKey("ProgramModel")]
         public Guid program_id {get; set;}
         public string mainCode {get ; set;}
+        public string language {get; set;}
         public string hidden_testcase {get; set;}
         public string public_testcase { get; set;}
         public int timeLimit {get;set;}

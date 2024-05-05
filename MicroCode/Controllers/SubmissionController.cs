@@ -22,24 +22,26 @@ public class SubmissionController : ControllerBase
         this._submission = submission;
     }
 
-    [Route("/pushSubmission")]
+    [Route("/submitProblem")]
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> pushSubmission([FromBody] BigSubmissionModel BModel)
+    public async Task<IActionResult> pushSubmission([FromBody] SubmissionModel mdl)
     {
         var id =  HttpContext.User.Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Sid).Value;
-        string value = _submission.SendPostRequest(BModel.sModel);
-        CodeSubmission rsp = new CodeSubmission
-        {
-            JudgeId = value,
-            Program_id = new Guid(BModel.program_id),
+        var value = Guid.NewGuid();
+        var rst = new CodeSubmission{
+            codeSubmissionId = value,
+            solved = mdl.solved,
+            code = mdl.source_code,
             user_id = new Guid(id),
-            codeStatus = false,
-            CompletedDate = DateTime.UtcNow,
+            CompletedDate  = DateTime.UtcNow,
+            language = mdl.language,
+            Program_id = new Guid(mdl.problem_id),
+            UserModel = dbContext.UserModel.FirstOrDefault(u => u.user_id == new Guid(id)),
+            ProgramModel =dbContext.ProgramModel.FirstOrDefault(u => u.program_id == new Guid(mdl.problem_id)),
         };
-        rsp.UserModel = dbContext.UserModel.FirstOrDefault(u => u.user_id == new Guid(id));
-        rsp.ProgramModel = dbContext.ProgramModel.FirstOrDefault(u => u.program_id == new Guid(BModel.program_id));
-        await dbContext.CodeSubmissions.AddAsync(rsp);
+        
+        await dbContext.CodeSubmissions.AddAsync(rst);
         await dbContext.SaveChangesAsync();
         return Ok(value);
     }

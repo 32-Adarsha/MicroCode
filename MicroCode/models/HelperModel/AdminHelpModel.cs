@@ -24,5 +24,16 @@ namespace MicroCode.models
         public ProgramModel pModel { get; set; }
     }
 
+    public class UserSolvedResponse
+{
+    public Guid CodeSubId { get; set; }
+    public Guid problemId { get; set; }
+    public string code { get; set; }
+    public bool Solved { get; set; }
+    public string Title { get; set; }
+    public string language { get; set; }
+    public List<String> Tag { get; set; }
+}
+
 
 }
