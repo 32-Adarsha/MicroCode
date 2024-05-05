@@ -242,8 +242,8 @@ function ListWithDrawer({ data }) {
                   {selectedItem.username.charAt(0).toLocaleUpperCase() + selectedItem.username.slice(1)}
               </span>
             </Header>
-          <Content className="w-full h-full">
-            <Divider orientation="left" orientationMargin={0}><span className="pl-2">Username</span></Divider>
+          <Content className="w-full h-full p-3">
+            
             
           </Content>
 
@@ -415,4 +415,18 @@ function ListWithDrawer({ data }) {
       </>
     );
   }
+
+
+  const UserInfoComponent = ({ label , item }) => {
+    return (
+      <div>
+        <Divider orientation="left" orientationMargin={0}>
+          <span className="pl-2 font-bold font-mono">{label}</span>
+        </Divider>
+        <div className="rounded-lg outline outline-blue-400">
+          <p className="text-xl pl-3 text-gray-600 font-sans p-3">{item}</p>
+        </div>
+      </div>
+    );
+  };
 export default AdminPage;
