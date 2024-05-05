@@ -35,6 +35,7 @@ public class ExamController : ControllerBase
         {
             var userIdClaim = HttpContext.User.Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Sid);
             var res = await _Exam.addExam(sub, userIdClaim.Value);
+
             return Ok(res);
         } catch(Exception e) {
             return BadRequest(e.Message);

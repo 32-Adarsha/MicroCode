@@ -15,10 +15,25 @@ const Homepage = () => {
   });
 
   const [problemsData, setProblemData] = useState([]);
+  const [userData, setUserData] = useState({})
 
   useEffect(() => {
-    const siteDataUrl = `http://localhost:8080/getsitestats`;
+    const siteDataUrl = `http://localhost:8080/getInfo`;
     const problemsUrl = `http://localhost:8080/getProblem`;
+    const userDetails = `http://localhost:8080/getDetail`
+
+    const fetchUserDetails = async () => {
+      try {
+        const response = await axios.post(userDetails);
+        setUserData(response.data.user);
+      } catch (error) {
+        console.error('Error fetching user details:', error);
+        message.error('Failed to fetch user details');
+      }
+    };
+
+    fetchUserDetails();
+
 
     const getData = () => {
       axios.post(siteDataUrl)
@@ -51,25 +66,29 @@ const Homepage = () => {
           <Row gutter={[16, 16]}>
             <Col span={8}>
               <Card className="stats-card">
-                <h3>Total Users</h3>
-                <p>{statsData.total_users}</p>
+                <h3><strong>Name:</strong></h3>
+                <p>{userData.first_name} {userData.last_name}</p>
+                <h3><strong>Email:</strong></h3>
+                <p>{userData.email}</p>
               </Card>
             </Col>
             <Col span={8}>
               <Card className="stats-card">
-                <h3>Total Problems</h3>
+              <h3>Total Problems</h3>
                 <p>{statsData.total_problems}</p>
               </Card>
             </Col>
             <Col span={8}>
               <Card className="stats-card">
-                <h3>Date</h3>
-                <p>{new Date().toLocaleDateString()}</p>
+                <h3>Total Users:</h3>
+                <p>{statsData.total_users}</p>
               </Card>
             </Col>
           </Row>
-          <Divider />
+
+          <Divider  >
           <h1>List of Problems</h1>
+          </Divider>
           <Row gutter={[16, 16]}>
             {problemsData.map(problem => (
               <Col key={problem.program_id} span={24}>

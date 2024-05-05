@@ -43,7 +43,6 @@ function App() {
         <Route path="/navbar" element={<Auth page={<NavBar />} />} />
         <Route path="/solve/:problemId" element={<Auth page={<SolveProblemPage />} />} />
         <Route path="/profile" element={<Auth page={<Profile />} />} />
-        <Route path="*" element={<ErrorPage />} />
 
 
       </Routes>
