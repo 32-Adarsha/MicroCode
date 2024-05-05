@@ -22,12 +22,10 @@ namespace MicroCode.Dependency
         }
         public string SendPostRequest(SubmissionModel data)
         {
-            var client = new RestClient("https://judge0-ce.p.rapidapi.com/");
+            var client = new RestClient("http://172.17.0.1:2358");
             var request = new RestRequest("submissions?base64_encoded=false&fields=*");
             request.AddHeader("content-type", "application/json");
             request.AddHeader("Content-Type", "application/json");
-            request.AddHeader("X-RapidAPI-Key", _token);
-            request.AddHeader("X-RapidAPI-Host", "judge0-ce.p.rapidapi.com");
 
             request.AddJsonBody(data);
 
@@ -41,12 +39,11 @@ namespace MicroCode.Dependency
          public string SendGetRequest(string token)
         {
             string url = token + "?base64_encoded=false&fields=*";
-            var client = new RestClient("https://judge0-ce.p.rapidapi.com/submissions/");
+            var client = new RestClient("http://172.17.0.1:2358/submissions/");
             var request = new RestRequest(url);
             request.AddHeader("content-type", "application/json");
             request.AddHeader("Content-Type", "application/json");
-            request.AddHeader("X-RapidAPI-Key", _token);
-            request.AddHeader("X-RapidAPI-Host", "judge0-ce.p.rapidapi.com");
+            
 
           
 
@@ -59,13 +56,11 @@ namespace MicroCode.Dependency
         public string SendCustomGetRequest(string token , string fields){
             
             string url = token + "?base64_encoded=false&fields=*";
-            var client = new RestClient("https://judge0-ce.p.rapidapi.com/submissions/");
+            var client = new RestClient("http://172.17.0.1:2358/submissions/");
             var request = new RestRequest(url);
             request.AddQueryParameter("fields", fields);
             request.AddHeader("content-type", "application/json");
             request.AddHeader("Content-Type", "application/json");
-            request.AddHeader("X-RapidAPI-Key", _token);
-            request.AddHeader("X-RapidAPI-Host", "judge0-ce.p.rapidapi.com");
             RestResponse response = client.Get(request);
             return response.Content.ToString();
 
@@ -74,12 +69,11 @@ namespace MicroCode.Dependency
 
 
         public string SendBatchRequest(List<SubmissionModel> data){
-            var client = new RestClient("https://judge0-ce.p.rapidapi.com/");
+            var client = new RestClient("http://172.17.0.1:2358");
             var request = new RestRequest("submissions/batch?base64_encoded=false&fields=*");
             request.AddHeader("content-type", "application/json");
             request.AddHeader("Content-Type", "application/json");
-            request.AddHeader("X-RapidAPI-Key", _token);
-            request.AddHeader("X-RapidAPI-Host", "judge0-ce.p.rapidapi.com");
+            
 
             request.AddJsonBody(data);
 
@@ -91,13 +85,12 @@ namespace MicroCode.Dependency
         public string GetBatchRequest(List<String> tokens , string fields){
             var token = string.Join(",", tokens);
             string url = token + "?base64_encoded=false&fields=*";
-            var client = new RestClient("https://judge0-ce.p.rapidapi.com/submissions/batch?tokens");
+            var client = new RestClient("http://172.17.0.1:2358/submissions/batch?tokens");
             var request = new RestRequest(url);
             request.AddQueryParameter("fields", fields);
             request.AddHeader("content-type", "application/json");
             request.AddHeader("Content-Type", "application/json");
-            request.AddHeader("X-RapidAPI-Key", _token);
-            request.AddHeader("X-RapidAPI-Host", "judge0-ce.p.rapidapi.com");
+
             RestResponse response = client.Get(request);
             return response.Content.ToString();
         }
