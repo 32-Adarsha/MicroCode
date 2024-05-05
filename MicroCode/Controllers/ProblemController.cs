@@ -196,7 +196,7 @@ public class ProblemController : ControllerBase
         var userIdClaim = HttpContext.User.Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Sid);
         if (userIdClaim != null)
         {
-            var allProgram = dbContext.ProgramModel.Where(p => p.user_id == new Guid(userIdClaim.Value)).Select(u => new { u.program_id, u.title, u.isPublic }).ToList();
+            var allProgram = dbContext.ProgramModel.Where(p => p.user_id == new Guid(userIdClaim.Value)).Select(u => new { u.program_id, u.title, u.isPublic, u.verified }).ToList();
             return Ok(allProgram);
         }
         else

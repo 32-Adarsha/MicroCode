@@ -102,7 +102,7 @@ const SolveProblemPage = ({ props }) => {
                 console.log(JSON.parse(res.data[0].public_testcase));
 
             }).catch(err=>{
-                window.location.href="/404"
+                console.log(err)
             })
         }
         getproblem();

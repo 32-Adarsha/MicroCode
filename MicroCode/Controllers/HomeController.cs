@@ -50,7 +50,7 @@ public class HomeController : ControllerBase
 
     [Route("/getInfo")]
     [HttpPost]
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     public IActionResult getSiteStats()
     {
         int total_users = dbcontext.UserModel.Count();
