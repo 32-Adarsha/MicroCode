@@ -1,5 +1,5 @@
-import React, { useState, useEffect,createRef } from 'react';
-import { Card, Flex, Typography, Button, message, List } from 'antd';
+import React, { useState, useEffect, createRef } from 'react';
+import { Card, Flex, Typography, Button, message, List, Divider, Checkbox, Space } from 'antd';
 import axios from 'axios';
 import Chart from 'chart.js/auto'; // Import Chart
 import NavBar from '../../components/NavBar';
@@ -8,6 +8,7 @@ const { Text } = Typography;
 
 const Profile = () => {
   const [userData, setUserData] = useState(null);
+  const [problemss, setProblems] = useState([])
   const chartData = {
     labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
     datasets: [
@@ -56,6 +57,12 @@ const Profile = () => {
         message.error('Failed to fetch user details');
       }
     };
+    const getProblems = () => {
+      axios.get(`http://localhost:8080/getAllProblem`).then((data) => {
+        setProblems(data.data)
+      })
+    }
+    getProblems()
 
     fetchUserDetails();
   }, []);
@@ -82,9 +89,20 @@ const Profile = () => {
     return (
       <div>
         <NavBar />
-        <Flex direction="column" gap="small" align="center">
-          <Card style={{ width: '450px', height: '400px', marginLeft: '30px', marginTop: '20px', border: 'solid', color: '' }}>
-            <Flex vertical gap="left" align='center'>
+        <Flex justify="space-between"
+          direction="row"
+          wrap="wrap"
+          style={{ width: '98vw' }}>
+          <Card
+            style={{
+              width: '100vw',
+              height: '400px',
+              marginLeft: '0px',
+              marginTop: '20px',
+              border: 'solid',
+              color: ''
+            }}
+          >            <Flex vertical gap="left" align='center'>
               <img
                 alt="Profile Avatar"
                 src="https://bootdey.com/img/Content/avatar/avatar7.png"
@@ -95,39 +113,43 @@ const Profile = () => {
               />
               <Flex vertical gap="xxs">
                 <Text strong align="center"><h2>{userData.first_name} {userData.last_name}</h2></Text>
-                <Text align="center">{userData.username}</Text>
-                <Text align="center">{userData.email}</Text>
-                <Text align="center">{userData.phone_no}</Text>
+                <Space></Space>
+                <Text align="center">Username: {userData.username}</Text>
+                <Text align="center">Email: {userData.email}</Text>
+                <Text align="center">Phone Number: {userData.phone_no}</Text>
                 <Flex gap="small" wrap="wrap" align='center'>
-                  <Button type="primary">Edit Profile</Button>
                   <Button type="default" onClick={handleLogout}>Logout</Button>
                 </Flex>
               </Flex>
             </Flex>
           </Card>
-          <Card style={{ width: '450px', height: '400px', marginLeft: '30px', marginTop: '20px', border: 'solid', color: '' }}>
-            <Flex direction="column" gap="small" align="center">
-              <Text>Stats:</Text>
-              <canvas ref={chartRef} width="400" height="200">
-                {createChart()}
-              </canvas>
-            </Flex>
-          </Card>
-          <List
-            style={{ width: '450px', marginLeft: '30px', marginTop: '20px' }}
-            bordered
-            dataSource={Array.from({ length: 10 }, (_, i) => `List Item ${i + 1}`)}
-            renderItem={(item) => (
-              <List.Item>{item}</List.Item>
-            )}
-          />
+
+
         </Flex>
+        <Divider>Your Problems</Divider>
+        <List
+          style={{ marginLeft: '30px', marginTop: '20px' }}
+          bordered
+          dataSource={problemss}
+          renderItem={(item) => (
+            <List.Item
+              key={item.program_id}
+              actions={[item.isPublic ? 'Public' : 'Not Public', item.verified ? 'Verified' : 'Not Verified']}
+            >
+              <List.Item.Meta
+                title={item.title}
+                description="TODO: Problem Tag"
+              />
+            </List.Item>
+          )}
+        />
+
       </div>
     );
   };
 
   return (
-    <Flex justify="left" direction="row">
+    <Flex justify="left" direction="row" style={{ width: '100%' }}>
       {renderProfileCard()}
     </Flex>
   );

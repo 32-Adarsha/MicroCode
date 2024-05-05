@@ -65,7 +65,7 @@ ${createMarkdownTable(problem.hidden_testcase[1])}` : ""}
 
   const [messageApi, contextHolder] = message.useMessage();
   const [token, setToken] = useState(props.token)
-  const [hasToken, setHasToken] = useState(props.token ? true : false)
+  const [hasToken, setHasToken] = useState(false)
   const [input, setInput] = useState("")
   const [output, setOutput] = useState("")
   const [time, setTime] = useState(0)
@@ -215,7 +215,7 @@ ${createMarkdownTable(problem.hidden_testcase[1])}` : ""}
                 axios.post(`http://localhost:8080/saveProblem`, newp).then((res) => {
                   if (res.status === 200) {
                     message.success("Created problem and verified", 2).then(() => {
-                      window.location.href ="/"
+                      // window.location.href ="/"
                     });
                   } else {
                     console.log(res);
@@ -332,7 +332,7 @@ ${createMarkdownTable(problem.hidden_testcase[1])}` : ""}
                 <Input name="title" value={problem.title} onChange={handleTitleChange} />
 
               </Form.Item>
-              {!hasToken ? <Button type='primary' hidden={!hasToken} onClick={getToken} style={{ float: "right" }}>Get Token</Button> : ""}
+              {!hasToken ? <Button type='primary'  onClick={getToken} style={{ float: "right" }}>Get Token</Button> : ""}
               {hasToken ?
                 <div>
                   <Form.Item label="Description">
