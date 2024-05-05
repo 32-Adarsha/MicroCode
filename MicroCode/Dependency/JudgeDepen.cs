@@ -8,7 +8,7 @@ namespace MicroCode.Dependency
 {
 
     public interface ISubmission {
-        public string SendPostRequest(SubmissionModel data);
+        public string SendPostRequest(ExecuteModelHelper data);
         public string SendGetRequest(string token);
         public string SendCustomGetRequest(string token, string fields);
         public string SendBatchRequest (List<SubmissionModel> data);
@@ -20,7 +20,7 @@ namespace MicroCode.Dependency
         public Submission(string token){
             _token = token;
         }
-        public string SendPostRequest(SubmissionModel data)
+        public string SendPostRequest(ExecuteModelHelper data)
         {
             var client = new RestClient("https://judge0-ce.p.rapidapi.com/");
             var request = new RestRequest("submissions?base64_encoded=false&fields=*");

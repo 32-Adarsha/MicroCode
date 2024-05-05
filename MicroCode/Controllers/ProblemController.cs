@@ -169,7 +169,7 @@ public class ProblemController : ControllerBase
     [Route("/executeProblem")]
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> executeProblem([FromBody] SubmissionModel mdl)
+    public async Task<IActionResult> executeProblem([FromBody] ExecuteModelHelper mdl)
     {
         string value = _submission.SendPostRequest(mdl);
         string fields = "status,language,time,memory,stdin,expected_output,stdout,created_at,finished_at,source_code";
