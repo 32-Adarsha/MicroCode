@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MicroCode.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class init1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -37,8 +37,9 @@ namespace MicroCode.Migrations
                     examId = table.Column<Guid>(type: "uuid", nullable: false),
                     name = table.Column<string>(type: "text", nullable: false),
                     totaScore = table.Column<int>(type: "integer", nullable: false),
+                    timeLimit = table.Column<int>(type: "integer", nullable: false),
                     discription = table.Column<string>(type: "text", nullable: false),
-                    allProblems = table.Column<string>(type: "text", nullable: true),
+                    allProblems = table.Column<string>(type: "text", nullable: false),
                     accessCode = table.Column<string>(type: "text", nullable: false),
                     user_id = table.Column<Guid>(type: "uuid", nullable: true)
                 },
@@ -85,9 +86,7 @@ namespace MicroCode.Migrations
                 columns: table => new
                 {
                     eSubmissionId = table.Column<Guid>(type: "uuid", nullable: false),
-                    expires = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     user_id = table.Column<Guid>(type: "uuid", nullable: true),
-                    judgeId = table.Column<Guid>(type: "uuid", nullable: false),
                     examId = table.Column<Guid>(type: "uuid", nullable: false),
                     totalScore = table.Column<int>(type: "integer", nullable: false),
                     trackProblem = table.Column<string>(type: "text", nullable: true),
@@ -110,13 +109,41 @@ namespace MicroCode.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "UserExamModels",
+                columns: table => new
+                {
+                    modelId = table.Column<Guid>(type: "uuid", nullable: false),
+                    examId = table.Column<Guid>(type: "uuid", nullable: false),
+                    taken = table.Column<bool>(type: "boolean", nullable: false),
+                    atmtCount = table.Column<int>(type: "integer", nullable: false),
+                    maxScore = table.Column<int>(type: "integer", nullable: false),
+                    user_id = table.Column<Guid>(type: "uuid", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserExamModels", x => x.modelId);
+                    table.ForeignKey(
+                        name: "FK_UserExamModels_ExamModel_examId",
+                        column: x => x.examId,
+                        principalTable: "ExamModel",
+                        principalColumn: "examId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserExamModels_UserModel_user_id",
+                        column: x => x.user_id,
+                        principalTable: "UserModel",
+                        principalColumn: "user_id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "CodeModels",
                 columns: table => new
                 {
                     program_id = table.Column<Guid>(type: "uuid", nullable: false),
                     mainCode = table.Column<string>(type: "text", nullable: false),
-                    input = table.Column<string>(type: "text", nullable: true),
-                    output = table.Column<string>(type: "text", nullable: true),
+                    language = table.Column<string>(type: "text", nullable: false),
+                    hidden_testcase = table.Column<string>(type: "text", nullable: false),
+                    public_testcase = table.Column<string>(type: "text", nullable: false),
                     timeLimit = table.Column<int>(type: "integer", nullable: false),
                     memoryLimit = table.Column<int>(type: "integer", nullable: false)
                 },
@@ -135,8 +162,9 @@ namespace MicroCode.Migrations
                 name: "CodeSubmissions",
                 columns: table => new
                 {
-                    JudgeId = table.Column<string>(type: "text", nullable: false),
-                    codeStatus = table.Column<bool>(type: "boolean", nullable: true),
+                    codeSubmissionId = table.Column<Guid>(type: "uuid", nullable: false),
+                    solved = table.Column<bool>(type: "boolean", nullable: false),
+                    code = table.Column<string>(type: "text", nullable: false),
                     user_id = table.Column<Guid>(type: "uuid", nullable: true),
                     CompletedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     language = table.Column<string>(type: "text", nullable: false),
@@ -144,7 +172,7 @@ namespace MicroCode.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CodeSubmissions", x => x.JudgeId);
+                    table.PrimaryKey("PK_CodeSubmissions", x => x.codeSubmissionId);
                     table.ForeignKey(
                         name: "FK_CodeSubmissions_ProgramModel_Program_id",
                         column: x => x.Program_id,
@@ -186,6 +214,16 @@ namespace MicroCode.Migrations
                 name: "IX_ProgramModel_user_id",
                 table: "ProgramModel",
                 column: "user_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserExamModels_examId",
+                table: "UserExamModels",
+                column: "examId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserExamModels_user_id",
+                table: "UserExamModels",
+                column: "user_id");
         }
 
         /// <inheritdoc />
@@ -199,6 +237,9 @@ namespace MicroCode.Migrations
 
             migrationBuilder.DropTable(
                 name: "ExamSubmissionModel");
+
+            migrationBuilder.DropTable(
+                name: "UserExamModels");
 
             migrationBuilder.DropTable(
                 name: "ProgramModel");

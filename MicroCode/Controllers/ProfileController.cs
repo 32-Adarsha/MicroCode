@@ -22,8 +22,10 @@ namespace MicroCode.Controllers;
 public class ProfileController : ControllerBase
 {
    private readonly MicroCodeContext _cntx;
-   public ProfileController(MicroCodeContext cntx){
+    private readonly IUserRepository _userRepository;
+   public ProfileController(MicroCodeContext cntx , IUserRepository userRepository){
         this._cntx = cntx;
+        _userRepository = userRepository;
    }
    
    [Route("/getDetail")]
@@ -48,8 +50,8 @@ public class ProfileController : ControllerBase
             .Where(x => x.user_id == new Guid(id))
             .Select(u => new {
                 u.Program_id,
-                u.codeStatus,
-                u.JudgeId,
+                u.solved,
+                u.codeSubmissionId,
                 u.CompletedDate,
                 u.language
             }).ToList();
@@ -58,6 +60,27 @@ public class ProfileController : ControllerBase
 
     return Ok(result);
 }
+
+    [Route("/getUserSolved")]
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> getSolvedProblem(){
+        try
+        {
+            var id = HttpContext.User.Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Sid).Value;
+            var data = await _userRepository.GetSolvedProblems(new Guid(id), 1, 10);
+            return Ok(data);
+        }
+         catch (Exception e ) {
+            return BadRequest(e.Message);
+         }
+        
+
+    }
+
+
+
+
 
 
 

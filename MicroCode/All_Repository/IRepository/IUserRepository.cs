@@ -23,6 +23,6 @@ public struct UserStat {
 
 
 public interface IUserRepository {
-    Task<PaginatedList<SolvedResponse>> GetSolvedProblems(Guid id ,int pageIndex, int pageSize);
+    Task<PaginatedList<UserSolvedResponse>> GetSolvedProblems(Guid id ,int pageNumber, int pageSize);
     // Task<UserStat> GetUserStat(Guid id);
 }

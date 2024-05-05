@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MicroCode.Migrations
 {
     [DbContext(typeof(MicroCodeContext))]
-    [Migration("20240504210035_init13")]
-    partial class init13
+    [Migration("20240505180407_init1")]
+    partial class init1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -30,7 +30,12 @@ namespace MicroCode.Migrations
                     b.Property<Guid>("program_id")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("input")
+                    b.Property<string>("hidden_testcase")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("language")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("mainCode")
@@ -40,7 +45,8 @@ namespace MicroCode.Migrations
                     b.Property<int>("memoryLimit")
                         .HasColumnType("integer");
 
-                    b.Property<string>("output")
+                    b.Property<string>("public_testcase")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int>("timeLimit")
@@ -53,8 +59,9 @@ namespace MicroCode.Migrations
 
             modelBuilder.Entity("MicroCode.models.CodeSubmission", b =>
                 {
-                    b.Property<string>("JudgeId")
-                        .HasColumnType("text");
+                    b.Property<Guid>("codeSubmissionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CompletedDate")
                         .HasColumnType("timestamp with time zone");
@@ -62,17 +69,21 @@ namespace MicroCode.Migrations
                     b.Property<Guid?>("Program_id")
                         .HasColumnType("uuid");
 
-                    b.Property<bool?>("codeStatus")
-                        .HasColumnType("boolean");
+                    b.Property<string>("code")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("language")
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<bool>("solved")
+                        .HasColumnType("boolean");
+
                     b.Property<Guid?>("user_id")
                         .HasColumnType("uuid");
 
-                    b.HasKey("JudgeId");
+                    b.HasKey("codeSubmissionId");
 
                     b.HasIndex("Program_id");
 

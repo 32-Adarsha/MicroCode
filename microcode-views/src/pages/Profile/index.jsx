@@ -1,7 +1,7 @@
 import React, { useState, useEffect,createRef } from 'react';
 import { Card, Flex, Typography, Button, message, List } from 'antd';
 import axios from 'axios';
-import Chart from 'chart.js/auto'; // Import Chart
+
 import NavBar from '../../components/NavBar';
 
 const { Text } = Typography;

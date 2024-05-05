@@ -31,6 +31,10 @@ namespace MicroCode.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("language")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("mainCode")
                         .IsRequired()
                         .HasColumnType("text");
@@ -52,8 +56,9 @@ namespace MicroCode.Migrations
 
             modelBuilder.Entity("MicroCode.models.CodeSubmission", b =>
                 {
-                    b.Property<string>("JudgeId")
-                        .HasColumnType("text");
+                    b.Property<Guid>("codeSubmissionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CompletedDate")
                         .HasColumnType("timestamp with time zone");
@@ -61,17 +66,21 @@ namespace MicroCode.Migrations
                     b.Property<Guid?>("Program_id")
                         .HasColumnType("uuid");
 
-                    b.Property<bool?>("codeStatus")
-                        .HasColumnType("boolean");
+                    b.Property<string>("code")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("language")
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<bool>("solved")
+                        .HasColumnType("boolean");
+
                     b.Property<Guid?>("user_id")
                         .HasColumnType("uuid");
 
-                    b.HasKey("JudgeId");
+                    b.HasKey("codeSubmissionId");
 
                     b.HasIndex("Program_id");
 

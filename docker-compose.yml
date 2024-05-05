@@ -36,20 +36,20 @@ services:
       - db_data:/var/lib/postgresql/data
     networks:
       - dev
-  FrontEnd:
-    container_name: FrontEndService
-    image: frontend_view
-    build:
-      context: ./microcode-views/
-      dockerfile: Dockerfile
-    volumes:
-      - ./microcode-views/:/vl
-      - /vl/node_modules
-      - /vl/.next 
-    ports:
-      - "5173:5173"
-    networks:
-      - dev
+  # FrontEnd:
+  #   container_name: FrontEndService
+  #   image: frontend_view
+  #   build:
+  #     context: ./microcode-views/
+  #     dockerfile: Dockerfile
+  #   volumes:
+  #     - ./microcode-views/:/vl
+  #     - /vl/node_modules
+  #     - /vl/.next 
+  #   ports:
+  #     - "5173:5173"
+  #   networks:
+  #     - dev
 
 
 volumes:
