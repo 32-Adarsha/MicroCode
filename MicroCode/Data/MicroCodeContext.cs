@@ -63,18 +63,6 @@ public class MicroCodeContext : DbContext
                 x => x.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList()
             );
 
-            modelBuilder.Entity<CodeModel>()
-            .Property(x => x.input)
-            .HasConversion(
-                x => string.Join(",", x),
-                x => x.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList()
-            );
-            modelBuilder.Entity<CodeModel>()
-            .Property(x => x.output)
-            .HasConversion(
-                x => string.Join(",", x),
-                x => x.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList()
-            );
             modelBuilder.Entity<ExamModel>()
                 .Property(x => x.allProblems)
                 .HasConversion(
@@ -88,9 +76,6 @@ public class MicroCodeContext : DbContext
                 x => ConversionFunction2(x)
                 );
                 
-            
-                
-
         }
     
     

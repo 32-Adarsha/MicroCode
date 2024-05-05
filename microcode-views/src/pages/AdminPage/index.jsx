@@ -1,10 +1,14 @@
-import { Layout , Menu, Input , Drawer} from "antd";
+import { Layout , Menu, Input , Drawer, Button,Switch} from "antd";
 const { Header, Content, Footer, Sider , } = Layout;
-import { useState } from 'react';
+import { useState ,useEffect } from 'react';
 import { Divider } from 'antd';
+import axios from 'axios';
 import { List, Avatar} from 'antd';
 const { Search } = Input;
-
+import remarkGfm from 'remark-gfm'
+import supersub from 'remark-supersub'
+import remarkRehype from 'remark-rehype'
+import Markdown from 'react-markdown';
 
 import {
     AppstoreOutlined,
@@ -14,7 +18,7 @@ import {
     UserOutlined,
   } from '@ant-design/icons';
 
-const items = [
+  const items = [
 { key: '1', icon: <PieChartOutlined />, label: 'Stats' },
   { key: '2', icon: <DesktopOutlined />, label: 'Exams' },
   { key: '3', icon: <ContainerOutlined />, label: 'Problems'},
@@ -59,6 +63,7 @@ const AdminPage = () => {
     const [selectedKeys, setSelectedKeys] = useState(['1']);
     const [open, setOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
+    const [loading , setLoading] = useState(true)
     const handleSelect = ({ key }) => {
         setSelectedKeys([key]);
         console.log('Selected item:', key);
@@ -72,11 +77,55 @@ const AdminPage = () => {
     const onClose = () => {
       setOpen(false);
     };
+// ------------------------------------------
+
+const [usersData , setUsersData] = useState(null)
+const [problemsData , setProblemsData] = useState(null)
 
 
 
 
 
+useEffect(() => {
+  const userDataUrl = `http://localhost:8080/admin/getAllUser?pageIndex=1&pageSize=10`;
+  const problemsUrl = `http://localhost:8080/admin/problems?pageIndex=1&pageSize=10
+  `;
+
+  const getData = () => {
+    axios.get(userDataUrl)
+      .then(res => {
+        setUsersData(res.data.items);
+        
+      })
+      .catch(error => {
+        console.error('Error fetching site stats:', error);
+      });
+    // To Fetch Problem
+    axios.get(problemsUrl)
+      .then(res => {
+        setProblemsData(res.data.items);
+        console.log(res.data.items)
+      })
+      .catch(error => {
+        console.error('Error fetching site stats:', error);
+        
+      });
+    setLoading(false)
+  };
+
+  getData();
+}, []);
+
+
+
+
+
+
+
+
+
+
+//--------------------------------------------
     return (
     <Layout className='h-screen p-1'>
             <Sider width={200} className="h-full py-2 px-3 rounded-lg flex flex-col justify-center">
@@ -101,14 +150,22 @@ const AdminPage = () => {
                     <h1 className="w-full text-black text-4xl font-sans font-bold mt-5 text-center">PROBLEMS</h1>
                     <Divider orientation="left">Problems</Divider>
                     <Search placeholder="search problem" className='' enterButton="Search" size="large" onSearch={value => console.log(value)}/>
-                    <ProblemWithDrawer data={problem}/>
+                    {loading ? (
+                      <p>Loading...</p> // You can replace this with your loading indicator
+                    ) : (
+                    <ProblemWithDrawer data={problemsData}/>
+                  )}
                 </Layout>
             ): (
                 <Layout className="bg-white rounded-lg shadow-lg p-3">
                     <h1 className="w-full text-black text-4xl font-sans font-bold mt-5 text-center">USERS</h1>
                     <Divider orientation="left">Users</Divider>
                     <Search placeholder="search user" className='' enterButton="Search" size="large" onSearch={value => console.log(value)}/>
-                    <ListWithDrawer data={data}/>
+                    {loading ? (
+                      <p>Loading...</p> // You can replace this with your loading indicator
+                    ) : (
+                      <ListWithDrawer data={usersData} />
+                    )}
                 </Layout>)}
             </Layout>
         </Layout>
@@ -120,12 +177,29 @@ function ListWithDrawer({ data }) {
     const [open, setOpen] = useState(false);
   
     const showDrawer = (item) => {
-      setSelectedItem(item);
+      console.log(item.id)
+      getUserData(item.id);
       setOpen(true);
     };
   
     const onClose = () => {
       setOpen(false);
+    };
+
+    const getUserData = (id) => {
+      axios.get('http://localhost:8080/admin/getUser', {
+        headers: {
+        'accept': '*/*',
+        'id': id,
+  }
+})
+.then(response => {
+  setSelectedItem(response.data)
+  console.log(response.data);
+})
+.catch(error => {
+  console.error('Error fetching data:', error);
+});
     };
   
     return (
@@ -143,17 +217,25 @@ function ListWithDrawer({ data }) {
               ]}
             >
               <List.Item.Meta
-                
                 title={<a href="#">{item.name}</a>}
-                description="Ant Design, a design language for background applications, is refined by Ant UED Team"
+                description={`${item.email}`}
               />
             </List.Item>
           )}
         />
         <Drawer width={640} title="User" onClose={onClose} open={open}>
-          <p>{selectedItem !== null ? selectedItem.id : "Test"}</p>
-          <p>{selectedItem !== null ? selectedItem.name : "No User"}</p>
-          <p>Some contents...</p>
+        {selectedItem !== null ? (
+        <>
+          <p>{selectedItem.id}</p>
+          <p className="flex flex-row w-full mr-5 justify-between"><span className="text-3xl font-sans font-bold text-red-500">Username:</span> <span className="text-2xl font-sans font-bold">{selectedItem.username}</span></p>
+          <p className="flex flex-row w-full mr-5 justify-between"><span className="text-3xl font-sans font-bold text-red-500">First Name:</span> <span className="text-2xl font-sans font-bold">{selectedItem.first_name}</span></p>
+          <p className="flex flex-row w-full mr-5 justify-between"><span className="text-3xl font-sans font-bold text-red-500">Last Name:</span> <span className="text-2xl font-sans font-bold">{selectedItem.last_name}</span></p>
+          <p className="flex flex-row w-full mr-5 justify-between"><span className="text-3xl font-sans font-bold text-red-500">Phone Number:</span> <span className="text-2xl font-sans font-bold">{selectedItem.phone_no}</span></p>
+          <p className="flex flex-row w-full mr-5 justify-between"><span className="text-3xl font-sans font-bold text-red-500">Email:</span> <span className="text-2xl font-sans font-bold">{selectedItem.email}</span></p>
+        </>
+        ) : (
+          <p>No one selected</p>
+        )}
         </Drawer>
       </>
     );
@@ -163,14 +245,57 @@ function ListWithDrawer({ data }) {
   function ProblemWithDrawer({ data }) {
     const [selectedItem, setSelectedItem] = useState(null);
     const [open, setOpen] = useState(false);
+    const [checked, setChecked] = useState(null);
+
   
     const showDrawer = (item) => {
+      getProblemData(item.id);
       setSelectedItem(item);
       setOpen(true);
     };
-  
+    
     const onClose = () => {
       setOpen(false);
+    };
+
+    const makePublic = () => {
+      const newChecked = !checked;
+      setChecked(newChecked);
+      changeIsPublic(selectedItem.program_id, newChecked);
+    };
+
+    const changeIsPublic = (Token, isPublic) => {
+      axios.get('http://localhost:8080/makePublic', {
+        headers: {
+          'accept': '*/*',
+          'Token': Token,
+          'isPublic': isPublic
+        },
+        
+      })
+      .then(response => {
+        console.log(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+    };
+
+
+
+    const getProblemData = (id) => {
+      axios.get('http://localhost:8080/admin/getProblemById', {
+        headers: {
+        'accept': '*/*',
+        'id': id,}})
+      .then(response => {
+      setSelectedItem(response.data)
+      setChecked(response.data.isPublic)
+  console.log(response.data);
+})
+.catch(error => {
+  console.error('Error fetching data:', error);
+});
     };
   
     return (
@@ -190,15 +315,39 @@ function ListWithDrawer({ data }) {
               <List.Item.Meta
                 
                 title={<a href="#">{item.name}</a>}
-                description="Ant Design, a design language for background applications, is refined by Ant UED Team"
+                description={`${item.owner}`}
               />
             </List.Item>
           )}
         />
         <Drawer width={640} title="User" onClose={onClose} open={open}>
-          <p>{selectedItem !== null ? selectedItem.id : "Test"}</p>
-          <p>{selectedItem !== null ? selectedItem.name : "No User"}</p>
-          <p>Some contents...</p>
+          {selectedItem !== null ? (
+            <>
+              <Layout className="w-full h-full bg-transparent" >
+                  <Header className="bg-black my-1 text-white rounded-lg font-bold">{selectedItem.title}</Header>
+                  <Content className="p-2 rounded-lg bg-gray-200" >
+                    <Divider orientation="left">Description</Divider>
+                    <Markdown remarkPlugins={[remarkGfm, supersub, remarkRehype]}>{selectedItem.discription}</Markdown>
+                    <Divider orientation="left">Code</Divider>
+                    <Markdown remarkPlugins={[remarkGfm, supersub, remarkRehype]}>
+  {`\`\`\`\n${
+    selectedItem && selectedItem.codeModel && selectedItem.codeModel.mainCode
+      ? selectedItem.codeModel.mainCode
+      : "not"
+  }\n\`\`\``}
+</Markdown>
+                  </Content>
+                  <Footer className="bg-gray-100 my-1 text-white rounded-lg font-bold">
+                    
+                    <Switch checked={checked} onChange={makePublic} checkedChildren="Public" unCheckedChildren="Private"/>
+                  </Footer>
+            </Layout>
+            </>
+          ):(
+            <>
+              <p>problem doestn't exist</p>
+            </>
+          )}
         </Drawer>
       </>
     );
@@ -210,6 +359,7 @@ function ListWithDrawer({ data }) {
     const [open, setOpen] = useState(false);
   
     const showDrawer = (item) => {
+
       setSelectedItem(item);
       setOpen(true);
     };

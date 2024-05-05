@@ -41,8 +41,8 @@ public class ProblemController : ControllerBase
             {
                 thisProblem.title = qst.title;
                 thisProblem.discription = qst.discription;
-                thisCode.input = qst.input;
-                thisCode.output = qst.output;
+                thisCode.hidden_testcase = qst.hidden_testcase;
+                thisCode.public_testcase = qst.public_testcase;
                 thisCode.memoryLimit = qst.memoryLimit;
                 thisCode.timeLimit = qst.timeLimit;
                 thisCode.mainCode = qst.mainCode;
@@ -94,9 +94,8 @@ public class ProblemController : ControllerBase
                 {
                     program_id = pID,
                     mainCode = "",
-                    input = [],
-                    output = [],
-
+                    hidden_testcase = "",
+                    public_testcase = "",
                     timeLimit = 10,
                     memoryLimit = 2,
                 };
@@ -239,8 +238,8 @@ public class ProblemController : ControllerBase
                 p.registration_data,
                 p.title,
                 p.user_id,
-                p.CodeModel.input,
-                p.CodeModel.output
+                p.CodeModel.hidden_testcase,
+                p.CodeModel.public_testcase
             });
             return Ok(code);
         }
@@ -278,16 +277,15 @@ public class ProblemController : ControllerBase
     [Route("/makePublic")]
     [HttpGet]
     [Authorize]
-    public async Task<IActionResult> makePublic([FromHeader] string Token)
+    public async Task<IActionResult> makePublic([FromHeader] string Token , [FromHeader] bool isPublic)
     {
 
         if (Token != null)
         {
             ProgramModel program = dbContext.ProgramModel.FirstOrDefault<ProgramModel>(p => p.program_id == new Guid(Token));
-            program.isPublic = true;
+            program.isPublic = isPublic;
             await dbContext.SaveChangesAsync();
-            return Ok("made public available");
-
+            return Ok(program.isPublic);
         }
         else
         {
