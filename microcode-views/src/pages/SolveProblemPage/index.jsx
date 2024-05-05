@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Editor from '@monaco-editor/react';
 import CButton from '../../components/Button';
 import SplitPane from 'react-split-pane';
-import { Select, Layout, Tabs, Button, Card, Flex, Space, Upload } from 'antd';
+import { Select, Layout, Tabs, Button, Card, Flex, Space, Upload, Modal, Timeline,Spin } from 'antd';
 import axios from 'axios';
 import config from '../../config/config.jsx';
 import NavBar from '../../components/NavBar/index.jsx';
@@ -11,7 +11,7 @@ import remarkGfm from 'remark-gfm'
 import supersub from 'remark-supersub'
 import remarkRehype from 'remark-rehype'
 
-import { UploadOutlined, CloudDownloadOutlined, PlaySquareFilled } from '@ant-design/icons'
+import { UploadOutlined, CloudDownloadOutlined, PlaySquareFilled, CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons'
 import { useParams } from 'react-router-dom';
 import ErrorPage from '../ErrorPage/index.jsx';
 const { Header, Content, Footer } = Layout;
@@ -53,7 +53,10 @@ const SolveProblemPage = ({ props }) => {
     const [inputValue, setInputValue] = useState("")
     const [height, setHeight] = useState(548);
     const [problem, setProblem] = useState({})
+    const [visible, setVisible] = useState(false);
+    const [timelineData, setTimelineData] = useState([]);
     const linktoproblem = `http://localhost:8080/getCodetoSolve`
+    const [gotvalue, setgotvalue] = useState(false)
 
 
 
@@ -101,7 +104,8 @@ const SolveProblemPage = ({ props }) => {
                 setTest(JSON.parse(res.data[0].public_testcase))
                 console.log(JSON.parse(res.data[0].public_testcase));
 
-            }).catch(err=>{
+
+            }).catch(err => {
                 console.log(err)
             })
         }
@@ -126,59 +130,141 @@ const SolveProblemPage = ({ props }) => {
 
     const submit_url = `http://0.0.0.0:2358/submissions?base64_encoded=true&wait=false`;
     const get_url = `http://0.0.0.0:2358/submissions/`;
-    const submitCode = () => {
+    const submitUrl = `http://localhost:8080/executeProblem`
+    const runCode = () => {
         axios
             .post(submit_url, {
                 source_code: btoa(value),
-                stdin: btoa(test),
+                stdin: btoa(inputValue),
                 language_id: language_id[lang],
-            },
-                { withCredentials: false })
+            }, { withCredentials: false })
             .then((e) => {
                 setActiveTab("2")
                 if (e.status === 201) {
                     const alt = async () => {
                         axios.get(`${get_url}${e.data.token}?base64_encoded=true`, { withCredentials: false }).then((f) => {
                             const a = f.data.status.id;
-                            if (a == 1 || a == 2) {
-                                setOutputValue((f.data.status.description));
-                                setError("Compiling")
+                            switch (a) {
+                                case 1:
+                                    setOutputValue("In Queue");
+                                    setError("Compiling")
+                                    break;
+                                case 2:
+                                    setOutputValue("Processing");
+                                    setError("Compiling")
+                                    break;
+                                case 3:
+                                    setOutputValue(`${atob(f.data.stdout)} `);
+                                    setMemory(f.data.memory)
+                                    setTime(f.data.time)
+                                    setError(null)
+                                    break;
+                                case 4:
+                                    setOutputValue(`Wrong Answer: ${atob(f.data.stderr)} ${atob(f.data.compile_output)}`);
+                                    setError("Error in code")
+                                    break;
+                                case 5:
+                                    setOutputValue(`Time Limit Exceeded: ${atob(f.data.message)} ${atob(f.data.compile_output)}`);
+                                    setError("Error in code")
+                                    break;
+                                case 6:
+                                    setOutputValue(`Compilation Error: ${atob(f.data.stderr)} ${atob(f.data.compile_output)}`);
+                                    setError("Error in code")
+                                    break;
+                                case 7:
+                                    setOutputValue(`Runtime Error (SIGSEGV): ${atob(f.data.stderr)} ${atob(f.data.compile_output)}`);
+                                    setError("Error in code")
+                                    break;
+                                case 8:
+                                    setOutputValue(`Runtime Error (SIGXFSZ): ${atob(f.data.stderr)} ${atob(f.data.compile_output)}`);
+                                    setError("Error in code")
+                                    break;
+                                case 9:
+                                    setOutputValue(`Runtime Error (SIGFPE): ${atob(f.data.stderr)} ${atob(f.data.compile_output)}`);
+                                    setError("Error in code")
+                                    break;
+                                case 10:
+                                    setOutputValue(`Runtime Error (SIGABRT): ${atob(f.data.stderr)} ${atob(f.data.compile_output)}`);
+                                    setError("Error in code")
+                                    break;
+                                case 11:
+                                    setOutputValue(`Runtime Error (NZEC): ${atob(f.data.stderr)} ${atob(f.data.compile_output)}`);
+                                    setError("Error in code")
+                                    break;
+                                case 12:
+                                    setOutputValue(`Runtime Error (Other): ${atob(f.data.stderr)} ${atob(f.data.compile_output)}`);
+                                    setError("Error in code")
+                                    break;
+                                case 13:
+                                    setOutputValue(`Internal Error: ${atob(f.data.stderr)} ${atob(f.data.compile_output)}`);
+                                    setError("Error in code")
+                                    break;
+                                case 14:
+                                    setOutputValue(`Exec Format Error: ${atob(f.data.stderr)} ${atob(f.data.compile_output)}`);
+                                    setError("Error in code")
+                                    break;
+                                default:
+                                    setOutputValue("Unknown status");
+                                    setError("Error getting the details")
                             }
-
-                            else if (a === 3) {
-                                setOutputValue(`${atob(f.data.stdout)} `);
-                                setMemory(f.data.memory)
-                                setTime(f.data.time)
-                                setError(null)
-
-                                return;
-                            } else if (a === 6 || a === 13 || a === 11) {
-
-                                setOutputValue(`${atob(f.data.stderr)} ${atob(f.data.compile_output)}`);
-                                setError("Error getting the details")
-                                return;
+                            if (a < 3) {
+                                setTimeout(() => {
+                                    alt();
+                                }, 1000);
                             }
-
-                            setTimeout(() => {
-                                alt();
-                            }, 1000);
                         });
                     };
-
                     alt();
                 }
             }).catch(err => {
-                setOutputValue("Some error occured in our side.")
+                setOutputValue("Some error occurred on our side.")
             })
     };
+
+    const showModal = () => {
+        setVisible(true);
+    };
+
+    const handleOk = () => {
+        setVisible(false);
+    };
+
+
+    const submitCode = () => {
+        showModal();
+        const requests = test.map(data => axios.post('http://localhost:8080/executeProblem', { language_id: language_id[lang], stdin: data.input, expected_output: data.output, source_code: value }));
+        Promise.all(requests)
+            .then(responses => {
+                const timeline = [];
+               
+                responses.forEach((response, index) => {
+                    console.log(response.data.status_id)
+                    const color = response.data.status_id === 3 ? 'green' : 'red';
+                    const child = response.data.status_id === 3 ? <CheckCircleOutlined/> : <CloseCircleOutlined/>;
+                    timeline.push({
+                        label: `Test ${index + 1}`,
+                        color,
+                        children: child,
+                    });
+                });
+                console.log(timeline)
+                setTimelineData(timeline);
+                setgotvalue(true)
+                
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    };
+
 
     const items = config().plangs;
 
     const leftnavchilds = [
-        <Button type='primary'>Submit</Button>,
+        <Button type='primary' onClick={submitCode}>Submit</Button>,
         <Flex style={{ marginRight: 5, padding: 2 }}>
             <Button type='primary' icon={<PlaySquareFilled />} onClick={() => {
-                submitCode();
+                runCode();
             }}> Run</Button>
             &nbsp;
             <Select defaultValue={lang}
@@ -188,6 +274,12 @@ const SolveProblemPage = ({ props }) => {
         </Flex>
 
     ]
+    const contentStyle = {
+        padding: 50,
+        background: 'rgba(0, 0, 0, 0.05)',
+        borderRadius: 4,
+      };
+    const content = <div style={contentStyle} />;
 
 
 
@@ -199,8 +291,8 @@ const SolveProblemPage = ({ props }) => {
                 <div style={{ backgroundColor: '#f0f2f5', padding: '2px' }}>
                     <Space>
                         <p>Set:</p>
-                        <Button onClick={()=>{setInputValue(test[0].input)}}>Testcase 1</Button>
-                        <Button onClick={()=>{setInputValue(test[1].input)}}>Testcase 2</Button>
+                        <Button onClick={() => { setInputValue(test[0].input) }}>Testcase 1</Button>
+                        <Button onClick={() => { setInputValue(test[1].input) }}>Testcase 2</Button>
                     </Space>
                 </div>
                 <Editor height={780 - height} width={"99vw"} theme='vs-dark'
@@ -322,6 +414,14 @@ const SolveProblemPage = ({ props }) => {
 
 
             </div>
+            <Modal title="Test Results" open={visible} onOk={handleOk} >
+                {gotvalue?<Timeline items={timelineData}></Timeline>:<Spin tip="Submitted" size="large">
+                    {content}
+                </Spin>}
+                
+                
+                
+            </Modal>
 
 
         </div >
