@@ -2,6 +2,7 @@ using System.Runtime.CompilerServices;
 using MicroCode.Data;
 using MicroCode.models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 public class AdminRepository : IAdminRepository
 {
@@ -11,35 +12,55 @@ public class AdminRepository : IAdminRepository
         _context = context;
     }
 
-    public async Task<PaginatedList<UserModel>> GetUsers(int pageIndex, int pageSize){
+    public async Task<PaginatedList<aUserModel>> GetUsers(int pageIndex, int pageSize){
         var users = await _context.UserModel
                 .OrderBy(b => b.username)
+                .Select(b => new aUserModel { 
+                    name = b.username,
+                    email = b.email,
+                    id = b.user_id.ToString(),
+                })
                 .Skip((pageIndex - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
         var count = await _context.UserModel.CountAsync();
         var totalPages = (int)Math.Ceiling(count / (double)pageSize);
-        return new PaginatedList<UserModel>(users,pageIndex,totalPages);
+        return new PaginatedList<aUserModel>(users,pageIndex,totalPages);
 
     }
 
-    public async Task<PaginatedList<ProgramModel>> GetProblems(int pageIndex, int pageSize){
+    public async Task<PaginatedList<aProblemModel>> GetProblems(int pageIndex, int pageSize){
         var problems = await _context.ProgramModel
                 .OrderBy(b => b.title)
+                .Select( b => new aProblemModel {
+                    name = b.title,
+                    owner = _context.UserModel.Where(c => c.user_id == b.user_id).Select(d => d.email).FirstOrDefault(),
+                    id = b.program_id.ToString(),
+                })
                 .Skip((pageIndex - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
         var count = await _context.UserModel.CountAsync();
         var totalPages = (int)Math.Ceiling(count / (double)pageSize);
-        return new PaginatedList<ProgramModel>(problems,pageIndex,totalPages);
+        return new PaginatedList<aProblemModel>(problems,pageIndex,totalPages);
     }
 
+    public async Task<ProgramModel> GetProblemById(Guid id)
+{
+    var problem = await _context.ProgramModel
+        .Include(p => p.CodeModel)
+        .FirstOrDefaultAsync(p => p.program_id == id);
+    return problem;
+   
+}
     public async Task<UserModel> AddUser(UserModel user){
         _context.UserModel.Add(user);
         await _context.SaveChangesAsync();
         return user;
     }
-
+    public async Task<UserModel> getUser(Guid id){
+       return  await _context.UserModel.FirstOrDefaultAsync(x => x.user_id == id);
+    }
     public async Task<ProgramModel> AddProblem(ProgramModel problem){
         _context.ProgramModel.Add(problem);
         await _context.SaveChangesAsync();

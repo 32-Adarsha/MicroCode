@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace MicroCode.models
 {
@@ -28,10 +29,16 @@ namespace MicroCode.models
         [Required]
         public string password_hash {get ;set;}
         public DateTime registration_data {get; set;}
+        [JsonIgnore]
         public virtual ICollection<ProgramModel> ProgramModels { get; set; }
         public virtual ICollection<CodeSubmission> CodeSubmissions { get; set; }
         public virtual ICollection<ExamSubmissionModel> ExamSubmissionsModel { get; set; }
         public virtual ICollection<ExamModel> ExamModels {get; set;}
+
+        public static implicit operator string?(UserModel? v)
+        {
+            throw new NotImplementedException();
+        }
     }
 
 }

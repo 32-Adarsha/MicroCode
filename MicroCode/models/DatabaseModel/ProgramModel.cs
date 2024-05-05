@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace MicroCode.models
 {
@@ -30,6 +31,7 @@ namespace MicroCode.models
         public bool flagged { get; set; }
         public DateTime registration_data {get; set;}
         public Nullable<Guid> user_id {get ;set;}
+        
         public virtual CodeModel CodeModel { get; set; }
         [ForeignKey(nameof(user_id))]
         public virtual UserModel UserModel {get ; set;}

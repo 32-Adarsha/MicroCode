@@ -35,7 +35,7 @@ public class ExamRepository : IExamRepository
             };
             await _context.ExamModel.AddAsync(newExamModel);
             await _context.SaveChangesAsync();
-            return string.Join(",", sub.allProblem.Select(problem => $"{problem.problemId}:{problem.score}"));
+            return id.ToString();
 
         } catch (Exception e) {
             return "false";

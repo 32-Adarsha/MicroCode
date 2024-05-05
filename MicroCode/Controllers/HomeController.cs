@@ -55,6 +55,7 @@ public class HomeController : ControllerBase
     {
         int total_users = dbcontext.UserModel.Count();
         int total_problems = dbcontext.ProgramModel.Count(p=>p.isPublic && p.verified);
+        int total_exam = dbcontext.ExamModel.Count();
 
 
             var stats = new
@@ -79,6 +80,19 @@ public class HomeController : ControllerBase
         }
     }
 
+
+    [Route("/getCreatedExams")]
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> getCreatedExam() {
+        var userIdClaim = HttpContext.User.Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Sid);
+        try {
+            var allExam = await _Exam.getCreatedExam(userIdClaim.Value);
+            return Ok(allExam);
+        } catch(Exception e){
+            return BadRequest(e.Message);
+        }
+    }
 
 
 
