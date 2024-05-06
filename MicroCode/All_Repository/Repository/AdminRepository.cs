@@ -45,6 +45,19 @@ public class AdminRepository : IAdminRepository
         return new PaginatedList<aProblemModel>(problems,pageIndex,totalPages);
     }
 
+    public async Task<aProblemModel> GetProblemsForSide(Guid id){
+        var problem = await _context.ProgramModel
+                .Where(b => b.program_id == id)
+                .Select(b => new aProblemModel
+                {
+                    name = b.title,
+                    owner = _context.UserModel.Where(c => c.user_id == b.user_id).Select(d => d.email).FirstOrDefault(),
+                    id = b.program_id.ToString(),
+                }).FirstOrDefaultAsync();
+
+        return problem;
+    }
+
     public async Task<ProgramModel> GetProblemById(Guid id)
 {
     var problem = await _context.ProgramModel
@@ -89,5 +102,8 @@ public class AdminRepository : IAdminRepository
         problem.isPublic = false;
         return true;
     }
-
+     public async Task<ExamModel> GetExamById(Guid examId){
+        var exam = await _context.ExamModel.FirstOrDefaultAsync(x => x.examId == examId);
+        return exam;
+    }
 }

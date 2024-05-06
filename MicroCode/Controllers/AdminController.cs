@@ -1,5 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using MicroCode.Data;
+using MicroCode.models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 namespace MicroCode.Controllers;
@@ -59,6 +60,29 @@ public class AdminController : ControllerBase
             return BadRequest(e.Message);
         }
         
+    }
+
+
+    [Route("/admin/getExamByID")]
+    [HttpGet]
+    [AllowAnonymous]
+
+    public async Task<IActionResult> getExamByID([FromHeader] string examID){
+        try {
+            var exam = await _adminRepository.GetExamById(new Guid(examID));
+            List<aProblemModel> e = [];
+            if (exam != null) {
+                foreach (var m in exam.allProblems){
+                    e.Add(await _adminRepository.GetProblemsForSide(new Guid(m.problemId)));
+                }
+            }
+            return Ok(new {
+                exam = exam,
+                allProblem = e,
+            });
+        } catch (Exception e){
+            return BadRequest(e);
+        }
     }
 
 

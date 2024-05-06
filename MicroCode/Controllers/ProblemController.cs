@@ -257,13 +257,13 @@ public class ProblemController : ControllerBase
     [Route("/verified")]
     [HttpGet]
     [Authorize]
-    public async Task<IActionResult> pushVerified([FromHeader] string Token)
+    public async Task<IActionResult> pushVerified([FromHeader] string Token ,[FromHeader] bool verify )
     {
 
         if (Token != null)
         {
             ProgramModel program = dbContext.ProgramModel.FirstOrDefault<ProgramModel>(p => p.program_id == new Guid(Token));
-            program.verified = true;
+            program.verified = verify;
             await dbContext.SaveChangesAsync();
             return Ok("verified");
 

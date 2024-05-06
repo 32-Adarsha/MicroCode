@@ -7,6 +7,6 @@ public interface IExamRepository {
     Task<IEnumerable<examViewModel>> GetAllExamAsync();
     Task<IEnumerable<examViewModel>> getCreatedExam(string userId);
     Task<rtnModel<string>> addStudentToExam(string email, Guid examId);
-    
-    
+
+    Task<UExam> getUsersExam(Guid user_id);
 }

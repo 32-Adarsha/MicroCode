@@ -99,7 +99,8 @@ public class ExamRepository : IExamRepository
     {
         var allExams = await _context.ExamModel.Select (x => new examViewModel {
             name = x.name,
-            id = x.examId.ToString()
+            id = x.examId.ToString(),
+            owner = x.UserModel.email,
         }).
         ToListAsync();
         return allExams;
@@ -168,6 +169,43 @@ public class ExamRepository : IExamRepository
             };
         }
     }
+
+   public async Task<UExam> getUsersExam(Guid user_id){
+        var takenExam = await _context.UserExamModels
+                .Where(x => x.user_id == user_id && x.taken == true)
+                .Select(y => new UserExamT {
+                    examId = y.examId.ToString(),
+                    taken = y.taken,
+                    maxScore = y.maxScore,
+                    name = y.examModle.name,
+                    totaScore = y.examModle.totaScore,
+                    timeLimit = y.examModle.timeLimit,
+                    discription = y.examModle.discription,
+                    owner = y.examModle.UserModel.username,
+                }).ToListAsync();
+        var notTakenExam = await _context.UserExamModels
+                .Where(x => x.user_id == user_id && x.taken == false)
+                .Select(y => new UserExamT {
+                    examId = y.examId.ToString(),
+                    taken = y.taken,
+                    maxScore = y.maxScore,
+                    name = y.examModle.name,
+                    totaScore = y.examModle.totaScore,
+                    timeLimit = y.examModle.timeLimit,
+                    discription = y.examModle.discription,
+                    owner = y.examModle.UserModel.username,
+                }).ToListAsync();
+
+        return new UExam
+        {
+            taken = takenExam,
+            nTaken = notTakenExam,
+        };
+
+
+   }
+
+
 }
 
 

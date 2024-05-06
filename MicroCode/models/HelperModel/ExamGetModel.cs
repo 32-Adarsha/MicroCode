@@ -13,6 +13,7 @@ namespace MicroCode.models
     public class examViewModel {
         public string name {get; set; }
         public string id {get; set; }
+        public string owner {get; set; }
     }
 
     
