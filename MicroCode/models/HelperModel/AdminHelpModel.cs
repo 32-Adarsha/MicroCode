@@ -35,5 +35,35 @@ namespace MicroCode.models
     public List<String> Tag { get; set; }
 }
 
+ public class ExamProblemDetail
+{
+    public Guid problemId { get; set; }
+    public string hidden_testcase { get; set; }
+    public string public_testcase { get; set; }
+    public string description { get; set; }
+    public List<String> Tag { get; set; }
+}
+
+
+    public class UserExamT  {
+        public string examId {get; set;}
+        public bool taken {get; set;}
+        public int maxScore { get; set;}
+
+        public string name {get; set;}
+        public int totaScore {get; set;}
+        public int timeLimit {get; set;}
+        public string discription {get; set;}
+        public string owner {get ;set;}
+
+    }
+
+    public class UExam {
+        public List<UserExamT> taken { get; set; }
+        public List<UserExamT> nTaken { get; set; }
+    }
+
+
+
 
 }

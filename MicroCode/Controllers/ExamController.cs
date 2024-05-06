@@ -82,5 +82,14 @@ public class ExamController : ControllerBase
         return Ok("Successful");
     }
 
+    [Route("/getAssignedExam")]
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> aExam(){
+        var userIdClaim = HttpContext.User.Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Sid);
+        var rst = await _Exam.getUsersExam(new Guid(userIdClaim.Value));
+        return Ok(rst);
+    }
+
 
 }
