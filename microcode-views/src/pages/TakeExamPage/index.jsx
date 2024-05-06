@@ -152,11 +152,15 @@ const TakeExam = () => {
                 console.error(error);
             }).finally(() => {
                 axios.post("http://localhost:8080/submitExam", {
-                    examId: "78804a61-4947-4f05-958c-3125fe62e738",
+                    examId: examId,
                     totalScore: 0,
                     trackProblem: trackProblem,
                 }).then(res => {
-                    console.log(res)
+                    if(confirm("Submitted Exam")) {
+                        window.location.href="/profile"
+                    } else {
+                        window.location.href="/"
+                    }
                 })
             })
 
