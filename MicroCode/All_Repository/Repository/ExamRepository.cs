@@ -181,7 +181,7 @@ public class ExamRepository : IExamRepository
                     totaScore = y.examModle.totaScore,
                     timeLimit = y.examModle.timeLimit,
                     discription = y.examModle.discription,
-                    owner = y.examModle.UserModel.username,
+                    owner = y.examModle.UserModel.email,
                 }).ToListAsync();
         var notTakenExam = await _context.UserExamModels
                 .Where(x => x.user_id == user_id && x.taken == false)
@@ -193,7 +193,7 @@ public class ExamRepository : IExamRepository
                     totaScore = y.examModle.totaScore,
                     timeLimit = y.examModle.timeLimit,
                     discription = y.examModle.discription,
-                    owner = y.examModle.UserModel.username,
+                    owner = y.examModle.UserModel.email,
                 }).ToListAsync();
 
         return new UExam
