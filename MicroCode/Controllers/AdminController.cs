@@ -3,14 +3,17 @@ using MicroCode.Data;
 using MicroCode.models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 namespace MicroCode.Controllers;
 
 [ApiController]
 public class AdminController : ControllerBase
 {
     private readonly IAdminRepository _adminRepository;
-   public AdminController(IAdminRepository adminRepository){
+    private readonly MicroCodeContext _context;
+   public AdminController(IAdminRepository adminRepository , MicroCodeContext context){
         _adminRepository = adminRepository;
+        _context = context;
    }
    
    [Route("/admin/problems")]
@@ -84,6 +87,25 @@ public class AdminController : ControllerBase
             return BadRequest(e);
         }
     }
+
+
+    [Route("/admin/getStat")]
+    [HttpGet]
+    [Authorize(Roles ="Admin")]
+    public async Task<IActionResult> getSiteStat(){
+        var coutUsers = _context.UserModel.Count();
+        var coutProblem = _context.ProgramModel.Count();
+        var coutExam = _context.ExamModel.Count();
+
+
+        return Ok(new
+        {
+            users = coutUsers,
+            problems = coutProblem,
+            exam = coutExam,
+        });
+    }
+
 
 
 
