@@ -62,7 +62,14 @@ namespace MicroCode.models
         public List<UserExamT> taken { get; set; }
         public List<UserExamT> nTaken { get; set; }
     }
-
+    
+    public class seeUserExamReport {
+        public bool taken { get; set; }
+        public string user {get; set;}
+        public string email {get; set;}
+        public int totalScore {get; set;}
+        public int atmCount {get; set;}
+    }
 
 
 

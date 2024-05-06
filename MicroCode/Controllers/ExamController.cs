@@ -5,6 +5,7 @@ using MicroCode.Dependency;
 using MicroCode.models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace MicroCode.Controllers;
@@ -74,12 +75,12 @@ public class ExamController : ControllerBase
 
 
     [Route("/submitExam")]
-    [HttpGet]
+    [HttpPost]
     [Authorize]
     public async Task<IActionResult> submitExam([FromBody] submitExamFromUser e){
         var userIdClaim = HttpContext.User.Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Sid);
         await _IexamSubmission.addExamSubmission(new Guid(userIdClaim.Value), e);
-        return Ok("Successful");
+        return Ok(userIdClaim.Value.ToString());
     }
 
     [Route("/getAssignedExam")]
@@ -90,6 +91,55 @@ public class ExamController : ControllerBase
         var rst = await _Exam.getUsersExam(new Guid(userIdClaim.Value));
         return Ok(rst);
     }
+
+    [Route("/getUserExamReport")]
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> aExamReport([FromHeader]string examId){
+        var rst = await _Exam.getUserExamReport(new Guid(examId));
+        return Ok(rst);
+    }
+
+
+    [Route("/getUserExamDetail")]
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> aExamUserDetail([FromHeader]string examId , [FromHeader] string studenID){
+        var rst = await _Exam.getUserExamQuestionDetail(new Guid(examId) , new Guid(studenID));
+        List<UserSolvedResponse> rsp = [];
+        if (rst != null){
+            if (rst.trackProblem != null)
+            {
+                foreach (var p in rst.trackProblem) {
+                    var allSolvedProblem = await dbContext.CodeSubmissions
+                        .Include(s => s.ProgramModel)
+                        .Where(s => s.user_id == new Guid(studenID) && s.codeSubmissionId == new Guid(p.judgeId))
+                        .Select(s => new UserSolvedResponse
+                        {
+                            CodeSubId = s.codeSubmissionId,
+                            Solved = s.solved,
+                            problemId = (Guid)s.Program_id,
+                            code = s.code,
+                            language = s.language,
+                            Title = s.ProgramModel.title,
+                            Tag = s.ProgramModel.tag,
+                        }).FirstOrDefaultAsync();
+                    if (allSolvedProblem != null){
+                        rsp.Add(allSolvedProblem);
+                    }
+                }
+            }
+        }
+
+        return Ok(new
+        {
+            examS = rst,
+            probles = rsp,
+        });
+    }
+
+
+
 
 
 }
