@@ -17,6 +17,8 @@ import CreateExam from "./pages/CreateExamPage";
 import AdminPage from "./pages/AdminPage";
 import ErrorPage from "./pages/ErrorPage";
 import ExamViewPage from "./pages/ExamViewPage";
+import ExamPage from "./pages/ExamPage";
+
 
 function App() {
 
@@ -24,26 +26,22 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Auth page={<Homepage/>}/>}/>
-        <Route path="/signup" element={<SignUp/>}/>
-        <Route path="/custom" element={<CustomTestPage/>}/>
-        <Route path="/createproblem" element={<CreateProblemPage/>}/>
-        <Route path="/navbar" element={<NavBar/>}/>
-        
-        <Route path="/solve/:problemId" element={<SolveProblemPage/>} />
-        <Route path="/profile" element={<Profile/>}/>
-        <Route path="/takeExam" element = {<TakeExam/>} />
-        <Route path="/createExam" element = {<CreateExam/>} />
-        <Route path="/adminPage" element = {<AdminPage/>} />
-
+        <Route path="/takeExam/:examId" element = {<Auth page={<TakeExam />} />} />
+        <Route path="/createExam" element = {<Auth page={<CreateExam />} />} />
+        <Route path="/adminPage" element = {<Auth page={<AdminPage />} />} />
         <Route path="/" element={<Auth page={<Homepage />} />} />
         <Route path="/signup" element={<Auth page={<SignUp />} />} />
         <Route path="/custom" element={<Auth page={<CustomTestPage />} />} />
         <Route path="/createproblem" element={<Auth page={<CreateProblemPage />} />} />
+        <Route path="/createproblem/:questionId" element={<Auth page={<CreateProblemPage />} />} />
         <Route path="/navbar" element={<Auth page={<NavBar />} />} />
         <Route path="/solve/:problemId" element={<Auth page={<SolveProblemPage />} />} />
         <Route path="/profile" element={<Auth page={<Profile />} />} />
+
         <Route path="/viewExams" element={<Auth page={<ExamViewPage />} />} />
+
+        <Route path="/exam" element={<Auth page={<ExamPage />} />} />
+
 
 
       </Routes>

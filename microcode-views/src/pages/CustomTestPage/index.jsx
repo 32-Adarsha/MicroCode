@@ -25,7 +25,7 @@ const headerStyle = {
   zIndex: '1000'
 };
 
-const CustomTestPage = ({ props }) => {
+const CustomTestPage = (props) => {
   const [value, setValue] = useState(localStorage.getItem("custom_code"));
   const [lang, setLang] = useState('cpp');
   const [time, setTime] = useState('');
@@ -49,7 +49,10 @@ const CustomTestPage = ({ props }) => {
     setValue(v);
     localStorage.setItem("custom_code", v);
   };
-  const handleEditorDidMount = (v) => { };
+  const handleEditorDidMount = (v) => { 
+
+    console.log(props) 
+  };
 
   const submit_url = `http://0.0.0.0:2358/submissions?base64_encoded=true&wait=false`;
   const get_url = `http://0.0.0.0:2358/submissions/`;

@@ -3,11 +3,12 @@ import { Form, Input, Typography, Button, message, Tabs, Card, Space, Divider, L
 import { DeleteOutlined, PlusOutlined, SyncOutlined, CloseOutlined, CheckOutlined } from '@ant-design/icons'
 import Markdown from 'react-markdown';
 import Editor from '@monaco-editor/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import config from '../../config/config';
 import axios from 'axios';
 import './create.css'
 import NavBar from '../../components/NavBar';
+import { useParams } from 'react-router-dom';
 import remarkGfm from 'remark-gfm'
 import supersub from 'remark-supersub'
 import remarkRehype from 'remark-rehype'
@@ -38,6 +39,11 @@ const CreateProblemPage = (props) => {
     max_memory: 0,
     max_time: 0,
   });
+  function getSubstringBetween(str, start, end) {
+    const startIndex = str.indexOf(start) + start.length;
+    const endIndex = str.indexOf(end, startIndex);
+    return str.substring(startIndex, endIndex);
+  }
 
   var dis = `
 ## Title:
@@ -64,17 +70,62 @@ ${createMarkdownTable(problem.hidden_testcase[1])}` : ""}
 `;
 
   const [messageApi, contextHolder] = message.useMessage();
-  const [token, setToken] = useState(props.token)
-  const [hasToken, setHasToken] = useState(false)
+
+
   const [input, setInput] = useState("")
   const [output, setOutput] = useState("")
   const [time, setTime] = useState(0)
   const [activeKey, setActiveKey] = useState("0")
   const [mem, setMem] = useState(0)
   const [verifying, setVerifying] = useState(0)
-
-
+  const questionId = useParams()['questionId']
+  const [token, setToken] = useState(questionId)
+  const [hasToken, setHasToken] = useState()
   const [solLang, setSolLang] = useState("cpp")
+  const [edit, setEdit] = useState(false)
+
+  useEffect(() => {
+    if (questionId) {
+      setHasToken(true)
+      setToken(questionId)
+      console.log(questionId)
+      setEdit(true)
+      let a ={}
+      axios.post(`http://localhost:8080/getCodetoSolve`, {}, { headers: { Token: questionId } })
+        .then(response => {
+          a={
+            title: response.data[0].title,
+            pid: questionId,
+            max_memory: 10,
+            max_time: 10,
+            hidden_testcase: JSON.parse(response.data[0].hidden_testcase),
+            public_testcase: JSON.parse(response.data[0].public_testcase),
+            discription: getSubstringBetween(response.data[0].discription, "## Description:", "## Sample Testcases")
+          }
+          setProblem(a)
+        }).then(()=>{
+          axios.get(`http://localhost:8080/getCode`, { headers: { Token: questionId } })
+            .then(response => {
+              a = {...a,mainCode: response.data[0].mainCode}
+              setProblem(a)
+              console.log(problem)
+            })
+        })
+        .catch(error => {
+          console.error(error);
+        }).finally(() => {
+          
+
+        })
+    } else {
+      setHasToken(false)
+
+    }
+
+  }, [])
+
+
+
 
   function createMarkdownTable(data) {
     try {
@@ -215,7 +266,7 @@ ${createMarkdownTable(problem.hidden_testcase[1])}` : ""}
                 axios.post(`http://localhost:8080/saveProblem`, newp).then((res) => {
                   if (res.status === 200) {
                     message.success("Created problem and verified", 2).then(() => {
-                      // window.location.href ="/"
+                      window.location.href = "/createproblem/" + problem.pid
                     });
                   } else {
                     console.log(res);
@@ -228,7 +279,7 @@ ${createMarkdownTable(problem.hidden_testcase[1])}` : ""}
                 axios.post(`http://localhost:8080/saveProblem`, newp).then((res) => {
                   if (res.status === 200) {
                     message.success("Created problem but could not verify, Someone at Microcode will look at it", 3).then(() => {
-                      //window.location.href ="/"
+                      window.location.href = "/createproblem/" + problem.pid
                     });
                   } else {
                     console.log(res);
@@ -293,6 +344,57 @@ ${createMarkdownTable(problem.hidden_testcase[1])}` : ""}
       });
   }
 
+  const updateProblem = () => {
+    setProblem({ ...problem, public_testcase: [problem.hidden_testcase[0], problem.hidden_testcase[1]] });
+    const validateProblem = () => {
+      if (!problem.discription) {
+        message.error("Description cannot be empty", 2);
+        return false;
+      }
+
+      if (problem.hidden_testcase.length < 2) {
+        message.error("There should be at least 2 testcases", 2);
+        return false;
+      }
+
+      if (problem.max_memory < 1) {
+        message.error("Max memory must be greater than or equal to 1", 2);
+        return false;
+      }
+
+      if (problem.max_time < 1) {
+        message.error("Max time must be greater than or equal to 1", 2);
+        return false;
+      }
+
+      return true;
+    };
+
+    if (validateProblem()) {
+      var newp = problem;
+      newp.discription = dis;
+      newp.public_testcase[0] = newp.hidden_testcase[0];
+      newp.public_testcase[1] = newp.hidden_testcase[1];
+      newp.hidden_testcase = JSON.stringify(problem.hidden_testcase);
+      newp.public_testcase = JSON.stringify(problem.public_testcase);
+
+      axios.post(`http://localhost:8080/saveProblem`, newp).then((res) => {
+        if (res.status === 200) {
+          message.success("Saved Problem", 2).then(() => {
+            window.location.href = "/createproblem/" + problem.pid
+          });
+        } else {
+          console.log(res);
+        }
+      }).catch(err => {
+        console.log(err);
+      });
+
+
+
+    }
+  }
+
   const addTestcase = () => {
     setProblem({ ...problem, hidden_testcase: [...problem.hidden_testcase, { "input": input, "output": output }] })
     setInput("")
@@ -323,7 +425,7 @@ ${createMarkdownTable(problem.hidden_testcase[1])}` : ""}
   return (
     <>
       {contextHolder}
-      <NavBar leftChildren={[left(), <br></br>]}></NavBar>
+      <NavBar leftChildren={[edit ? <Button type='primary' onClick={updateProblem}>Update</Button> : left(), <br></br>]}></NavBar>
       <SplitPane split="vertical" defaultSize="50%" minSize={300} maxSize={1200}>
         <div>
           <div className='left'>
@@ -332,11 +434,11 @@ ${createMarkdownTable(problem.hidden_testcase[1])}` : ""}
                 <Input name="title" value={problem.title} onChange={handleTitleChange} />
 
               </Form.Item>
-              {!hasToken ? <Button type='primary'  onClick={getToken} style={{ float: "right" }}>Get Token</Button> : ""}
+              {!hasToken ? <Button type='primary' onClick={getToken} style={{ float: "right" }}>Get Token</Button> : ""}
               {hasToken ?
                 <div>
                   <Form.Item label="Description">
-                    <TextArea rows={10} placeholder={"Type in markdown"} onChange={handleDetailsChange} />
+                    <TextArea value={problem.discription} rows={10} placeholder={"Type in markdown"} onChange={handleDetailsChange} />
 
 
                   </Form.Item>
@@ -409,7 +511,7 @@ ${createMarkdownTable(problem.hidden_testcase[1])}` : ""}
                   <Text >Token:</Text>
 
 
-                  <Text copyable code>{problem.pid}</Text>
+                  <Text copyable code>{token}</Text>
                 </span>
 
 
