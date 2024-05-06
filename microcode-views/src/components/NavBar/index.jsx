@@ -2,34 +2,74 @@ import React from "react";
 import { Menu, Button, Space, Grid, theme } from "antd";
 import { MenuOutlined } from "@ant-design/icons";
 import Logo from "../../assets/images/logo.png";
+import axios from 'axios';
+import { useState ,useEffect } from 'react';
 
 const { useToken } = theme;
 
 const NavBar = (props) => {
   const { token } = useToken();
-
-  const menuItems = [
+  const [addeAdmin ,seAddedAdmint] = useState(false)
+  const [menuItems, setMenuItems] = useState([
     {
-      label: "Home",
-      key: "home",
-      to: "/"
+      label: 'Home',
+      key: 'home',
+      to: '/'
     },
     {
-      label: "Custom Test",
-      key: "ctest",
-      to: "/custom"
+      label: 'Custom Test',
+      key: 'ctest',
+      to: '/custom'
     },
     {
-      label: "Create Problem",
-      key: "cproblem",
-      to: "/createproblem"
+      label: 'Create Problem',
+      key: 'cproblem',
+      to: '/createproblem'
     },
     {
-      label: "Profile",
-      key: "profile",
-      to: "/profile"
+      label: 'Profile',
+      key: 'profile',
+      to: '/profile'
+    },
+    {
+      label: 'Exam',
+      key: 'exam',
+      to: '/viewExams'
     }
-  ];
+  ]);
+  
+useEffect(() => {
+  
+
+  const getData = () => {
+   
+    axios.get(`http://localhost:8080/getRole`)
+      .then(res => {
+        if (res.data.role && res.data.role.includes('Admin')) {
+          seAddedAdmint(true)
+          setMenuItems((prevMenuItems) => [
+            ...prevMenuItems,
+            {
+              label: 'Admin',
+              key: 'admin',
+              to: '/adminPage'
+            }
+          ]);
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching site stats:', error);
+      });
+    
+    
+  };
+
+  getData();
+}, []);
+
+  
+
+
 
   const styles = {
     header: {

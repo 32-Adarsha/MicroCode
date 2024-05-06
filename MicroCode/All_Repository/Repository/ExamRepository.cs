@@ -119,7 +119,8 @@ public class ExamRepository : IExamRepository
             var examModel = await _context.ExamModel.Where(u => u.user_id == new Guid(userId)).Select(x => new examViewModel
             {
                 name = x.name,
-                id = x.examId.ToString()
+                id = x.examId.ToString(),
+                owner = x.UserModel.email
             }).ToListAsync();
 
             return examModel;
@@ -214,6 +215,7 @@ public class ExamRepository : IExamRepository
                 email = y.UserModel.email,
                 totalScore = y.maxScore,
                 atmCount = y.atmtCount,
+                id = y.UserModel.user_id.ToString(),
 
             }).ToListAsync();
         

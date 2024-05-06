@@ -69,6 +69,7 @@ namespace MicroCode.models
         public string email {get; set;}
         public int totalScore {get; set;}
         public int atmCount {get; set;}
+        public string id {get; set;}
     }
 
 

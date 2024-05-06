@@ -26,36 +26,6 @@ import {
   { key: '4', icon: <UserOutlined />, label: 'Users'},
 ];
 
-const data = [
-    {
-        id: 1,
-        name: 'Lily',
-      },
-      {
-        id: 2,
-        name: 'drfgd',
-      },
-  ];
-  const problem = [
-    {
-        id: 1,
-        name: 'Problem1',
-      },
-      {
-        id: 2,
-        name: 'Problem2',
-      },
-  ];
-  const exam = [
-    {
-        id: 1,
-        name: 'exam1',
-      },
-      {
-        id: 2,
-        name: 'exam2',
-      },
-  ];
 
   
 
@@ -377,7 +347,7 @@ function ListWithDrawer({ data }) {
             </List.Item>
           )}
         />
-        <Drawer width={640} title="User" onClose={onClose} open={open}>
+        <Drawer width={640} title="Problem" onClose={onClose} open={open}>
           {selectedItem !== null ? (
             <>
               <Layout className="w-full h-full bg-transparent" >
@@ -417,7 +387,7 @@ function ListWithDrawer({ data }) {
     const [open, setOpen] = useState(false);
   
     const showDrawer = (item) => {
-
+      getExamData(item.id)
       setSelectedItem(item);
       setOpen(true);
     };
@@ -425,6 +395,21 @@ function ListWithDrawer({ data }) {
     const onClose = () => {
       setOpen(false);
     };
+
+    const getExamData = (id) => {
+      axios.get('http://localhost:8080/admin/getExamByID', {
+        headers: {
+        'accept': '*/*',
+        'examId': id,}})
+      .then(response => {
+      setSelectedItem(response.data)
+  console.log(response.data);
+})
+.catch(error => {
+  console.error('Error fetching data:', error);
+});
+    };
+
   
     return (
       <>
@@ -448,10 +433,34 @@ function ListWithDrawer({ data }) {
             </List.Item>
           )}
         />
-        <Drawer width={640} title="User" onClose={onClose} open={open}>
-          <p>{selectedItem !== null ? selectedItem.id : "Test"}</p>
-          <p>{selectedItem !== null ? selectedItem.name : "No User"}</p>
-          <p>Some contents...</p>
+        <Drawer width={640} title="Exam" onClose={onClose} open={open}>
+          <Divider orientation="left">Exam Info</Divider>
+          {selectedItem != null && selectedItem.exam != null ? (
+  < div className="pl-10">
+    <div className="w-2/5 flex flex-row justify-between"><p className="font-bold font-sans">Title :</p><p>{selectedItem.exam.name}</p></div>
+    <div className="w-2/5 flex flex-row justify-between"><p className="font-bold font-sans">Time Limit :</p><p>{selectedItem.exam.timeLimit}</p></div>
+    <div className="w-2/5 flex flex-row justify-between"><p className="font-bold font-sans">Total Score :</p><p>{selectedItem.exam.totaScore}</p></div>
+
+  </div>
+) : (
+  <>
+  </>
+)}
+<Divider orientation="left">Exam Problem</Divider>
+        {selectedItem && selectedItem.allProblem && (
+  <List
+    dataSource={selectedItem.allProblem}
+    renderItem={problem => (
+      <List.Item>
+        <List.Item.Meta
+          avatar={<Avatar>{problem.name[0].toUpperCase()}</Avatar>}
+          title={problem.name}
+          description={`Owner: ${problem.owner}`}
+        />
+      </List.Item>
+    )}
+  />
+)}
         </Drawer>
       </>
     );
