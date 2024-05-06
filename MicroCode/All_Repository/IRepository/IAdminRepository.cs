@@ -15,6 +15,8 @@ public interface IAdminRepository
     Task<Boolean> MakePublic(Guid Id);
     Task<Boolean> MakePrivate(Guid Id);
     Task<UserModel> getUser(Guid id);
+    Task<ExamModel> GetExamById(Guid examId);
+    Task<aProblemModel> GetProblemsForSide(Guid problemID);
     
    
 }

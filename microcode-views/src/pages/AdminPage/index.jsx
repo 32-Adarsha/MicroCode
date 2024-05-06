@@ -82,6 +82,7 @@ const AdminPage = () => {
 
 const [usersData , setUsersData] = useState(null)
 const [problemsData , setProblemsData] = useState(null)
+const [examData , setExamData] = useState(null)
 
 
 
@@ -89,8 +90,8 @@ const [problemsData , setProblemsData] = useState(null)
 
 useEffect(() => {
   const userDataUrl = `http://localhost:8080/admin/getAllUser?pageIndex=1&pageSize=10`;
-  const problemsUrl = `http://localhost:8080/admin/problems?pageIndex=1&pageSize=10
-  `;
+  const problemsUrl = `http://localhost:8080/admin/problems?pageIndex=1&pageSize=10`;
+  const examsUrl = `http://localhost:8080/getAllExam`
 
   const getData = () => {
     axios.get(userDataUrl)
@@ -105,7 +106,18 @@ useEffect(() => {
     axios.get(problemsUrl)
       .then(res => {
         setProblemsData(res.data.items);
-        console.log(res.data.items)
+        
+      })
+      .catch(error => {
+        console.error('Error fetching site stats:', error);
+        
+      });
+
+
+      axios.get(examsUrl)
+      .then(res => {
+        setExamData(res.data);
+        console.log(res.data)
       })
       .catch(error => {
         console.error('Error fetching site stats:', error);
@@ -144,7 +156,7 @@ useEffect(() => {
                     <h1 className="w-full text-black text-4xl font-sans font-bold mt-5 text-center">EXAMS</h1>
                     <Divider orientation="left">Exams</Divider>
                     <Search placeholder="search exam" className='' enterButton="Search" size="large" onSearch={value => console.log(value)}/>
-                    <ProblemWithDrawer data={exam}/>
+                    <ExamWithDrawer data={examData}/>
                 </Layout>
             ) : selectedKeys[0] ==='3'?(
                 <Layout className="bg-white rounded-lg shadow-lg p-3">
@@ -243,8 +255,10 @@ function ListWithDrawer({ data }) {
               </span>
             </Header>
           <Content className="w-full h-full p-3">
-            
-            
+            <UserInfoComponent label="Username" item={selectedItem.username} />
+            <UserInfoComponent label="First Name" item={selectedItem.first_name} />
+            <UserInfoComponent label="Last Name" item={selectedItem.last_name} />
+            <UserInfoComponent label="Email" item={selectedItem.email} /> 
           </Content>
 
           </Layout>
@@ -263,6 +277,7 @@ function ListWithDrawer({ data }) {
     const [selectedItem, setSelectedItem] = useState(null);
     const [open, setOpen] = useState(false);
     const [checked, setChecked] = useState(null);
+    const [vCheck, setVCheck] = useState(null);
 
   
     const showDrawer = (item) => {
@@ -281,12 +296,36 @@ function ListWithDrawer({ data }) {
       changeIsPublic(selectedItem.program_id, newChecked);
     };
 
+    const makeVerify = () => {
+      const newChecked = !vCheck;
+      setVCheck(newChecked);
+      changeVerify(selectedItem.program_id, newChecked)
+      
+    };
+
     const changeIsPublic = (Token, isPublic) => {
       axios.get('http://localhost:8080/makePublic', {
         headers: {
           'accept': '*/*',
           'Token': Token,
           'isPublic': isPublic
+        },
+        
+      })
+      .then(response => {
+        console.log(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+    };
+
+    const changeVerify = (Token, verify) => {
+      axios.get('http://localhost:8080/verified', {
+        headers: {
+          'accept': '*/*',
+          'Token': Token,
+          'verify': verify
         },
         
       })
@@ -308,6 +347,7 @@ function ListWithDrawer({ data }) {
       .then(response => {
       setSelectedItem(response.data)
       setChecked(response.data.isPublic)
+      setVCheck(response.data.verified)
   console.log(response.data);
 })
 .catch(error => {
@@ -325,7 +365,7 @@ function ListWithDrawer({ data }) {
               key={item.id}
               actions={[
                 <a onClick={() => showDrawer(item)} key={`a-${item.id}`}>
-                  View Profile
+                  View Problem
                 </a>,
               ]}
             >
@@ -354,9 +394,10 @@ function ListWithDrawer({ data }) {
   }\n\`\`\``}
 </Markdown>
                   </Content>
-                  <Footer className="bg-gray-100 my-1 text-white rounded-lg font-bold">
+                  <Footer className="bg-gray-100 my-1 text-white rounded-lg font-bold flex felx-row justify-between">
                     
                     <Switch checked={checked} onChange={makePublic} checkedChildren="Public" unCheckedChildren="Private"/>
+                    <Switch checked={vCheck} onChange={makeVerify} checkedChildren="Verified" unCheckedChildren="Not Verified"/>
                   </Footer>
             </Layout>
             </>
@@ -395,14 +436,14 @@ function ListWithDrawer({ data }) {
               key={item.id}
               actions={[
                 <a onClick={() => showDrawer(item)} key={`a-${item.id}`}>
-                  View Profile
+                  View Exam
                 </a>,
               ]}
             >
               <List.Item.Meta
                 
-                title={<a href="#">{item.name}</a>}
-                description="Ant Design, a design language for background applications, is refined by Ant UED Team"
+                title={item.name}
+                description={item.owner}
               />
             </List.Item>
           )}
