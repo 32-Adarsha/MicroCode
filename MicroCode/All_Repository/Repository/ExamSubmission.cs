@@ -31,7 +31,7 @@ public class ExamSubmission : IExamSubmission
 
         };
         var userEmodel = await _context.UserExamModels.FirstOrDefaultAsync(x => x.user_id == userId && x.examId == e.examId);
-        if (userEmodel == null) { userEmodel.taken = true; };
+        if (userEmodel  != null) { userEmodel.taken = true; };
 
         await _context.ExamSubmissionModel.AddAsync(newExamSubmission);
         await _context.SaveChangesAsync();

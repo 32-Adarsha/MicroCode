@@ -106,4 +106,8 @@ public class AdminRepository : IAdminRepository
         var exam = await _context.ExamModel.FirstOrDefaultAsync(x => x.examId == examId);
         return exam;
     }
+
+
+
+    
 }

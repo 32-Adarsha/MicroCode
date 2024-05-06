@@ -26,36 +26,6 @@ import {
   { key: '4', icon: <UserOutlined />, label: 'Users'},
 ];
 
-const data = [
-    {
-        id: 1,
-        name: 'Lily',
-      },
-      {
-        id: 2,
-        name: 'drfgd',
-      },
-  ];
-  const problem = [
-    {
-        id: 1,
-        name: 'Problem1',
-      },
-      {
-        id: 2,
-        name: 'Problem2',
-      },
-  ];
-  const exam = [
-    {
-        id: 1,
-        name: 'exam1',
-      },
-      {
-        id: 2,
-        name: 'exam2',
-      },
-  ];
 
   
 
@@ -83,7 +53,7 @@ const AdminPage = () => {
 const [usersData , setUsersData] = useState(null)
 const [problemsData , setProblemsData] = useState(null)
 const [examData , setExamData] = useState(null)
-
+const [siteStat , setSiteStat] = useState(null)
 
 
 
@@ -117,6 +87,17 @@ useEffect(() => {
       axios.get(examsUrl)
       .then(res => {
         setExamData(res.data);
+       
+      })
+      .catch(error => {
+        console.error('Error fetching site stats:', error);
+        
+      });
+
+
+      axios.get(`http://localhost:8080/admin/getStat`)
+      .then(res => {
+        setSiteStat(res.data)
         console.log(res.data)
       })
       .catch(error => {
@@ -144,12 +125,35 @@ useEffect(() => {
             <Sider width={200} className="h-full py-2 px-3 rounded-lg flex flex-col justify-center">
                 <h1 className='text-white w-full text-center font-sans text-3xl my-5'>MENU</h1>
                 <Menu theme='dark' defaultSelectedKeys={["1"]} mode='inline' items={items} onSelect={handleSelect} ></Menu>
+
             </Sider>
             <Layout className='p-1'>
             {selectedKeys[0] === '1' ? (
                     <Layout className="bg-white rounded-lg shadow-lg p-3">
                         <h1 className="w-full text-black text-4xl font-sans font-bold mt-5 text-center">STATISTICS</h1>
                         <Divider orientation="left">Statistics </Divider>
+                        {siteStat != null? (
+                          <>
+                            <div className="flex flex-row w-full justify-around">
+                              <div className="flex flex-col items-center justify-around p-2 w-56 outline rounded-lg h-56">
+                                <p className="text-3xl font-sans font-bold">Users</p>
+                                <p className="text-black text-8xl text-gray-700 font-sans font-bold">{siteStat.users}</p>
+                              </div>
+                              <div className="flex flex-col items-center justify-around p-2 w-56 outline rounded-lg h-56">
+                                <p className="text-3xl font-sans font-bold">Exam</p>
+                                <p className="text-black text-8xl text-gray-700 font-sans font-bold">{siteStat.exam}</p>
+                              </div>
+                              <div className="flex flex-col items-center justify-around p-2 w-56 outline rounded-lg h-56">
+                                <p className="text-3xl font-sans font-bold">Problem</p>
+                                <p className="text-black text-8xl text-gray-700 font-sans font-bold">{siteStat.problems}</p>
+                              </div>
+                            </div>
+                          </>
+                        ):(
+                          <>
+                          <p>Loading ...</p>
+                          </>
+                        )}
                     </Layout>
             ) : selectedKeys[0] === '2' ? (
                 <Layout className="bg-white rounded-lg shadow-lg p-3">
@@ -377,7 +381,7 @@ function ListWithDrawer({ data }) {
             </List.Item>
           )}
         />
-        <Drawer width={640} title="User" onClose={onClose} open={open}>
+        <Drawer width={640} title="Problem" onClose={onClose} open={open}>
           {selectedItem !== null ? (
             <>
               <Layout className="w-full h-full bg-transparent" >
@@ -417,7 +421,7 @@ function ListWithDrawer({ data }) {
     const [open, setOpen] = useState(false);
   
     const showDrawer = (item) => {
-
+      getExamData(item.id)
       setSelectedItem(item);
       setOpen(true);
     };
@@ -425,6 +429,21 @@ function ListWithDrawer({ data }) {
     const onClose = () => {
       setOpen(false);
     };
+
+    const getExamData = (id) => {
+      axios.get('http://localhost:8080/admin/getExamByID', {
+        headers: {
+        'accept': '*/*',
+        'examId': id,}})
+      .then(response => {
+      setSelectedItem(response.data)
+  console.log(response.data);
+})
+.catch(error => {
+  console.error('Error fetching data:', error);
+});
+    };
+
   
     return (
       <>
@@ -448,10 +467,34 @@ function ListWithDrawer({ data }) {
             </List.Item>
           )}
         />
-        <Drawer width={640} title="User" onClose={onClose} open={open}>
-          <p>{selectedItem !== null ? selectedItem.id : "Test"}</p>
-          <p>{selectedItem !== null ? selectedItem.name : "No User"}</p>
-          <p>Some contents...</p>
+        <Drawer width={640} title="Exam" onClose={onClose} open={open}>
+          <Divider orientation="left">Exam Info</Divider>
+          {selectedItem != null && selectedItem.exam != null ? (
+  < div className="pl-10">
+    <div className="w-2/5 flex flex-row justify-between"><p className="font-bold font-sans">Title :</p><p>{selectedItem.exam.name}</p></div>
+    <div className="w-2/5 flex flex-row justify-between"><p className="font-bold font-sans">Time Limit :</p><p>{selectedItem.exam.timeLimit}</p></div>
+    <div className="w-2/5 flex flex-row justify-between"><p className="font-bold font-sans">Total Score :</p><p>{selectedItem.exam.totaScore}</p></div>
+
+  </div>
+) : (
+  <>
+  </>
+)}
+<Divider orientation="left">Exam Problem</Divider>
+        {selectedItem && selectedItem.allProblem && (
+  <List
+    dataSource={selectedItem.allProblem}
+    renderItem={problem => (
+      <List.Item>
+        <List.Item.Meta
+          avatar={<Avatar>{problem.name[0].toUpperCase()}</Avatar>}
+          title={problem.name}
+          description={`Owner: ${problem.owner}`}
+        />
+      </List.Item>
+    )}
+  />
+)}
         </Drawer>
       </>
     );

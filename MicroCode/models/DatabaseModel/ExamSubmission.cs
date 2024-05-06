@@ -2,9 +2,9 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 public struct SubmissionProblem {
-        public string problemId;
-        public string judgeId;
-        public float score;
+        public string problemId { get; set; }
+        public string judgeId { get; set; }
+        public float score { get; set; }
     }
 
 namespace MicroCode.models

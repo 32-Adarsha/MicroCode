@@ -15,9 +15,10 @@ import Profile from "./pages/Profile";
 import TakeExam from "./pages/TakeExamPage";
 import CreateExam from "./pages/CreateExamPage";
 import AdminPage from "./pages/AdminPage";
-
 import ErrorPage from "./pages/ErrorPage";
+import ExamViewPage from "./pages/ExamViewPage";
 import ExamPage from "./pages/ExamPage";
+
 
 function App() {
 
@@ -36,7 +37,11 @@ function App() {
         <Route path="/navbar" element={<Auth page={<NavBar />} />} />
         <Route path="/solve/:problemId" element={<Auth page={<SolveProblemPage />} />} />
         <Route path="/profile" element={<Auth page={<Profile />} />} />
+
+        <Route path="/viewExams" element={<Auth page={<ExamViewPage />} />} />
+
         <Route path="/exam" element={<Auth page={<ExamPage />} />} />
+
 
 
       </Routes>

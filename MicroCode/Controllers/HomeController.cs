@@ -94,6 +94,19 @@ public class HomeController : ControllerBase
         }
     }
 
+    [Route("/getRole")]
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> getRoles(){
+        var userIdClaim = HttpContext.User.Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Sid);
+
+        var value = await dbcontext.UserModel.Where(x => x.user_id == new Guid(userIdClaim.Value)).Select(x => new
+        {
+            role = x.roles,
+        }).FirstOrDefaultAsync();
+
+        return Ok(value);
+    }
 
 
 }

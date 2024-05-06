@@ -119,7 +119,8 @@ public class ExamRepository : IExamRepository
             var examModel = await _context.ExamModel.Where(u => u.user_id == new Guid(userId)).Select(x => new examViewModel
             {
                 name = x.name,
-                id = x.examId.ToString()
+                id = x.examId.ToString(),
+                owner = x.UserModel.email
             }).ToListAsync();
 
             return examModel;
@@ -170,7 +171,7 @@ public class ExamRepository : IExamRepository
         }
     }
 
-   public async Task<UExam> getUsersExam(Guid user_id){
+    public async Task<UExam> getUsersExam(Guid user_id){
         var takenExam = await _context.UserExamModels
                 .Where(x => x.user_id == user_id && x.taken == true)
                 .Select(y => new UserExamT {
@@ -205,6 +206,46 @@ public class ExamRepository : IExamRepository
 
    }
 
+    public async Task<List<seeUserExamReport>> getUserExamReport(Guid exam_id){
+        var usersExam = await _context.UserExamModels.Where(x => x.examId == exam_id)
+            .Select(y => new seeUserExamReport
+            {
+                taken = y.taken,
+                user = y.UserModel.username,
+                email = y.UserModel.email,
+                totalScore = y.maxScore,
+                atmCount = y.atmtCount,
+                id = y.UserModel.user_id.ToString(),
+
+            }).ToListAsync();
+        
+        return usersExam;
+    }
+
+    public async Task<List<seeUserExamReport>> getIndividualExamReport(Guid exam_id){
+        var usersExam = await _context.UserExamModels.Where(x => x.examId == exam_id)
+            .Select(y => new seeUserExamReport
+            {
+                taken = y.taken,
+                user = y.UserModel.username,
+                email = y.UserModel.email,
+                totalScore = y.maxScore,
+                atmCount = y.atmtCount,
+
+            }).ToListAsync();
+        
+        return usersExam;
+    }
+
+
+
+    public async Task<ExamSubmissionModel> getUserExamQuestionDetail(Guid exam_id, Guid s_id){
+        var usersExam = await _context.ExamSubmissionModel.FirstOrDefaultAsync(x => x.user_id == s_id && x.examId == exam_id);
+        return usersExam;
+    }
+
+    
+   
 
 }
 
