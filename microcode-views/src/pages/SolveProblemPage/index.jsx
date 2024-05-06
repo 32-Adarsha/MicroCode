@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Editor from '@monaco-editor/react';
 import CButton from '../../components/Button';
 import SplitPane from 'react-split-pane';
-import { Select, Layout, Tabs, Button, Card, Flex, Space, Upload, Modal, Timeline,Spin } from 'antd';
+import { Select, Layout, Tabs, Button, Card, Flex, Space, Upload, Modal, Timeline, Spin } from 'antd';
 import axios from 'axios';
 import config from '../../config/config.jsx';
 import NavBar from '../../components/NavBar/index.jsx';
@@ -61,11 +61,11 @@ const SolveProblemPage = ({ props }) => {
 
 
     const language_id = {
-        cpp: 54,
-        python: 70,
-        java: 62,
-        javascript: 63,
-        csharp: 51,
+        cpp: "54",
+        python: "70",
+        java: "62",
+        javascript: "63",
+        csharp: "51",
     };
     const language_extension = {
         cpp: 'cpp',
@@ -101,7 +101,7 @@ const SolveProblemPage = ({ props }) => {
             axios.post(linktoproblem, null, { headers: { 'Token': problemId } }).then((res) => {
                 setProblem(res.data[0])
                 console.log(res.data[0])
-                setTest(JSON.parse(res.data[0].public_testcase))
+                setTest(JSON.parse(res.data[0].hidden_testcase))
                 console.log(JSON.parse(res.data[0].public_testcase));
 
 
@@ -236,21 +236,38 @@ const SolveProblemPage = ({ props }) => {
         Promise.all(requests)
             .then(responses => {
                 const timeline = [];
-               
+                const r = [];
+
                 responses.forEach((response, index) => {
                     console.log(response.data.status_id)
                     const color = response.data.status_id === 3 ? 'green' : 'red';
-                    const child = response.data.status_id === 3 ? <CheckCircleOutlined/> : <CloseCircleOutlined/>;
+                    const child = response.data.status_id === 3 ? <CheckCircleOutlined /> : <CloseCircleOutlined />;
+                    const successful = response.data.status_id === 3;
                     timeline.push({
                         label: `Test ${index + 1}`,
                         color,
                         children: child,
                     });
+                    r.push(successful)
                 });
                 console.log(timeline)
                 setTimelineData(timeline);
                 setgotvalue(true)
-                
+
+                axios.post('http://localhost:8080/submitProblem', {
+                    problem_id: problemId,
+                    language: language_id[lang],
+                    source_code: value,
+                    solved: (!r.some( b=>!b))
+                })
+                    .then(response => {
+                        console.log(response.data);
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+
+
             })
             .catch(error => {
                 console.error(error);
@@ -278,7 +295,7 @@ const SolveProblemPage = ({ props }) => {
         padding: 50,
         background: 'rgba(0, 0, 0, 0.05)',
         borderRadius: 4,
-      };
+    };
     const content = <div style={contentStyle} />;
 
 
@@ -415,12 +432,12 @@ const SolveProblemPage = ({ props }) => {
 
             </div>
             <Modal title="Test Results" open={visible} onOk={handleOk} >
-                {gotvalue?<Timeline items={timelineData}></Timeline>:<Spin tip="Submitted" size="large">
+                {gotvalue ? <Timeline items={timelineData}></Timeline> : <Spin tip="Submitted" size="large">
                     {content}
                 </Spin>}
-                
-                
-                
+
+
+
             </Modal>
 
 

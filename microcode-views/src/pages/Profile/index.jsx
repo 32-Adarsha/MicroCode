@@ -1,6 +1,9 @@
 import React, { useState, useEffect, createRef } from 'react';
-import { Card, Flex, Typography, Button, message, List, Divider, Checkbox, Space } from 'antd';
+import { Card, Flex, Typography, Button, message, List, Divider, Checkbox, Space, Collapse } from 'antd';
 import axios from 'axios';
+import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons'
+import { CodeBlock } from "react-code-blocks";
+
 
 import NavBar from '../../components/NavBar';
 
@@ -9,6 +12,7 @@ const { Text } = Typography;
 const Profile = () => {
   const [userData, setUserData] = useState(null);
   const [problemss, setProblems] = useState([])
+  const [solvedProblems, setSolvedProblems] = useState([])
   const chartData = {
     labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
     datasets: [
@@ -62,7 +66,21 @@ const Profile = () => {
         setProblems(data.data)
       })
     }
+
+    const getsolvedproblems = () => {
+      axios({
+        method: 'GET',
+        url: 'http://localhost:8080/getUserSolved',
+      })
+        .then((response) => {
+          setSolvedProblems(response.data.items);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
     getProblems()
+    getsolvedproblems()
 
     fetchUserDetails();
   }, []);
@@ -80,6 +98,14 @@ const Profile = () => {
       message.error('Logout failed');
     }
   };
+  const swapped_language_id = {
+    '54': 'cpp',
+    '70': 'python',
+    '62': 'java',
+    '63': 'javascript',
+    '51': 'csharp',
+  };
+
 
   const renderProfileCard = () => {
     if (!userData) {
@@ -89,20 +115,28 @@ const Profile = () => {
     return (
       <div>
         <NavBar />
-        <Flex justify="space-between"
-          direction="row"
-          wrap="wrap"
-          style={{ width: '98vw' }}>
+        <Flex justify="space-between" direction="row" wrap="nowrap"  style={{ width: '98vw' , padding:'20px'}}>
           <Card
             style={{
-              width: '100vw',
+              width: '30%',
+              height: '400px',
+              marginLeft: '0px',
+              marginTop: '20px',
+              border: '',
+            }}
+          >
+            
+          </Card>
+          <Card
+            style={{
+              width: '30%',
               height: '400px',
               marginLeft: '0px',
               marginTop: '20px',
               border: 'solid',
-              color: ''
             }}
-          >            <Flex vertical gap="left" align='center'>
+          >
+            <Flex vertical gap="left" align='center'>
               <img
                 alt="Profile Avatar"
                 src="https://bootdey.com/img/Content/avatar/avatar7.png"
@@ -123,10 +157,20 @@ const Profile = () => {
               </Flex>
             </Flex>
           </Card>
-
-
+          <Card
+            style={{
+              width: '30%',
+              height: '400px',
+              marginLeft: '0px',
+              marginTop: '20px',
+              border: '',
+            }}
+          >
+            
+          </Card>
         </Flex>
-        <Divider>Your Problems</Divider>
+
+        <Divider>Created Problems</Divider>
         <List
           style={{ marginLeft: '30px', marginTop: '20px' }}
           bordered
@@ -143,6 +187,26 @@ const Profile = () => {
             </List.Item>
           )}
         />
+        <Divider>Attempted Problems</Divider>
+        <Collapse style={{ marginLeft: '30px', marginTop: '20px' }} items={
+          solvedProblems.map(item => ({
+            key: item.codeSubId,
+            label: item.title,
+            extra: item.solved ? <span>Solved <CheckCircleOutlined /></span> : <span>Error <CloseCircleOutlined /></span>,
+            children: <div>
+              <p>Language:{swapped_language_id[item.language]}</p>
+              <CodeBlock
+                text={item.code}
+                language={swapped_language_id[item.language]}
+                showLineNumbers={true}
+                theme='atom-one-dark'
+                codeBlock={{ lineNumbers: false, wrapLines: true }}
+              />
+              <Button type='primary' onClick={() => { window.location.href = `/solve/` + item.problemId }}>Solve Again</Button>
+            </div>,
+          }))
+        } />
+        <Divider />
 
       </div>
     );

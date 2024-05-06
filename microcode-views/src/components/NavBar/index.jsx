@@ -28,6 +28,11 @@ const NavBar = (props) => {
       label: "Profile",
       key: "profile",
       to: "/profile"
+    },
+    {
+      label: "Exams",
+      key: "exam",
+      to: "/exam"
     }
   ];
 
