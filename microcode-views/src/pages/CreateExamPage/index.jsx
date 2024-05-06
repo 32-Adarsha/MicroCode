@@ -385,13 +385,7 @@ const CreateExam = () => {
                                         value={exam.name}
                                         onChange={(e) => setExam({ ...exam, name: e.target.value })}
                                     />
-                                    <h1 className='text-gray-700 font-bold w-full text-start font-sans text-xl my-2'>Password</h1>
-                                    <Input
-                                        placeholder="Password"
-                                        className='h-10 w-full'
-                                        value={exam.accessCode}
-                                        onChange={(e) => setExam({ ...exam, accessCode: e.target.value })}
-                                    />
+                                    
                                     <h1 className='text-gray-700 font-bold w-full text-start font-sans text-xl my-2'>Total Score</h1>
                                     <Input
                                         type='number'

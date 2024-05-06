@@ -167,7 +167,9 @@ const SignIn = () => {
               <Form.Item>
                 <Button
                   type="primary"
-                  htmlType="submit"
+                  onClick={()=>{
+                    window.location.href="/signup"
+                  }}
                   className="login-form-button"
                   block
                 >

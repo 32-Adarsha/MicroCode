@@ -48,10 +48,10 @@ public class ExamController : ControllerBase
     [Route("/getExam")]
     [HttpPost]
     [Authorize]
-    public async Task<examGetResponse> getExam([FromHeader] string guid, [FromHeader] string accessCode)
+    public async Task<examGetResponse> getExam([FromHeader] string guid)
     {
 
-        return _Exam.getExam(guid, accessCode);
+        return _Exam.getExam(guid);
     }
     
     [Route("/getCreated")]

@@ -178,7 +178,7 @@ const Profile = () => {
           renderItem={(item) => (
             <List.Item
               key={item.program_id}
-              actions={[item.isPublic ? 'Public' : 'Not Public', item.verified ? 'Verified' : 'Not Verified',<Button type='primary' onClick={()=>{window.location.href="/createproblem/"+item.program_id}}>Edit</Button>]}
+              actions={[item.isPublic ? 'Public' : 'Not Public',<Button type='primary' onClick={()=>{window.location.href="/createproblem/"+item.program_id}}>Edit</Button>]}
             >
               <List.Item.Meta
                 title={item.title}

@@ -30,7 +30,7 @@ function App() {
         <Route path="/createExam" element = {<Auth page={<CreateExam />} />} />
         <Route path="/adminPage" element = {<Auth page={<AdminPage />} />} />
         <Route path="/" element={<Auth page={<Homepage />} />} />
-        <Route path="/signup" element={<Auth page={<SignUp />} />} />
+        <Route path="/signup" element={<SignUp  />} />
         <Route path="/custom" element={<Auth page={<CustomTestPage />} />} />
         <Route path="/createproblem" element={<Auth page={<CreateProblemPage />} />} />
         <Route path="/createproblem/:questionId" element={<Auth page={<CreateProblemPage />} />} />

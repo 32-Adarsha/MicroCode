@@ -1,6 +1,7 @@
 import { Layout, List, Card, Button, Divider } from 'antd';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 const ExamPage = () => {
     const [taken, setTaken] = useState([])
@@ -55,7 +56,7 @@ const ExamPage = () => {
                         dataSource={[...taken, ...notTaken]}
                         renderItem={(item) => (
                             <List.Item key={item.examId} actions={[
-                                <p>{item.taken ? "Taken" : <Button type='primary'> Take Now</Button>}</p>,
+                                <p>{item.taken ? "Taken" : <Link to={`/takeexam/${item.examId}`}><Button type='primary'> Take Now</Button></Link>}</p>,
                                 <p> Created By: {item.owner}</p>
                             ]}>
                                 <List.Item.Meta title={item.name} description={item.discription} />
@@ -63,6 +64,20 @@ const ExamPage = () => {
                         )}
                     />
                     <Divider>Exams Created by you</Divider>
+                    
+                    <Link to={"/viewExams"}>
+                    <Button type='primary'>View All</Button>
+
+
+                    </Link>
+                    <Divider type='vertical'></Divider>
+                    <Link to={"/createExam"}>
+                    <Button type='primary'>Create New</Button>
+
+
+                    </Link>
+
+                    
                     <List
                         bordered
                         dataSource={createdExams}

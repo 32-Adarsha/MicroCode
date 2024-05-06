@@ -42,7 +42,7 @@ public class ExamRepository : IExamRepository
         }
     }
 
-    public examGetResponse getExam(string id, string accessCode)
+    public examGetResponse getExam(string id)
     {
 
         var examModel = _context.ExamModel.FirstOrDefault(u => u.examId == new Guid(id));
@@ -51,11 +51,11 @@ public class ExamRepository : IExamRepository
             {
                 exam = null,
                 successful = false,
-                error = "Access code wrong"
+                error = "No Exam"
             };
             return e;
         }
-        if (examModel.accessCode == accessCode)
+        if (examModel != null)
         {
             var examGetModel = new ExamGetModel
             {

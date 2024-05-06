@@ -31,10 +31,10 @@ const TakeExam = () => {
     const [gotValue, setGotValue] = useState(false);
 
     const { examId } = useParams();
+    console.log(examId)
 
     const headers = {
-        'guid': "78804a61-4947-4f05-958c-3125fe62e738",
-        'accessCode': 'This Password',
+        'guid': examId,
         'accept': 'text/plain'
     };
 
@@ -107,47 +107,61 @@ const TakeExam = () => {
         const requests = problems.map(problem => {
             const test = testcases[problem.problem_id];
             return test.map(testCase => {
-              return axios.post('http://localhost:8080/executeProblem', {
-                language_id: "54", 
-                stdin: testCase.input,
-                expected_output: testCase.output,
-                source_code: codes[problem.problem_id]
-              });
+                return axios.post('http://localhost:8080/executeProblem', {
+                    language_id: "54",
+                    stdin: testCase.input,
+                    expected_output: testCase.output,
+                    source_code: codes[problem.problem_id]
+                });
             });
-          });
-    
+        });
+
+        const trackProblem = []
+
         Promise.all(requests)
             .then(responses => {
-                const timeline = [];
+                console.log(responses)
                 const r = [];
-    
+                const postPromises = []; // array to store post promises
+
                 responses.map((response, index) => {
-                    const problemId = problems[index].program_id;
+                    const problemId = problems[index].problem_id;
                     console.log(response)
-    
-                    axios.post('http://localhost:8080/submitProblem', {
+
+                    const postPromise = axios.post('http://localhost:8080/submitProblem', {
                         problem_id: problemId,
-                        language: 54, 
+                        language: '54',
                         source_code: codes[problemId],
                         solved: true
                     })
                         .then(response => {
-                            console.log(response.data);
+                            trackProblem.push({ problemId: problemId, judgeId: response.data, score: 0 })
                         })
                         .catch(error => {
                             console.error(error);
                         });
+
+                    postPromises.push(postPromise); // push post promise into array
                 });
-    
-                console.log(timeline);
-                setTimelineData(timeline);
-                setGotValue(true);
+
+                return Promise.all(postPromises); // return a promise that resolves when all post requests are done
+            })
+            .then(() => {
             })
             .catch(error => {
                 console.error(error);
-            });
+            }).finally(() => {
+                axios.post("http://localhost:8080/submitExam", {
+                    examId: "78804a61-4947-4f05-958c-3125fe62e738",
+                    totalScore: 0,
+                    trackProblem: trackProblem,
+                }).then(res => {
+                    console.log(res)
+                })
+            })
+
     };
-    
+
 
 
     return (
