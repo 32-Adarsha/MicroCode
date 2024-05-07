@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MicroCode.Migrations
 {
     [DbContext(typeof(MicroCodeContext))]
-    [Migration("20240505033441_init")]
+    [Migration("20240507052038_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -31,6 +31,10 @@ namespace MicroCode.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("hidden_testcase")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("language")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -55,8 +59,9 @@ namespace MicroCode.Migrations
 
             modelBuilder.Entity("MicroCode.models.CodeSubmission", b =>
                 {
-                    b.Property<string>("JudgeId")
-                        .HasColumnType("text");
+                    b.Property<Guid>("codeSubmissionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CompletedDate")
                         .HasColumnType("timestamp with time zone");
@@ -64,17 +69,21 @@ namespace MicroCode.Migrations
                     b.Property<Guid?>("Program_id")
                         .HasColumnType("uuid");
 
-                    b.Property<bool?>("codeStatus")
-                        .HasColumnType("boolean");
+                    b.Property<string>("code")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("language")
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<bool>("solved")
+                        .HasColumnType("boolean");
+
                     b.Property<Guid?>("user_id")
                         .HasColumnType("uuid");
 
-                    b.HasKey("JudgeId");
+                    b.HasKey("codeSubmissionId");
 
                     b.HasIndex("Program_id");
 

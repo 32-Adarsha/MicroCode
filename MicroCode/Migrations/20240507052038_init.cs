@@ -141,6 +141,7 @@ namespace MicroCode.Migrations
                 {
                     program_id = table.Column<Guid>(type: "uuid", nullable: false),
                     mainCode = table.Column<string>(type: "text", nullable: false),
+                    language = table.Column<string>(type: "text", nullable: false),
                     hidden_testcase = table.Column<string>(type: "text", nullable: false),
                     public_testcase = table.Column<string>(type: "text", nullable: false),
                     timeLimit = table.Column<int>(type: "integer", nullable: false),
@@ -161,8 +162,9 @@ namespace MicroCode.Migrations
                 name: "CodeSubmissions",
                 columns: table => new
                 {
-                    JudgeId = table.Column<string>(type: "text", nullable: false),
-                    codeStatus = table.Column<bool>(type: "boolean", nullable: true),
+                    codeSubmissionId = table.Column<Guid>(type: "uuid", nullable: false),
+                    solved = table.Column<bool>(type: "boolean", nullable: false),
+                    code = table.Column<string>(type: "text", nullable: false),
                     user_id = table.Column<Guid>(type: "uuid", nullable: true),
                     CompletedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     language = table.Column<string>(type: "text", nullable: false),
@@ -170,7 +172,7 @@ namespace MicroCode.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CodeSubmissions", x => x.JudgeId);
+                    table.PrimaryKey("PK_CodeSubmissions", x => x.codeSubmissionId);
                     table.ForeignKey(
                         name: "FK_CodeSubmissions_ProgramModel_Program_id",
                         column: x => x.Program_id,

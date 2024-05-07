@@ -16,8 +16,7 @@ RUN dotnet publish -c Release -o out
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS migration
 WORKDIR /app
 COPY --from=build-env /app/out ./
-RUN dotnet ef migrations add InitialCreate -c ApplicationDbContext --output-dir Migrations --context-dir Data
-RUN dotnet ef database update -c ApplicationDbContext
+
 
 # Build the runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
