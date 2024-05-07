@@ -30,7 +30,7 @@ unzip judge0-v1.13.1.zip
 cd judge0-v1.13.1
 docker-compose up --build
 ```
-wait for 3 minutes
+wait until all the pulls are done
 
 
 
