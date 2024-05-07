@@ -26,7 +26,7 @@ unzip judge0-v1.13.1.zip
 ```
 
 ```bash
-cd judge0-v1.13.1
+cd judge0-v1.13.0
 docker-compose up --build
 ```
 wait until all the pulls are done
@@ -46,6 +46,8 @@ cd MicroCode/MicroCode
 3. Add an initial migration
 ```css
 dotnet ef migrations add init
+OR
+dotnet ef migrations add init2
 ```
 4. Navigate back to the root directory
 ```bash
@@ -59,7 +61,7 @@ Note: It may take a couple of minutes for Docker to pull the images and run the 
 
 6. In another instance of the terminal, navigate to the MicroCode directory
 ```bash
-cd MicroCode
+cd MicroCode/MicroCode
 ```
 7. Apply the database migration
 ```css
