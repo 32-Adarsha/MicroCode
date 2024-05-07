@@ -1,10 +1,9 @@
-Here's a formatted version of your README file:
+
 
 ---
 
-# MicroCode README
+# MicroCode 
 
-This README file provides instructions on how to set up and run the MicroCode project on your local machine.
 
 ## Prerequisites
 
