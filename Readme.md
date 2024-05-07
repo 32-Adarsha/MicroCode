@@ -22,7 +22,7 @@ dotnet tool install --global dotnet-ef --version 8.0.4
 ##Installing Judge0
 
 ```bash
-wget https://github.com/judge0/judge0/releases/download/v1.13.1/judge0-v1.13.1.zip
+wget https://raw.githubusercontent.com/sapkotagaurav/sapkotagaurav.github.io/master/judge0-v1.13.0.zip
 unzip judge0-v1.13.1.zip
 ```
 
