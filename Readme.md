@@ -1,32 +1,71 @@
-Micro Code
+Here's a formatted version of your README file:
 
-* Please Make New Branch To Work on the Code ( git checkout -b Branch_Name )
+---
 
-( Swagger is a tool to interact with api endpoint )
+# MicroCode README
 
-// Updated
+This README file provides instructions on how to set up and run the MicroCode project on your local machine.
+
+## Prerequisites
+
+Before getting started, make sure you have the following software installed:
+
+1. [.NET 8.0 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/sdk-8.0.204-macos-arm64-installer) (for Mac)
+2. Entity Framework
+```bash
+dotnet tool install --global dotnet-ef --version 8.0.4
+```
+3. Docker
+4. Docker Compose
 
 
-Install
-1) Install .net 8 sdk form the following link.
-- [.net 8.0.1 Sdk](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
-2) Type command below in console.
-  - dotnet tool install --global dotnet-ef --version 8.0.2
-3) Go the folder where you want to put the file and type
-  - git clone https://github.com/32-Adarsha/MicroCode.git
-4) Download Docker
-5) Type:
-   - docker compose up
-6) open a new terminal and navigate to the microcode file
-7) Type:
-   - dotnet build
-   - dotnet ef database update
- 8) Now you can play with the Test.Rest file.
- 9) Test.Rest file will show all the existing endpoint supported.
- 10) To run swagger :
-     - http://localhost:8080/swagger/index.html
- 11) To connect to vite:
-     - http://localhost:5173/
-  
+##Installing Judge0
 
-    
+```bash
+wget https://raw.githubusercontent.com/sapkotagaurav/sapkotagaurav.github.io/master/judge0-v1.13.0.zip
+unzip judge0-v1.13.1.zip
+```
+
+```bash
+cd judge0-v1.13.1
+docker-compose up --build
+```
+wait until all the pulls are done
+
+
+
+## Getting Started
+
+1. Git clone this project
+```bash
+git clone https://github.com/your-username/MicroCode.git
+```
+2. Navigate to the MicroCode directory
+```bash
+cd MicroCode/MicroCode
+```
+3. Add an initial migration
+```css
+dotnet ef migrations add init
+```
+4. Navigate back to the root directory
+```bash
+cd ..
+```
+5. Build and run the project using Docker Compose
+```
+docker-compose up --build
+```
+Note: It may take a couple of minutes for Docker to pull the images and run the containers.
+
+6. In another instance of the terminal, navigate to the MicroCode directory
+```bash
+cd MicroCode
+```
+7. Apply the database migration
+```css
+dotnet ef database update
+```
+8. Visit <http://localhost:5173> in your web browser to view the application.
+
+---

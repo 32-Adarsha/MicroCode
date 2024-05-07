@@ -4,7 +4,7 @@ WORKDIR /vite-app
 
 EXPOSE 5173
 
-COPY package.json package-lock.json ./
+COPY package.json  ./
 
 RUN npm install --force
 
