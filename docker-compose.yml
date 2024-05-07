@@ -18,6 +18,7 @@ services:
     environment:
       - ASPNETCORE_URLS=http://+:80
       - ConnectionStrings__DefaultConnection=Server=dataBase;Port=5432;Database=postgres;Username=postgres;Password=microcode;Pooling=true;
+    command: sh -c "dotnet ef database update --context ApplicationDbContext && dotnet MicroCode.dll"
     networks:
       - dev
   dataBase:
@@ -36,21 +37,6 @@ services:
       - db_data:/var/lib/postgresql/data
     networks:
       - dev
-  # FrontEnd:
-  #   container_name: FrontEndService
-  #   image: frontend_view
-  #   build:
-  #     context: ./microcode-views/
-  #     dockerfile: Dockerfile
-  #   volumes:
-  #     - ./microcode-views/:/vl
-  #     - /vl/node_modules
-  #     - /vl/.next 
-  #   ports:
-  #     - "5173:5173"
-  #   networks:
-  #     - dev
-
 
 volumes:
   db_data:

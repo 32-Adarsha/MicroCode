@@ -6,7 +6,7 @@ EXPOSE 5173
 
 COPY package.json package-lock.json ./
 
-RUN npm install --force
+RUN npm install 
 
 COPY . .
 
